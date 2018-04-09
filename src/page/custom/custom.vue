@@ -1,11 +1,11 @@
 <template>
     <div class="custom">
         <section class="custom_header_form">
-            <el-button type="button" icon='el-icon-plus' class='add_custom'>新建客户信息</el-button>
+            <el-button type="primary" icon='el-icon-plus' class='add_custom'>新建客户信息</el-button>
             <el-form ref="form" :model="form" :inline="true"  class='search_form'>
                 <el-form-item class='search_form_item'>
                     <el-input v-model="form.name" placeholder="搜索客户信息" class='search_input'></el-input>
-                    <el-button type="button" class='search_btn'>搜索</el-button>
+                    <el-button type="primary" class='search_btn'>搜索</el-button>
                 </el-form-item>
                 <div class="form_select_right">
                     <el-form-item>
@@ -71,13 +71,26 @@
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer'>
-            <el-tab-pane label="消息中心">消息中心</el-tab-pane>
-            <el-tab-pane label="角色管理">角色管理</el-tab-pane>
-            <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+            <el-tab-pane label="基本信息">
+                <basicInfo></basicInfo>
+            </el-tab-pane>
+            <el-tab-pane label="沟通记录">
+                <communicationRecord></communicationRecord>
+            </el-tab-pane>
+            <el-tab-pane label="上门测量">
+                <measurement></measurement>
+            </el-tab-pane>
+            <el-tab-pane label="收款管理"></el-tab-pane>
+            <el-tab-pane label="方案明细"></el-tab-pane>
+            <el-tab-pane label="交易信息"></el-tab-pane>
+            <el-tab-pane label="投诉建议"></el-tab-pane>
         </el-tabs>
     </div>
-</template>
+</template>''
 <script>
+    import basicInfo from '@/components/custom/basicInfo';
+    import communicationRecord from '@/components/custom/communicationRecord';
+    import measurement from '@/components/custom/measurement';
     export default{
         name:'custom',
         data(){
@@ -167,6 +180,11 @@
                     }
                 ]
             }
+        },
+        components:{
+            basicInfo,
+            communicationRecord,
+            measurement
         }
     }
 </script>
@@ -182,9 +200,8 @@
         width: 200px;
         height: 48px;
         border-radius: 0;
-        background-color: #1876EF;
         color: #fff;
-        /*font-size: 20px;*/
+        font-size: 20px;
     }
     .search_form{
         margin-top: 19px;
@@ -202,11 +219,10 @@
         margin-right: 11px;
     }
     .search_btn,.edit_btn{
-        background-color: #1876EF;
         color: #fff;
         width: 90px;
         height: 48px;
-        /*font-size: 20px;*/
+        font-size: 20px;
         border-radius: 0;
     }
     .edit_btn{

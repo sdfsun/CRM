@@ -87,7 +87,42 @@ html{
     width: 100% !important;
 }
 /*客户列表底部切换栏*/
-.el-tabs__item{
+.el-tabs--border-card{
+    border:none;
 }
-.el-tabs__item:after{
+.el-tabs--border-card>.el-tabs__header{
+    background: #f7f7f7;
+    border-bottom: none;
+}
+.el-tabs__item{
+    width: 233px;
+    height: 66px;
+    line-height: 66px;
+    font-size: 20px;
+    text-align: center;
+    color: #fff !important;
+    margin-top: 10px !important;
+    transition: none !important;
+}
+.el-tabs__item::before{
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: -1;
+    background: #ccc;
+    background-color: #1876EF;
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    transform: perspective(20px) rotateX(5deg);
+    transform-origin: left;
+    box-shadow:6px 0px 0px rgba(242,242,242,1);
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
+    z-index: 3;
+    background: transparent;
+    color: #1876EF !important;
+    border:none;
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active::before{
+    background-color: #fff;
 }

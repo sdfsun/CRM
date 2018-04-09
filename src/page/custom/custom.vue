@@ -228,7 +228,4 @@
         left: 0;
         right: 0;
     }
-    .el-tab-pane{
-        background-color: #1876EF;
-    }
 </style>

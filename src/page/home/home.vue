@@ -9,7 +9,7 @@
     </el-container>
 </template>
 <script>
-    import sidebar from './children/sidebar'
+    import sidebar from '../../components/common/sidebar'
     export default{
         name:'home',
         components:{

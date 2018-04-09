@@ -1,0 +1,93 @@
+body{
+    height: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+html{
+    height: 100%;
+}
+#app{
+    height: 100%;
+}
+/* 浮动 */
+.left {
+    float:left;
+}
+.right {
+    float:right;
+}
+.clear:after ,.clearfix:after{
+    content:'\20';
+    display:block; 
+    height:0;
+    line-height:0;
+    font-size:0;
+    clear:both;
+    visibility:hidden;
+}
+/* for ie*/
+.clear,.clearfix{
+    *zoom:1;
+} 
+
+
+/*element-ui*/
+.el-submenu__title{
+    font-size: 22px;
+    background-color: #2C3031 !important;
+}
+.el-menu-item{
+    font-size: 18px;
+    background-color: #25292A !important;
+    color: #999 !important;
+    position: relative;
+}
+.el-menu-item.is-active:before{
+    content: '';
+    width: 10px;
+    height: 100%;
+    background-color: #1876EF;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.el-menu-item.is-active{
+    color: #1876EF !important;
+}
+.el-form-item__content{
+    margin-left: 0 !important;
+}
+.search_input .el-input__inner{
+    border-color: #D6D7DC;
+    border-radius: 0;
+    height: 100%;
+    /*font-size: 18px;*/
+}
+.search_form_item .el-form-item__content{
+    display: flex;
+}
+.el-table th{
+    text-align: center;
+}
+.header_row_style th{
+    background-color:#EAECEE !important;
+    color:#000;
+}
+.el-table .cell{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.el-table--striped .el-table__body tr.el-table__row--striped td{
+    background-color: #F2F6FA;
+}
+.el-table .el-table__header,.el-table .el-table__body{
+    width: 100% !important;
+}
+/*客户列表底部切换栏*/
+.el-tabs__item{
+}
+.el-tabs__item:after{
+}

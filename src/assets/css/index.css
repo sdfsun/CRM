@@ -64,6 +64,7 @@ html{
     border-radius: 0;
     height: 100%;
     /*font-size: 18px;*/
+    max-width: 350px;
 }
 .search_form_item .el-form-item__content{
     display: flex;

@@ -15,12 +15,12 @@
                     <template slot="title">
                         <span>客户管理</span>
                     </template>
-                    <el-menu-item index="/custom">客户列表</el-menu-item>
-                    <el-menu-item index="1-2">待联系列表</el-menu-item>
-                    <el-menu-item index="1-3">已联系列表</el-menu-item>
-                    <el-menu-item index="1-4">待分配列表</el-menu-item>
-                    <el-menu-item index="1-5">待测量列表</el-menu-item>
-                    <el-menu-item index="1-6">待上传方案列表</el-menu-item>
+                    <el-menu-item index="/custom/0">客户列表</el-menu-item>
+                    <el-menu-item index="/custom/1">待联系列表</el-menu-item>
+                    <el-menu-item index="/custom/2">已联系列表</el-menu-item>
+                    <el-menu-item index="/custom/3">待分配列表</el-menu-item>
+                    <el-menu-item index="/custom/4">待测量列表</el-menu-item>
+                    <el-menu-item index="/custom/5">待上传方案列表</el-menu-item>
                 </el-submenu>
                 <el-submenu index="2">
                     <template slot="title">

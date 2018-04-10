@@ -12,7 +12,7 @@ export default [
         component: home,
         children:[
             {
-                path: '/custom',
+                path: '/custom/:id',
                 component: custom
             }
         ]

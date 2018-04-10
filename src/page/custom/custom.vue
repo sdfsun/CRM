@@ -1,5 +1,5 @@
 <template>
-    <div class="custom">
+    <div class="custom_container">
         <section class="custom_header_form">
             <el-button type="primary" icon='el-icon-plus' class='add_custom'>新建客户信息</el-button>
             <el-form ref="form" :model="form" :inline="true"  class='search_form'>
@@ -192,7 +192,7 @@
     }
 </script>
 <style scoped>
-    .custom{
+    .custom_container{
         height: 100%;
         position: relative;
     }

@@ -1,2 +1,8 @@
 /*设计师*/
 .d_tale_hd th{text-align:center;background:#5A98E8;color:#fff;}
+
+/*工时上报*/
+.page_hours .el-tabs__header{height:90px;line-height:90px;margin:0;}
+.page_hours .el-tabs__nav-wrap{padding:0 80px;}
+.page_hours .el-tabs__item{font-size:26px;font-weight:bold;}
+.page_hours .el-tabs__active-bar{height:6px;}

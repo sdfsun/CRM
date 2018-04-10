@@ -34,6 +34,13 @@ html{
 
 
 /*element-ui*/
+/*登录页*/
+.login_form .el-input__inner{
+    padding-left: 54px;
+}
+.remember_pasd .el-radio__input.is-checked + .el-radio__label{
+    color: #919191;
+}
 .el-submenu__title{
     font-size: 22px;
     background-color: #2C3031 !important;

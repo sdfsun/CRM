@@ -169,7 +169,6 @@
                     const res = await getCustomLists(this.id,this.page);
                     if(res.error){
                         this.$message({
-                            showClose: true,
                             message: res.error,
                             type: 'error'
                         });

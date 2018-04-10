@@ -10,7 +10,7 @@ import 'normalize.css/normalize.css'
 // import 'element-ui/lib/theme-chalk/index.css'
 import '../theme/index.css'
 import './assets/css/index.css'
-
+import './assets/css/designer.css'
 
 Vue.config.productionTip = false
 

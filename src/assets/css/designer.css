@@ -2,7 +2,30 @@
 .d_tale_hd th{text-align:center;background:#5A98E8;color:#fff;}
 
 /*工时上报*/
-.page_hours .el-tabs__header{height:90px;line-height:90px;margin:0;}
+.page_hours .el-tabs__header{height:70px;line-height:70px;margin:0;background:#fff;padding-top:20px;}
 .page_hours .el-tabs__nav-wrap{padding:0 80px;}
+.page_hours .el-tabs__nav-wrap::after{height:0;}
 .page_hours .el-tabs__item{font-size:26px;font-weight:bold;}
 .page_hours .el-tabs__active-bar{height:6px;}
+
+/*日期*/
+.pika-single{z-index:9999;display:block;position:relative;width:90%;min-width:300px;box-sizing:border-box;margin:40px auto;box-shadow:0 5px 5px rgba(0,0,0,0.1)}
+.pika-title{position:relative;text-align:center;background:#5A98E8;height:80px;overflow:hidden;}
+.pika-label{display:inline-block;position:relative;z-index:9999;overflow:hidden;margin:0;padding:0 3px;font-size:24px;line-height:80px;font-weight:700;color:#fff;}
+.pika-title select{cursor:pointer;position:absolute;z-index:9998;margin:0;left:0;top:25px;filter:alpha(opacity=0);opacity:0}
+.pika-next,.pika-prev{display:block;cursor:pointer;position:relative;outline:0;border:0;padding:0;width:40px;height:80px;line-height:80px;overflow:hidden;color:#fff;font-size:30px;}
+.pika-next:hover,.pika-prev:hover{opacity:1}
+.is-rtl .pika-next,.pika-prev{float:left;margin-left:20%;}
+.is-rtl .pika-prev,.pika-next{float:right;margin-right:20%;}
+.pika-next.is-disabled,.pika-prev.is-disabled{cursor:default;opacity:.2}
+.pika-select{display:inline-block}
+.pika-table{width:100%;border-collapse:collapse;border-spacing:0;border:0;background:#fff;}
+.pika-table td,.pika-table th{width:14.285714285714286%;border:1px solid #e0e0e0;position:relative;padding:0;margin:0;}
+.pika-table th{color:#000;font-size:20px;line-height:50px;font-weight:700;text-align:center;background:#F2F6FA;}
+.pika-table th abbr{text-decoration:none;}
+.pika-button{cursor:pointer;display:block;outline:0;border:0;margin:0;color:#1876EF;font-size:32px;line-height:40px;text-align:right;height:70px;padding:10px;background:none;}
+.is-today .pika-button{color:#F7A903;font-weight:700}
+.is-selected .pika-button{color:#F25406;font-weight:700;background:#FFF6EE;}
+.is-disabled .pika-button{pointer-events:none;cursor:default;color:#999;opacity:.3}
+.pika-button:hover{color:#F25406!important;background:#FFF6EE!important;}
+.d_msg{position:absolute;text-align:center;bottom:15px;width:100%;font-size:16px;}

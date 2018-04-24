@@ -1,91 +1,83 @@
 <template>
-    <el-container>
-        <el-aside width="auto" min-width='180px'>
-            <sidebar></sidebar>
-        </el-aside>
-        <el-main>
-            <el-row class="d_hd">
-                <el-col :span="21">
-                    <el-carousel :autoplay="false" arrow="never" ref="carousel">
-                        <el-carousel-item v-for="(item,index) in list" :key="index">
-                            <el-row  class="d_list">
-                                <el-col :span="3" v-for="child in item" :key="item.name">
-                                    <img class="d_touxiang" :src="child.img">
-                                    <h3>{{child.name}}</h3>
-                                </el-col>
-                            </el-row>
-                        </el-carousel-item>
-                    </el-carousel>
-                </el-col>
-                <el-col :span="3">
-                    <img class="d_add" src="https://pic.solux.cn/PC/crm/d_add.png">
-                </el-col>
-                <div class="arrow_list">
-                   <a href="javascript:;" @click="prev()"><i class="el-icon-arrow-left"></i></a>
-                   <a href="javascript:;"  @click="next()"><i class="el-icon-arrow-right"></i></a>
-               </div>
-           </el-row>
+    <div>
+        <el-row class="d_hd">
+            <el-col :span="21">
+                <el-carousel :autoplay="false" arrow="never" ref="carousel">
+                    <el-carousel-item v-for="(item,index) in list" :key="index">
+                        <el-row  class="d_list">
+                            <el-col :span="3" v-for="child in item" :key="item.name">
+                                <img class="d_touxiang" :src="child.img">
+                                <h3>{{child.name}}</h3>
+                            </el-col>
+                        </el-row>
+                    </el-carousel-item>
+                </el-carousel>
+            </el-col>
+            <el-col :span="3">
+                <img class="d_add" src="https://pic.solux.cn/PC/crm/d_add.png">
+            </el-col>
+            <div class="arrow_list">
+               <a href="javascript:;" @click="prev()"><i class="el-icon-arrow-left"></i></a>
+               <a href="javascript:;"  @click="next()"><i class="el-icon-arrow-right"></i></a>
+           </div>
+       </el-row>
 
-           <el-table
-                :data="tableData"
-                stripe
-                style="width: 100%;text-align: center;"
-                header-row-class-name='d_tale_hd'>
-                <el-table-column
-                    prop="name"
-                    label="设计师"
-                    >
-                </el-table-column>
-                <el-table-column
-                    prop="marks"
-                    label="标注"
-                    >
-                </el-table-column>
-                <el-table-column
-                    prop="phone"
-                    label="手机号"
-                    >
-                </el-table-column>
-                <el-table-column
-                    prop="plan"
-                    label="日程"
-                    width='260'>
-                </el-table-column>
-                <el-table-column
-                    prop="time"
-                    label="时间">
-                </el-table-column>
-                <el-table-column
-                    prop="msg"
-                    label="投诉建议">
-                </el-table-column>
-            </el-table>
-            <div class="page_fenye">
-                <el-pagination
-                  background
-                  layout="prev, pager, next"
-                  :total="100">
-                </el-pagination>
+       <el-table
+            :data="tableData"
+            stripe
+            style="width: 100%;text-align: center;"
+            header-row-class-name='d_tale_hd'>
+            <el-table-column
+                prop="name"
+                label="设计师"
+                >
+            </el-table-column>
+            <el-table-column
+                prop="marks"
+                label="标注"
+                >
+            </el-table-column>
+            <el-table-column
+                prop="phone"
+                label="手机号"
+                >
+            </el-table-column>
+            <el-table-column
+                prop="plan"
+                label="日程"
+                width='260'>
+            </el-table-column>
+            <el-table-column
+                prop="time"
+                label="时间">
+            </el-table-column>
+            <el-table-column
+                prop="msg"
+                label="投诉建议">
+            </el-table-column>
+        </el-table>
+        <div class="page_fenye">
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="100">
+            </el-pagination>
 
-                <div class="d_data">
-                    <el-date-picker
-                      v-model="value7"
-                      type="daterange"
-                      align="right"
-                      unlink-panels
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
-                      :picker-options="pickerOptions2">
-                    </el-date-picker>
-                    <el-button type="primary">筛选</el-button>
-                </div>
+            <div class="d_data">
+                <el-date-picker
+                  v-model="value7"
+                  type="daterange"
+                  align="right"
+                  unlink-panels
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptions2">
+                </el-date-picker>
+                <el-button type="primary">筛选</el-button>
             </div>
-            
-            
-        </el-main>
-        <router-view/>
-    </el-container>
+        </div>
+    </div>
 </template>
 <script>
     import sidebar from '@/components/common/sidebar'

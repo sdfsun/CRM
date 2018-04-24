@@ -7,6 +7,7 @@ const source = r => require.ensure([], () => r(require('@/page/customerSource/cu
 const role = r => require.ensure([], () => r(require('@/page/role/role.vue')), '角色管理');
 const user = r => require.ensure([], () => r(require('@/page/user/user.vue')), '用户管理');
 
+
 export default [
     {
         path: '/',
@@ -39,8 +40,12 @@ export default [
         component: designer,
         children:[
             {
-                path: '/designerHours',
-                component: designerHours
+                path: '/designer',
+                component: designer
+            },
+            {
+                path: '/hours',
+                component: hours
             }
         ]
     }

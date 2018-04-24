@@ -27,7 +27,7 @@
                         <span>工时管理</span>
                     </template>
                     <el-menu-item index="/designer">设计师列表</el-menu-item>
-                    <el-menu-item index="/designerHours">工时上报</el-menu-item>
+                    <el-menu-item index="/hours">工时上报</el-menu-item>
                 </el-submenu>
                 <el-submenu index="3">
                     <template slot="title">

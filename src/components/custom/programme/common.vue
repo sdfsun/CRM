@@ -1,0 +1,86 @@
+<template>
+    <section class="common_container">
+        <el-form-item label='名称：'>
+            <el-row :gutter="10">
+                <el-col :span="14.5">
+                    <el-input  v-model="dataForm.name" placeholder='模块名称'></el-input>
+                </el-col>
+                <el-col :span="9">
+                    <el-button type="primary" @click="deleteModel">删除模块</el-button>
+                </el-col>
+            </el-row>
+        </el-form-item>
+        <el-form-item prop='dataForm.image_url' label='图片：'>
+            <el-upload
+                ref='upload'
+                action="/crm-upload_image.html"
+                list-type="picture-card"
+                name='mypic[]'
+                :file-list="dataForm.imageLists"
+                :multiple='true'
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+                :on-success='handleSuccess'>
+                <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
+                <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+        </el-form-item>
+    </section>
+</template>
+<script>
+    export default{
+        name:'common',
+        props:['dataForm','index'],
+        data(){
+            return{
+                dialogImageUrl:'',
+                dialogVisible:false,
+            }
+        },
+        methods:{
+            handleRemove(file, fileList) {
+                const index = this.dataForm.image_url.findIndex(function(item, index, arr) {
+                    return item === file.url;
+                });
+                this.dataForm.image_url.splice(index,1);
+                this.dataForm.imageLists = fileList;
+            },
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            handleSuccess(response, file, fileList){//上传成功
+                if(response.success && response.success.length>0){
+                    if(!this.dataForm.image_url){
+                        this.dataForm.image_url = [];
+                    }
+                    this.dataForm.image_url.push(response.success[0].image_id);
+                }
+                this.dataForm.imageLists = fileList;
+            },
+            deleteModel(){//删除模块
+                this.$confirm('确定删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$emit('deleteModal',this.index);
+                });
+            }
+        }
+    }
+</script>
+<style scoped>
+    .common_container{
+        margin-top: 20px;
+    }
+    .common_container .el-input{
+        height: 48px;
+        line-height: 48px;
+    }
+    .el-input__inner{
+        height: 100%;
+    }
+</style>

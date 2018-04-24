@@ -1,7 +1,8 @@
 import * as types from './mutation-types.js';
 
 export default {
-    [types.SETADDRMODALFLAG](state,data){
-        
+    //设置客户资源
+    [types.SETCUSTOMSOURCE](state,customSource){
+        state.customSource = customSource;
     }
 }

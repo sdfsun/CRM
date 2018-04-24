@@ -313,10 +313,10 @@ $--notification-danger-color: $--color-danger !default;
 
 /* Input
 -------------------------- */
-$--input-font-size: $--font-size-base !default;
+$--input-font-size: 18px !default;
 $--input-color: $--color-text-regular !default;
 $--input-width: 140px !default;
-$--input-height: 40px !default;
+$--input-height: 48px !default;
 $--input-border: $--border-base !default;
 $--input-border-color: $--border-color-base !default;
 $--input-border-radius: $--border-radius-base !default;
@@ -393,10 +393,10 @@ $--tab-vertical-header-count-fill: $--color-text-secondary !default;
 
 /* Button
 -------------------------- */
-$--button-font-size: 14px !default;
+$--button-font-size: 20px !default;
 $--button-font-weight: $--font-weight-primary !default;
-$--button-border-radius: $--border-radius-base !default;
-$--button-padding-vertical: 12px !default;
+$--button-border-radius: 0 !default;
+$--button-padding-vertical: 13px !default;
 $--button-padding-horizontal: 20px !default;
 
 $--button-medium-font-size: 14px !default;

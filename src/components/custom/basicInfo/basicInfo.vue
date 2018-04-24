@@ -4,92 +4,91 @@
             <li class="title">客户基本信息</li>
             <li>
                 <span class="txt_1">姓名：</span>
-                <span class="txt_2">陈奕迅/先生</span>
+                <span class="txt_2">{{basicInfoRecord.name}}</span>
             </li>
             <li>
                 <span class="txt_1">电话：</span>
-                <span class="txt_2">150-1212-1212</span>
+                <span class="txt_2">{{basicInfoRecord.tel}}</span>
             </li>
             <li>
                 <span class="txt_1">地址：</span>
-                <span class="txt_2">福建省厦门市同安区某某镇xx街道xx社区xxxx小区</span>
+                <span class="txt_2">{{basicInfoRecord.area}}{{basicInfoRecord.addr}}</span>
             </li>
             <li>
                 <span class="txt_1">QQ：</span>
-                <span class="txt_2">123456789</span>
+                <span class="txt_2">{{basicInfoRecord.qq}}</span>
             </li>
             <li>
                 <span class="txt_1">微信：</span>
-                <span class="txt_2">xc12345678912</span>
+                <span class="txt_2">{{basicInfoRecord.weixin}}</span>
             </li>
             <li>
                 <span class="txt_1">邮箱：</span>
-                <span class="txt_2">123456789@qq.com</span>
+                <span class="txt_2">{{basicInfoRecord.email}}</span>
             </li>
         </ul>
         <ul class="col_2">
             <li class="title">客户装修信息</li>
             <li>
                 <span class="txt_1">房屋类型：</span>
-                <span class="txt_2">精装房/已交房</span>
+                <span class="txt_2">{{basicInfoRecord.house_type}}/{{basicInfoRecord.house_status}}</span>
             </li>
             <li>
                 <span class="txt_1">户型：</span>
                 <span class="txt_2">
-                    普通住宅</br>
-                    四房两厅 160㎡</br>
-                    主卧/夫妻/中年</br>
-                    儿童房/女孩/8岁</br>
-                    儿童房/女孩/8岁
+                    {{basicInfoRecord.house_layout}}
                 </span>
             </li>
             <li>
                 <span class="txt_1">预算：</span>
-                <span class="txt_2">50w</span>
+                <span class="txt_2">{{basicInfoRecord.budget}}</span>
             </li>
             <li>
                 <span class="txt_1">装修需求：</span>
-                <span class="txt_2">全屋设计</span>
+                <span class="txt_2">{{basicInfoRecord.demand}}</span>
             </li>
             <li>
                 <span class="txt_1">客户来源：</span>
-                <span class="txt_2">今日头条</span>
+                <span class="txt_2">{{basicInfoRecord.source_name}}</span>
             </li>
         </ul>
         <ul class="col_3">
             <li class="title"></li>
             <li>
                 <span class="txt_1">是否装客：</span>
-                <span class="txt_2">是</span>
+                <span class="txt_2" v-if='basicInfoRecord.guest'>是</span>
+                <span class="txt_2" v-else>否</span>
             </li>
             <li>
                 <span class="txt_1">归属设计师：</span>
-                <span class="txt_2">张某某</span>
+                <span class="txt_2">{{basicInfoRecord.member_name}}</span>
             </li>
             <li>
-                <span class="txt_1">状        态：</span>
-                <span class="txt_2">未联系</span>
+                <span class="txt_1">状态：</span>
+                <span class="txt_2">{{basicInfoRecord.status_name}}</span>
             </li>
             <li>
                 <span class="txt_1">是否预约：</span>
-                <span class="txt_2">未预约</span>
+                <span class="txt_2">{{basicInfoRecord.bespeak_name}}</span>
             </li>
             <li>
                 <span class="txt_1">客户备注：</span>
-                <span class="txt_2">备注例如客户态度客户意向备注例如客户态度客户意向</span>
+                <span class="txt_2">{{basicInfoRecord.remarks}}</span>
             </li>
         </ul>
     </div>
 </template>
 <script>
     export default{
-        name:'basicInfo'
+        name:'basicInfo',
+        props:['basicInfoRecord']
     }
 </script>
 <style scoped>
     .basicInfo_container{
         display: flex;
         padding-top: 38px;
+        overflow: hidden;
     }
     .basicInfo_container ul{
         flex: 1;

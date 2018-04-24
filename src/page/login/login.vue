@@ -1,6 +1,6 @@
 <template>
     <div class="login_container">
-        <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="100px" class="login_form">
+        <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="0" class="login_form">
             <img src="@/assets/img/logo.png" class="logo">
             <el-form-item prop="login_account">
                 <el-input v-model="loginForm.login_account" clearable auto-complete='off' placeholder='请输入账号'></el-input>
@@ -14,7 +14,10 @@
     </div>
 </template>
 <script>
-    import {ajax_login} from '@/service/getData';
+    import { mapMutations } from 'vuex';
+    import { ajax_login } from '@/service/getData';
+    import { setStore } from '@/utils/';
+
     export default{
         name:'login',
         data(){
@@ -36,7 +39,13 @@
             }
         },
         methods:{
+            ...mapMutations([
+                'SETCUSTOMSOURCE'
+            ]),
             async login(formName){
+                if(this.loginBtnStatus){
+                    return false;
+                }
                 try {
                     let that = this;
                     this.$refs[formName].validate((valid) => {
@@ -58,15 +67,24 @@
                                 setTimeout(function(){
                                     that.$router.push('/home');
                                 },3000);
+                                //设置客户来源
+                                if(res.source && res.source.length>0){
+                                    setStore("customSource",res.source);
+                                    this.SETCUSTOMSOURCE(res.source);
+                                }
                             }).catch(error=>{
                                 this.loginBtnStatus = false;
                             });
                         } else {
                             return false;
                         }
-                    })
+                    });
                 } catch(e) {
                     this.loginBtnStatus = false;
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    });
                 }
             }
         }

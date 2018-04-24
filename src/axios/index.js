@@ -38,7 +38,10 @@ axios.interceptors.response.use(res => {
     }else{
         err.message = '连接服务器失败!';
     }
-    Message({"message":err.message});
+    Message({
+        message:err.message,
+        type:'error'
+    });
     return Promise.reject(err);
 });
 

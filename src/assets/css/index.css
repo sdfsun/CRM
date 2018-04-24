@@ -4,6 +4,7 @@ body{
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+    overflow: hidden;
 }
 html{
     height: 100%;
@@ -41,6 +42,7 @@ html{
 .remember_pasd .el-radio__input.is-checked + .el-radio__label{
     color: #919191;
 }
+/*侧边栏*/
 .el-submenu__title{
     font-size: 22px;
     background-color: #2C3031 !important;
@@ -63,19 +65,7 @@ html{
 .el-menu-item.is-active{
     color: #1876EF !important;
 }
-.el-form-item__content{
-    margin-left: 0 !important;
-}
-.search_input .el-input__inner{
-    border-color: #D6D7DC;
-    border-radius: 0;
-    height: 100%;
-    /*font-size: 18px;*/
-    max-width: 350px;
-}
-.search_form_item .el-form-item__content{
-    display: flex;
-}
+/*表格*/
 .el-table th{
     text-align: center;
 }
@@ -94,6 +84,33 @@ html{
 .el-table .el-table__header,.el-table .el-table__body{
     width: 100% !important;
 }
+/*弹框dialog*/
+.el-dialog{
+    left: 106px;
+}
+/*去除输入框校验成功的border样式*/
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
+    border-color: #dcdfe6;
+}
+/*客户列表搜索相关样式*/
+.custom_header_form .el-form-item__content{
+    margin-left: 0 !important;
+}
+.search_input .el-input__inner{
+    border-color: #D6D7DC;
+    /*border-radius: 0;*/
+    height: 100%;
+    /*font-size: 18px;*/
+    max-width: 350px;
+}
+.search_form_item .el-form-item__content{
+    display: flex;
+}
+/*客户列表选中样式*/
+.custom_container .el-table__body tr.current-row > td{
+    background-color: #FFF6EE !important;
+    color: #F25406;
+}
 /*客户列表底部切换栏*/
 .custom_container .el-tabs--border-card{
     border:none;
@@ -103,7 +120,7 @@ html{
     border-bottom: none;
 }
 .custom_container .el-tabs__item{
-    width: 233px;
+    flex: 1;
     height: 66px;
     line-height: 66px;
     font-size: 20px;
@@ -111,19 +128,39 @@ html{
     color: #fff !important;
     margin-top: 10px !important;
     transition: none !important;
+    padding: 0 !important;
+}
+.custom_container .el_tabs_footer .el-tabs__item:last-child{
+    flex: inherit;
+    width: 99px;
+    height: 34px;
+    line-height: 34px;
+    background-color: #1876EF;
+    border-top-left-radius: 20px;
+    margin-top: 42px !important;
+    margin-left: 20px;
+}
+/*此时处于上拉状态*/
+.custom_container.up .el-tabs__item:last-child i{
+    transform: rotate(90deg);
+}
+/*此时处于下拉状态*/
+.custom_container.down .el-tabs__item:last-child i{
+    transform: rotate(270deg);
 }
 .custom_container .el-tabs__item::before{
     content: '';
     position: absolute;
     top: 0; right: 0; bottom: 0; left: 0;
     z-index: -1;
-    background: #ccc;
     background-color: #1876EF;
     border-bottom: none;
     border-radius: 20px 20px 0 0;
     transform: perspective(20px) rotateX(5deg);
     transform-origin: left;
-    box-shadow:6px 0px 0px rgba(242,242,242,1);
+}
+.custom_container .el_tabs_footer .el-tabs__item:last-child::before{
+    position: relative;
 }
 .custom_container .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
     z-index: 3;
@@ -131,6 +168,66 @@ html{
     color: #1876EF !important;
     border:none;
 }
+.custom_container .el_tabs_footer>.el-tabs__header .el-tabs__item:last-child.is-active{
+    background-color:#1876EF;
+    color: #fff !important;
+}
 .custom_container .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active::before{
     background-color: #fff;
+    box-shadow:0 0px 20px rgba(0,0,0,.2);
+}
+.custom_container .el-tabs--border-card > .el-tabs__content,.custom_container .el-tabs__nav-wrap.is-scrollable{
+    padding: 0;
+    /*z-index: 1;*/
+}
+.custom_container .el-tabs__nav-next, .custom_container .el-tabs__nav-prev{
+    display: none;
+}
+.custom_container .el-tabs__nav{
+    display: flex;
+    width: 100%;
+}
+.custom_container .el_tabs_footer > .el-tabs__content .el-tab-pane{
+    height: 400px;
+}
+.custom_container.down .el_tabs_footer > .el-tabs__content .el-tab-pane{
+    min-height: 0;
+    height: 0;
+}
+/*新增客户基本信息*/
+.basicForm_container .el-form-item .el-form-item__content{
+    margin-left: 0 !important;
+}
+.basicForm_container .el-form-item label + .el-form-item__content{
+    margin-left: 80px !important;
+}
+/*基本信息弹框*/
+.custom_container .basicInfoDialog .el-dialog{
+    min-width: 600px;
+}
+.custom_container .basicInfoDialog .el-form-item.is-success .el-input__inner{
+    border-color: #dcdfe6;
+}
+.custom_container .budget_item .el-input__suffix{
+    right: 13px;
+}
+/*客户相关记录弹框*/
+.customRelationInfoDialog .el-dialog{
+    width: 763px;
+}
+.customRelationInfoDialog .form_item_style_width .el-form-item__content,
+    .customRelationInfoDialog .el-date-editor.el-input, .customRelationInfoDialog .el-date-editor.el-input__inner{
+    width: 100%;
+}
+/*方案明细弹框*/
+.customRelationInfoDialog.programmeEditDialog .el-dialog{
+    width: 863px;
+}
+.hide-form-item{
+    display: none;
+    margin-bottom: 0;
+    line-height: 0;
+}
+.customRelationInfoDialog .el-select{
+    width: 100%;
 }

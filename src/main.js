@@ -25,6 +25,10 @@ const router = new VueRouter({
 new Vue({
     el: '#app',
     router,
+    store,
     components: { App },
     template: '<App/>'
 })
+
+//设置客户资源
+store.dispatch('setCustomSource','customSource');

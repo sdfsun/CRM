@@ -1,11 +1,23 @@
+import { setStore,getStore } from '@/utils/'
+
 export default{
-    setStoreage(context,data){//设置本地存储
-        if (!data.name) return;
-        window.localStorage.setItem(data.name, data.val);
+    setCustomSource({commit},name){
+        const customSources = JSON.parse(getStore(name));
+        commit('SETCUSTOMSOURCE',customSources);
     },
-    getStoreage({commit},name){//读取本地存储
-        if (!name) return;
-        let cookieValue =  window.localStorage.getItem(name);
-        commit('SETCOOKIEVALUE',{"name":name,"val":cookieValue});
+    updateCustomSource({state,commit},result){
+        let customSources = state.customSource.slice();
+        const index = state.customSource.findIndex(function(item, index, arr) {
+            return item.id === result.id;
+        });
+        customSources[index] = result;
+        setStore("customSource",customSources);
+        commit('SETCUSTOMSOURCE',customSources);
+    },
+    addCustomSource({state,commit},result){
+        let customSources = state.customSource.slice();
+        customSources.push(result);
+        setStore("customSource",customSources);
+        commit('SETCUSTOMSOURCE',customSources);
     }
 }

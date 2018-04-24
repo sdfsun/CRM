@@ -29,6 +29,19 @@
                     <el-menu-item index="/designer">设计师列表</el-menu-item>
                     <el-menu-item index="/designerHours">工时上报</el-menu-item>
                 </el-submenu>
+                <el-submenu index="3">
+                    <template slot="title">
+                        <span>基本配置</span>
+                    </template>
+                    <el-menu-item index="/source">渠道来源管理</el-menu-item>
+                </el-submenu>
+                <el-submenu index="4">
+                    <template slot="title">
+                        <span>系统管理</span>
+                    </template>
+                    <el-menu-item index="/role">角色管理</el-menu-item>
+                    <el-menu-item index="/user">用户列表</el-menu-item>
+                </el-submenu>
           </el-menu>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
     <el-container>
-        <el-aside width="auto" min-width='180px'>
+        <el-aside width="212px">
             <sidebar></sidebar>
         </el-aside>
         <el-main>
@@ -24,6 +24,7 @@
     .el-main{
         text-align: left;
         padding: 0;
+        min-width: 800px;
     }
     .el-aside{
         background-color: #2C3031;

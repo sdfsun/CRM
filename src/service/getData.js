@@ -87,3 +87,15 @@ export const member = () => axios.post('/crm-member.html');
 
 //保存用户记录
 export const member_save = (formData) => axios.post('/crm-member_save.html',formData);
+
+// 获取设计师列表
+export const getDesignerLists = () => axios.post('/crm-designer_list.html');
+
+// 初始化设计师日程
+export const getVisitInit = () => axios.post('/crm-visit.html');
+
+// 记录设计师可上门日期
+export const postVisitSave = (formData) => axios.post('/crm-visit_save.html',formData);
+
+// 所有日程
+export const getAllPlan = (formData) => axios.post('/crm-schedules.html',formData);

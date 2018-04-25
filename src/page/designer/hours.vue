@@ -8,30 +8,13 @@
                         <el-button type="primary" class="h_request">请求派单</el-button>
                     </div>
                 </div>
-                <div class="h_left">
-                    <div class="h_hd">添加日程</div>
-                    <div class="h_ct">
-                        <el-select v-model="value" placeholder="日程类型">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                        </el-select>
-                        <div class="h_data">
-                            <el-date-picker v-model="value1" type="date" placeholder="开始日期"></el-date-picker>
-                            <el-date-picker v-model="value2" type="date" placeholder="截止日期"></el-date-picker>
-                        </div>
-                        <el-input v-model="input" class="h_phone" placeholder="外出联系电话">
-                            <i slot="prefix" class="el-input__icon el-icon-mobile-phone"></i>
-                        </el-input>
-                        <el-cascader placeholder="请选择 省/市/区" :options="address" filterable></el-cascader>
-                        <el-input type="textarea" class="h_addr" :rows="4" placeholder="具体地址" v-model="textarea"></el-input>
-                        <el-button type="primary" class="h_post">提交</el-button>
-                    </div>
-                </div>
             </el-tab-pane>
             <el-tab-pane label="所有日程" name="second">所有日程</el-tab-pane>
         </el-tabs>
     </div>
 </template>
 <script>
+import { getVisitInit } from '@/service/getData';
 export default {
     data() {
         return {
@@ -43,31 +26,10 @@ export default {
                 value: '选项2',
                 label: '设计沟通'
             }],
-            value: '',
-            value1:'',
-            value2:'',
-            input:'',
-            textarea: '',
-            address: [{
-                value: 'zhinan',
-                label: '福建',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '厦门',
-                    children: [{
-                            value: 'yizhi',
-                            label: '思明'
-                        }]
-                    }, {
-                    value: 'daohang',
-                    label: '龙岩',
-                    children: [{
-                        value: 'cexiangdaohang',
-                        label: '海沧'
-                    }]
-                }]
-            }],
-            selArr:[]  //请求派单，选中的日期
+            curActive:[],
+            startTime:'',
+            endTime:'',
+            sendDate:[]
         }
     },
     created(){
@@ -75,7 +37,7 @@ export default {
     },
     mounted: function () {
         this.$nextTick(function () {
-            this.initData()
+            this.init()
         })
     },
     methods: {
@@ -86,7 +48,39 @@ export default {
                 document.body.style.background = "#f7f7f7"
             }
         },
-        initData(){
+        async init(){
+            try {
+                let res = await getVisitInit();
+                console.log(res);
+                if(res.error){
+                    this.$message({
+                        message: res.error,
+                        type: 'error'
+                    });
+                }else{
+                    this.curActive = res.success.checkdate
+                    this.startTime = res.success.date
+                    this.endTimeFun();
+                    this.initday()
+                }
+            } catch(e) {
+                this.$message({
+                    showClose: true,
+                    message: e,
+                    type: 'error'
+                });
+            }
+        },
+        endTimeFun(){
+            var timestamp = new Date(this.startTime).getTime();
+            var endTamp = new Date(timestamp + 3600*24*3*1000);
+            var y = endTamp.getFullYear();
+            var m = endTamp.getMonth() + 1;
+            var d = endTamp.getDate();
+            this.endTime = y + '-' + m + '-' + d
+        },
+        
+        initday(){
 
             /**
              * feature detection and helper functions
@@ -418,7 +412,6 @@ export default {
 
                     if (!hasClass(target, 'is-disabled')) {
                         if (hasClass(target, 'pika-button') && !hasClass(target, 'is-empty')) {
-                            console.log(888);
                             self.setDate(new Date(self._y, self._m, parseInt(target.innerHTML, 10)));
                             if (opts.bound) {
                                 setTimeout(function() {
@@ -726,7 +719,7 @@ export default {
                     }
                     this._y = date.getFullYear();
                     this._m = date.getMonth();
-                    this.draw();
+                    // this.draw();
                 },
 
                 gotoToday: function()
@@ -751,7 +744,6 @@ export default {
                         this._m = 0;
                         this._y++;
                     }
-                    console.log(this._m+ this._y);
                     this.draw();
                 },
 
@@ -981,9 +973,14 @@ export default {
                 field: document.getElementById('datepicker'),
                 firstDay: 1,
                 bound:false,
-                minDate: new Date('2018-01-01'),
-                maxDate: new Date('2020-12-31'),
+                minDate: new Date(this.startTime),
+                maxDate: new Date(this.endTime),
                 onSelect:function(){
+                    if (hasClass(event.target.parentNode, 'is-active')) {
+                        event.target.parentNode.className = ''
+                    }else{
+                        event.target.parentNode.className = 'is-active'
+                    }
                     console.log(picker.toString());
                 }
             })
@@ -992,16 +989,7 @@ export default {
 };
 </script>
 <style scoped>
-.hours_box{height:100%;padding-right:320px;min-height:300px;}
-.h_left{position:fixed;top:90px;right:0;bottom:0;width:320px;background:#fff;}
-.h_hd{height:50px;line-height:50px;background:#5A98E8;font-size:22px;color:#fff;text-align:center;}
-.h_ct{padding:60px 40px 30px;}
-.el-select{width:100%;}
-.h_data{margin-top:20px;}
-.h_data .el-input{width:100%;margin-top:20px;}
-.h_phone{margin-top:40px;}
-.h_addr{margin-top:20px;}
-.h_post{margin-top:40px;}  
+.hours_box{height:100%;min-height:300px;}
 .el-cascader{width:100%;margin-top:40px}
 .h_footer{width:90%;margin:0 auto;text-align:right;}
 </style>

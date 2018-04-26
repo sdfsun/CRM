@@ -5,7 +5,7 @@
                 <div class="hours_box">
                     <input type="hidden" id="datepicker"/>
                     <div class="h_footer">
-                        <el-button type="primary" class="h_request">请求派单</el-button>
+                        <el-button type="primary" class="h_request" @click="postPaidan">请求派单</el-button>
                     </div>
                 </div>
             </el-tab-pane>
@@ -14,7 +14,7 @@
     </div>
 </template>
 <script>
-import { getVisitInit } from '@/service/getData';
+import { getVisitInit,postVisitSave } from '@/service/getData';
 export default {
     data() {
         return {
@@ -51,17 +51,19 @@ export default {
         async init(){
             try {
                 let res = await getVisitInit();
-                console.log(res);
                 if(res.error){
                     this.$message({
                         message: res.error,
                         type: 'error'
                     });
                 }else{
-                    this.curActive = res.success.checkdate
-                    this.startTime = res.success.date
+                    this.curActive = res.success.checkdate;
+                    this.startTime = res.success.date;
+                    for(var i=0;i<res.success.checkdate.length;i++){
+                        this.sendDate.push(res.success.checkdate[i].work_date);
+                    };
                     this.endTimeFun();
-                    this.initday()
+                    this.initday();
                 }
             } catch(e) {
                 this.$message({
@@ -79,9 +81,34 @@ export default {
             var d = endTamp.getDate();
             this.endTime = y + '-' + m + '-' + d
         },
-        
+        async postPaidan(){
+            let result = await postVisitSave({'work_date':this.sendDate});
+            if(result.success){
+                this.$message({
+                    message: '恭喜你，' + result.success,
+                    type: 'success'
+                });
+            }else{
+                this.$message({
+                    message: res.error,
+                    type: 'error'
+                });
+            }
+        },
         initday(){
-
+            var that = this;
+            Array.prototype.indexOf = function(val) {
+                for (var i = 0; i < this.length; i++) {
+                if (this[i] == val) return i;
+                }
+                return -1;
+            };
+            Array.prototype.remove = function(val) {
+                var index = this.indexOf(val);
+                if (index > -1) {
+                    this.splice(index, 1);
+                }
+            };
             /**
              * feature detection and helper functions
              */
@@ -151,7 +178,6 @@ export default {
             {
                 return (/Array/).test(Object.prototype.toString.call(obj));
             },
-
             isDate = function(obj)
             {
                 return (/Date/).test(Object.prototype.toString.call(obj)) && !isNaN(obj.getTime());
@@ -305,8 +331,7 @@ export default {
                 if (isSelected) {
                     arr.push('is-selected');
                 }
-                // console.log("su");
-                return '<td data-day="' + i + '" class="' + arr.join(' ') + '"><div class="pika-button">' + i + '</div><div class="d_msg">'+ isMsg + '</div></td>';
+                return '<td data-day="' + i + '" class="' + arr.join(' ') + ' '+ isMsg + '"><div class="pika-button">' + i + '</div><div class="d_msg"></div></td>';
             },
 
             renderRow = function(days, isRTL)
@@ -872,8 +897,6 @@ export default {
                         data   = [],
                         row    = [];
 
-                    // isMsg 是后台请求到的数据
-                    var isMsg = ['','上门测量','','','预约登记'];
                     setToStartOfDay(now);
                     if (opts.firstDay > 0) {
                         before -= opts.firstDay;
@@ -895,10 +918,16 @@ export default {
                             isToday = compareDates(day, now),
                             isEmpty = i < before || i >= (days + before);
 
+                            console.log(day);
                         var tempNum = 1 + (i - before);
+                        var tempVal = '';
 
-                        var tempVal = isMsg[tempNum] !=undefined ? isMsg[tempNum] : '';
-
+                        // curActive 是后台请求到的数据用作选中判断
+                        for(var n=0;n<that.curActive.length;n++){
+                            if(that.curActive[n].work_date == tempNum){
+                                tempVal = 'is-active'
+                            }
+                        }
                         row.push(renderDay(tempNum, isSelected, isToday, isDisabled, isEmpty,tempVal));
                         if (++r === 7) {
                             data.push(renderRow(row, opts.isRTL));
@@ -977,11 +1006,12 @@ export default {
                 maxDate: new Date(this.endTime),
                 onSelect:function(){
                     if (hasClass(event.target.parentNode, 'is-active')) {
-                        event.target.parentNode.className = ''
+                        event.target.parentNode.className = '';
+                        that.sendDate.remove(picker.toString().replace(/\-/g,''));
                     }else{
-                        event.target.parentNode.className = 'is-active'
+                        event.target.parentNode.className = 'is-active';
+                        that.sendDate.push(picker.toString().replace(/\-/g,''))
                     }
-                    console.log(picker.toString());
                 }
             })
         }

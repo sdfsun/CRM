@@ -9,7 +9,7 @@
 .page_hours .el-tabs__active-bar{height:6px;}
 
 /*日期*/
-.pika-single{z-index:9999;display:block;position:relative;width:90%;min-width:300px;box-sizing:border-box;margin:40px auto;box-shadow:0 5px 5px rgba(0,0,0,0.1)}
+.pika-single{display:block;position:relative;width:90%;min-width:300px;box-sizing:border-box;margin:40px auto;box-shadow:0 5px 5px rgba(0,0,0,0.1)}
 .pika-title{position:relative;text-align:center;background:#5A98E8;height:80px;overflow:hidden;}
 .pika-label{display:inline-block;position:relative;z-index:9999;overflow:hidden;margin:0;padding:0 3px;font-size:24px;line-height:80px;font-weight:700;color:#fff;}
 .pika-title select{cursor:pointer;position:absolute;z-index:9998;margin:0;left:0;top:25px;filter:alpha(opacity=0);opacity:0}

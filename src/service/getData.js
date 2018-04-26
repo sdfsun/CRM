@@ -88,6 +88,9 @@ export const member = () => axios.post('/crm-member.html');
 //保存用户记录
 export const member_save = (formData) => axios.post('/crm-member_save.html',formData);
 
+//用户修改密码
+export const password = (formData) => axios.post('/crm-password.html',formData);
+
 // 获取设计师列表
 export const getDesignerLists = () => axios.post('/crm-designer_list.html');
 
@@ -99,3 +102,15 @@ export const postVisitSave = (formData) => axios.post('/crm-visit_save.html',for
 
 // 所有日程
 export const getAllPlan = (formData) => axios.post('/crm-schedules.html',formData);
+
+//获取可分配设计师列表
+export const stylist = (information_id,member_id) => axios.post('/crm-stylist.html',{
+    information_id,
+    member_id
+});
+
+//分配设计师并发送微信通知
+export const assign = (formData) => axios.post('/crm-assign.html',formData);
+
+//用户退出
+export const unset_member = () => axios.post('/crm-unset_member.html');

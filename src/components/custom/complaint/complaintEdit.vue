@@ -64,16 +64,16 @@
                 submitBtnStatus:false,//保存按钮是否可点击
                 complaintFormRules:{//规则校验
                     name: [
-                        {  required: true, message: '请填写接待人名称', trigger: 'trigger' }
+                        {  required: true, message: '请填写接待人名称', trigger: 'blur' }
                     ],
                     type: [
                         {  required: true, message: '请选择投诉类型', trigger: 'change' }
                     ],
                     outline: [
-                        { required: true, message: '请填写投诉概要', trigger: 'trigger'}
+                        { required: true, message: '请填写投诉概要', trigger: 'blur'}
                     ],
                     status: [
-                        {  required: true, message: '请选择状态', trigger: 'trigger' }
+                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }

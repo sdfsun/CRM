@@ -83,7 +83,6 @@
         },
         methods:{
             ...mapActions([
-                'addCustomSource',
                 'updateCustomSource'
             ]),
             async init(){
@@ -157,11 +156,7 @@
                             message:res.success,
                             type:'success'
                         });
-                        if(formData.id){//编辑
-                            this.updateCustomSource(res.data);
-                        }else{//新增
-                            this.addCustomSource(res.data);
-                        }
+                        this.updateCustomSource(res.data);
                         let resData = res.data;
                         resData.editFlag = false;
                         resData.disabled = res.data.disabled === 'true'?true:false;

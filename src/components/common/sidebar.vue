@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar">
         <div class="side_header">
-            张某某
+            张某某<small class="roleName">设计主管</small>
         </div>
         <div class="side_menu">
             <el-menu
@@ -44,14 +44,47 @@
                 </el-submenu>
           </el-menu>
         </div>
+        <div class="footer-btns">
+            <a href="javascript:void(0);" @click='logout'>退出</a>
+        </div>
     </div>
 </template>
 <script>
+    import {mapState} from 'vuex';
+    import {unset_member} from '@/service/getData';
+
     export default {
         name: 'sidebar',
         data () {
             return {
                 openeds:['1']
+            }
+        },
+        computed:{
+            ...mapState([
+                'memberRoleId',
+                'memberRolesDes'
+            ])
+        },
+        methods:{
+            async logout(){//退出用户
+                try {
+                    const res  = await unset_member();
+                    if(res.success){
+                        this.$message({
+                            message:res.success,
+                            type:'success'
+                        });
+                        setTimeout(()=>{
+                            this.$router.push('/');
+                        },3000);
+                    }
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             }
         }
     }
@@ -61,13 +94,41 @@
 <style scoped>
     .sidebar{
         text-align: center;
+        position: relative;
+        height: 100%;
+    }
+    .footer-btns{
+        position: absolute;
+        bottom: 28px;
+        padding: 0 30px;
+        left: 0;
+        right: 0;
+    }
+    .footer-btns a{
+        text-decoration: none;
+        color: #fff;
+        font-size: 22px;
+        line-height: 28px;
+        display: block;
+        width: 84px;
+        height: 28px;
+        background: url('../../assets/img/logout.png') 0 center no-repeat;
+        background-size: 28px 28px;
+        padding-left: 38px;
+        box-sizing: border-box;
     }
     .side_header{
         height: 90px;
-        line-height: 90px;
+        /*line-height: 90px;*/
         background-color: #1876EF;
         color: #fff;
         font-size: 22px;
+        line-height: 36px;
+        padding-top: 10px;
+        box-sizing: border-box;
     }
-
+    .side_header small{
+        font-size: 16px;
+        display: block;
+    }
 </style>

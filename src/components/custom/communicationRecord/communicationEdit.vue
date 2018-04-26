@@ -165,10 +165,10 @@
                         { required: true, message: '请选择沟通方式', trigger: 'change' }
                     ],
                     contact_time: [
-                        {  required: true, message: '请选择沟通开始时间', trigger: 'trigger' }
+                        {  required: true, message: '请选择沟通开始时间', trigger: 'change' }
                     ],
                     end_time: [
-                        {  required: true, message: '请选择沟通结束时间', trigger: 'trigger' }
+                        {  required: true, message: '请选择沟通结束时间', trigger: 'change' }
                     ],
                     is_bespeak:[
                         { validator: checkIsBespeak, trigger: 'change'}
@@ -177,7 +177,7 @@
                         { validator: checkReason}
                     ],
                     status: [
-                        {  required: true, message: '请选择状态', trigger: 'trigger' }
+                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }

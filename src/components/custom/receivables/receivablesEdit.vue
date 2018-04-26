@@ -146,10 +146,10 @@
                 dialogVisible:false,
                 receivablesFormRules:{//规则校验
                     name: [
-                        {  required: true, message: '请填写收款人名称', trigger: 'trigger' }
+                        {  required: true, message: '请填写收款人名称', trigger: 'blur' }
                     ],
                     times: [
-                        {  required: true, message: '请选择收款时间', trigger: 'trigger' }
+                        {  required: true, message: '请选择收款时间', trigger: 'change' }
                     ],
                     money: [
                         { validator: checkMoneyAndDiscount}
@@ -161,7 +161,7 @@
                         { validator: checkRemarks}
                     ],
                     status: [
-                        {  required: true, message: '请选择状态', trigger: 'trigger' }
+                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }

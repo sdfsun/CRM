@@ -32,11 +32,11 @@
                 >
             </el-table-column>
             <el-table-column
-                prop="org_id"
+                prop="org_name"
                 label="所属门店">
             </el-table-column>
             <el-table-column
-                prop="member_role_id"
+                prop="role_name"
                 label="用户等级">
             </el-table-column>
             <el-table-column
@@ -49,18 +49,35 @@
                     size="medium">
                         编辑
                     </el-button>
+                    <el-button
+                    @click.native.prevent="handleUpdatePassword(scope.row.member_id)"
+                    type="text"
+                    size="medium">
+                        修改密码
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
         <el-dialog title="添加用户" :visible.sync="userDialogVisible" @close='resetUserEdit'>
             <userEdit  v-on:closeUserInfoDialog='updateUserRecord' :editInfos='currentrow' ref='userEdit'></userEdit>
         </el-dialog>
+        <el-dialog title="修改密码" :visible.sync="userUpdatePasdDialogVisible" @close='resetUserUpdatePasdEdit'>
+            <el-form ref="updatePasdForm" :model="updatePasdForm" :rules='updatePasdFormRules' label-width="80px">
+                <el-form-item prop='member_id' class='hide-form-item'></el-form-item>
+                <el-form-item prop='login_password' label='密码'>
+                    <el-input type='password' v-model="updatePasdForm.login_password" placeholder='请输入密码' @keyup.enter.native="onSubmitForm('updatePasdForm')"></el-input>
+                </el-form-item>
+            </el-form>
+            <div class="btns">
+                <el-button type="primary" @click="onSubmitForm('updatePasdForm')" class='submit_btn'>保存</el-button>
+            </div>
+        </el-dialog>
     </section>
 </template>
 <script>
     import Vue from 'vue';
-    import {mapActions} from 'vuex';
-    import {member,member_save} from '@/service/getData';
+    import {mapState,mapActions} from 'vuex';
+    import {member,password} from '@/service/getData';
     import userEdit from '@/components/user/userEdit';
 
     export default{
@@ -70,7 +87,18 @@
                 roleLists:[],
                 currentrow:{},
                 submitBtnStatus:false,
-                userDialogVisible:false
+                userDialogVisible:false,
+                submitPasdBtnStatus:false,
+                userUpdatePasdDialogVisible:false,
+                updatePasdForm:{
+                    member_id:'',
+                    login_password:''
+                },
+                updatePasdFormRules:{
+                    login_password: [
+                        {  required: true, message: '请输入密码', trigger: 'blur' }
+                    ]
+                }
             }
         },
         mounted(){
@@ -98,10 +126,6 @@
                         return false;
                     }
                     if(res.success){
-                        res.success.forEach( function(el, index) {
-                            el.disabled = el.disabled === 'true'?true:false;
-                            el.editFlag = false;
-                        });
                         this.roleLists = res.success;
                     }else{
                         this.roleLists = [];
@@ -125,7 +149,7 @@
                 this.editActiveRow = {};
                 this.$refs['userEdit'].$refs['userForm'].resetFields();
             },
-            updateUserRecord(){//更新用户记录
+            updateUserRecord(callbackData){//更新用户记录
                 this.userDialogVisible = false;
                 if(callbackData.data){
                     if(callbackData.type === 'add'){
@@ -136,6 +160,55 @@
                         });
                         Vue.set(this.roleLists,index,callbackData.data);
                     }
+                }
+            },
+            handleUpdatePassword(id){//修改密码
+                this.updatePasdForm.member_id = id;
+                this.userUpdatePasdDialogVisible = true;
+            },
+            resetUserUpdatePasdEdit(){//重置修改密码弹框
+                this.userUpdatePasdDialogVisible = false;
+                this.$refs['updatePasdForm'].resetFields();
+            },
+            onSubmitForm(formName){
+                if(this.submitPasdBtnStatus === true){
+                    return false;
+                }
+                try {
+                    let that = this;
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.submitPasdBtnStatus = true;
+                            password(this.updatePasdForm).then(res=>{
+                                this.submitPasdBtnStatus = false;
+                                if(res.error){
+                                    this.$message({
+                                        message: res.error,
+                                        type: 'error'
+                                    });
+                                    if(res.nologin === 1){//未登录
+                                        setTimeout(()=>{
+                                            that.$router.push('/');
+                                        },3000);
+                                    }
+                                    return false;
+                                }
+                                this.$message({
+                                    message:res.success,
+                                    type:'success'
+                                });
+                                that.resetUserUpdatePasdEdit();
+                            }).catch(error=>{
+                                this.submitPasdBtnStatus = false;
+                            });
+                        }
+                    });
+                }catch(e){
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                    this.submitPasdBtnStatus = false;
                 }
             }
         },
@@ -150,5 +223,8 @@
     }
     .add_source{
         margin-bottom: 20px;
+    }
+    .btns{
+        text-align: center;
     }
 </style>

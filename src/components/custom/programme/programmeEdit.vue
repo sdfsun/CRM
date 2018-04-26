@@ -68,7 +68,7 @@
                 submitBtnStatus:false,//保存按钮是否可点击
                 programmeFormRules:{
                     status: [
-                        {  required: true, message: '请选择状态', trigger: 'trigger' }
+                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }

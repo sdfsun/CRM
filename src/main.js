@@ -30,5 +30,9 @@ new Vue({
     template: '<App/>'
 })
 
+//设置当前登录账户id
+store.dispatch('setMemberRoleId','memberRoleId');
 //设置客户资源
 store.dispatch('setCustomSource','customSource');
+//设置用户等级
+store.dispatch('setMemberRoles','memberRoles');

@@ -78,16 +78,16 @@
                 submitBtnStatus:false,//保存按钮是否可点击
                 transactionFormRules:{//规则校验
                     name: [
-                        {  required: true, message: '请填写接待人名称', trigger: 'trigger' }
+                        {  required: true, message: '请填写接待人名称', trigger: 'blur' }
                     ],
                     times: [
-                        {  required: true, message: '请选择交易时间', trigger: 'trigger' }
+                        {  required: true, message: '请选择交易时间', trigger: 'change' }
                     ],
                     money: [
-                        { required: true, message: '请填写交易金额', trigger: 'trigger'}
+                        { required: true, message: '请填写交易金额', trigger: 'blur'}
                     ],
                     status: [
-                        {  required: true, message: '请选择状态', trigger: 'trigger' }
+                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }

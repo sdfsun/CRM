@@ -32,7 +32,9 @@ html{
 .clear,.clearfix{
     *zoom:1;
 } 
-
+.el-table::before{
+    height: 0;
+}
 
 /*element-ui*/
 /*登录页*/

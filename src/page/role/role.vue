@@ -81,6 +81,7 @@
 </template>
 <script>
     import Vue from 'vue';
+    import {mapActions} from 'vuex';
     import {member_role,add_role} from '@/service/getData';
 
     export default{
@@ -95,6 +96,9 @@
             this.init();
         },
         methods:{
+            ...mapActions([
+                'updateMemberRoles'
+            ]),
             async init(){
                 try {
                     let that = this;
@@ -174,6 +178,7 @@
                             type:'success'
                         });
                         let resData = res.data;
+                        this.updateMemberRoles(resData);
                         resData.editFlag = false;
                         resData.disabled = res.data.disabled === 'true'?true:false;
                         Vue.set(this.roleLists,index,resData);

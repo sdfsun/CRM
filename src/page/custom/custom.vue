@@ -77,49 +77,60 @@
             <el-table-column
                 prop="name"
                 label="客户"
+                width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="tel"
                 label="电话"
+                width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="mobile"
                 label="手机"
+                width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="qq"
-                label="QQ">
+                label="QQ"
+                width='120px'>
             </el-table-column>
             <el-table-column
                 prop="weixin"
-                label="微信">
+                label="微信"
+                width='120px'>
             </el-table-column>
             <el-table-column
                 prop="area"
-                label="客户地区">
+                label="客户地区"
+                width='200px'>
             </el-table-column>
             <el-table-column
                 prop="addr"
-                label="客户地址">
+                label="客户地址"
+                width='200px'>
             </el-table-column>
             <el-table-column
                 prop="house_type"
-                label="房屋类型">
+                label="房屋类型"
+                width='100px'>
             </el-table-column>
             <el-table-column
                 prop="house_status"
-                label="房屋状态">
+                label="房屋状态"
+                width='100px'>
             </el-table-column>
             <el-table-column
                 prop='source_name'
-                label="客户来源">
+                label="客户来源"
+                width='120px'>
             </el-table-column>
             <el-table-column
                 prop="createtime"
-                label="创建时间">
+                label="创建时间"
+                width='160px'>
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
@@ -186,6 +197,7 @@
                 currentRow:{},//当前选中的行数
                 activeRow:{},//当前选中的行数
                 customInfoArray:new Array({},[],[],[],[],[],[]),//存储客户相关信息
+                isGetDataArray:new Array(7).fill(""),//存储客户相关信息
                 basicInfoDialogVisible:false,//客户基本信息弹框是否可见
                 user_intention: [
                     {
@@ -262,6 +274,7 @@
                     this.currentRow = {};
                     this.activeName = '';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
+                    this.isGetDataArray = new Array(7).fill("");//重置
                 } catch(e) {
                     this.$message({
                         showClose: true,
@@ -336,13 +349,14 @@
                     this.currentRow = currentrow;
                     this.activeName = '基本信息';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
+                    this.isGetDataArray = new Array(7).fill("");//重置
                     this.up_down_tabs();
                 }
             },
             async initElPaneData(num,customer_id){//初始化信息栏数据
                 try {
                     let result = null;
-                    if(Object.keys(this.customInfoArray[num]).length === 0){//判断是否为空对象
+                    if(this.isGetDataArray[num] === ""){//判断是否为空对象
                         switch (num) {
                             case 0:
                                 result = await customer_detail(customer_id);
@@ -369,6 +383,7 @@
                                 // statements_def
                                 break;
                         }
+                        this.isGetDataArray[num] = "1";
                         if(result.error){
                             this.$message({
                                 message: result.error,
@@ -406,6 +421,7 @@
                         this.currentRow = callbackData.data;
                         this.activeName = '基本信息';
                         this.customInfoArray = [callbackData.data,[],[],[],[],[],[]];//重置
+                        this.isGetDataArray = ["1","","","","","",""];//重置
                         this.$refs['customListsTable'].setCurrentRow(this.currentRow);
                     }
                 }

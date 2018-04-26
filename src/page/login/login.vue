@@ -40,7 +40,9 @@
         },
         methods:{
             ...mapMutations([
-                'SETCUSTOMSOURCE'
+                'SETCUSTOMSOURCE',
+                'SETMEMBERROLES',
+                'SETMEMBERROLEID'
             ]),
             async login(formName){
                 if(this.loginBtnStatus){
@@ -68,9 +70,19 @@
                                     that.$router.push('/home');
                                 },3000);
                                 //设置客户来源
+                                if(res.member_role_id){
+                                    setStore("memberRoleId",res.member_role_id);
+                                    this.SETMEMBERROLEID(res.member_role_id);
+                                }
+                                //设置客户来源
                                 if(res.source && res.source.length>0){
                                     setStore("customSource",res.source);
                                     this.SETCUSTOMSOURCE(res.source);
+                                }
+                                //设置用户等级
+                                if(res.member_role && res.member_role.length>0){
+                                    setStore("memberRoles",res.member_role);
+                                    this.SETMEMBERROLES(res.member_role);
                                 }
                             }).catch(error=>{
                                 this.loginBtnStatus = false;

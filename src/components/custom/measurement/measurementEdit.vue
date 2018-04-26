@@ -116,16 +116,16 @@
                 dialogVisible:false,
                 measurementFormRules:{//规则校验
                     measure_name: [
-                        {  required: true, message: '请填写测量人名称', trigger: 'trigger' }
+                        {  required: true, message: '请填写测量人名称', trigger: 'blur' }
                     ],
                     measure_time: [
-                        {  required: true, message: '请选择测量开始时间', trigger: 'trigger' }
+                        {  required: true, message: '请选择测量开始时间', trigger: 'change' }
                     ],
                     end_time: [
-                        {  required: true, message: '请选择测量结束时间', trigger: 'trigger' }
+                        {  required: true, message: '请选择测量结束时间', trigger: 'change' }
                     ],
                     status: [
-                        {  required: true, message: '请选择状态', trigger: 'trigger' }
+                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }

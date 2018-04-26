@@ -37,7 +37,7 @@
             <el-table-column
                 prop="duration"
                 label="沟通时长"
-                width='100'
+                width='140'
                 >
             </el-table-column>
             <el-table-column
@@ -54,11 +54,13 @@
             <el-table-column
                 prop="is_bespeak_name"
                 label="是否预约成功"
+                width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="reason"
                 label="预约失败原因"
+                width='200px'
                 >
             </el-table-column>
             <el-table-column
@@ -68,21 +70,42 @@
             </el-table-column>
             <el-table-column
                 prop="outline"
-                label="沟通概要">
+                label="沟通概要"
+                width='200px'>
             </el-table-column>
         </el-table>
         <div class="btns">
-            <el-button type="primary" icon='el-icon-plus'>分配设计师</el-button>
+            <el-button type="primary" disabled icon='el-icon-plus' v-if='statusForm.status == "3"'>分配设计师</el-button>
+            <el-button type="primary" icon='el-icon-plus' @click='getAssignDesignerLists' v-else>分配设计师</el-button>
             <el-button type="primary" icon='el-icon-plus' @click='addCommunicationRecord'>新增沟通记录</el-button>
             <el-button type="primary" @click='editCommunicationRecord'>编辑</el-button>
         </div>
         <el-dialog title="沟通记录" :visible.sync="communicationDialogVisible" class='customRelationInfoDialog' @close='resetCommunicationEdit'>
             <communicationEdit :informationItem='infomation' v-on:closeCustomCommunicateInfoDialog='updateCommunicationRecord' :editInfos='editActiveRow' ref='communicationEdit'></communicationEdit>
         </el-dialog>
+        <el-dialog title="分配设计师" :visible.sync="assignDesignerFormDialogVisible" class='customRelationInfoDialog' @close='resetAssignDesignerForm'>
+            <el-form ref="assignDesignerForm" :model="assignDesignerForm" :rules='assignDesignerFormRules' label-width="80px">
+                <el-form-item prop='information_id' class='hide-form-item'></el-form-item>
+                <el-form-item prop='to_id' label='符合预约时间的设计师'>
+                    <el-select v-model="assignDesignerForm.to_id" placeholder="请选择设计师">
+                        <el-option
+                            v-for="item in assignDesignerLists"
+                            :key="item.member_role_id"
+                            :label="item.name"
+                            :value="item.member_role_id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div class="btns">
+                <el-button type="primary" @click="onSubmitAssignDesignerForm('assignDesignerForm')" class='submit_btn'>保存</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
     import communicationEdit from '@/components/custom/communicationRecord/communicationEdit';
+    import {stylist,assign} from '@/service/getData';
 
     export default{
         name:'communicationRecord',
@@ -91,7 +114,34 @@
             return{
                 communicationDialogVisible:false,
                 editActiveRow:{},//当前需要编辑的行
-                currentrow:null
+                currentrow:null,
+                assignDesignerBtnStatus:false,//列表
+                assignDesignerSubmitBtnStatus:false,//发送微信通知
+                assignDesignerFormDialogVisible:false,
+                assignDesignerLists:[],//可分配设计师列表
+                assignDesignerForm:{
+                    information_id:this.infomation.id,
+                    to_id:''
+                },
+                assignDesignerFormRules:{
+                    to_id: [
+                        {  required: true, message: '请选择需要分配的设计师', trigger: 'change' }
+                    ]
+                }
+            }
+        },
+        computed:{
+            statusForm:function(){
+                let statusFormTemp = {status:'3'};
+                if(this.communicateRecords && this.communicateRecords.length>0){
+                    statusFormTemp.status = this.communicateRecords[0].scale;
+                    if(this.communicateRecords[0].scale === "1"){
+                        statusFormTemp.member_id = this.communicateRecords[0].member_id;
+                        statusFormTemp.member_usercode = this.communicateRecords[0].member_usercode;
+                        statusFormTemp.member_name = this.communicateRecords[0].member_name;
+                    }
+                }
+                return statusFormTemp;
             }
         },
         methods:{
@@ -124,6 +174,82 @@
             resetCommunicationEdit(){//重置表单数据
                 this.editActiveRow = {};
                 this.$refs['communicationEdit'].$refs['communicateForm'].resetFields();
+            },
+            resetAssignDesignerForm(){//重置分配设计师表单
+                this.assignDesignerFormDialogVisible = false;
+                this.$refs['assignDesignerForm'].resetFields();
+            },
+            async getAssignDesignerLists(){//获取可分配设计师列表
+                try {
+                    let that = this;
+                    if(this.assignDesignerBtnStatus){
+                        return false;
+                    }
+                    this.assignDesignerBtnStatus = true;
+                    const res = await stylist(this.infomation.id,this.statusForm.member_id);
+                    this.assignDesignerBtnStatus = false;
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin === 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.assignDesignerLists = res.success;
+                    this.assignDesignerFormDialogVisible = true;
+                } catch(e) {
+                    this.assignDesignerBtnStatus = false;
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            onSubmitAssignDesignerForm(formName){//分配设计师 发送微信通知
+                if(this.assignDesignerSubmitBtnStatus === true){
+                    return false;
+                }
+                try {
+                    let that = this;
+                    this.$refs[formName].validate((valid,obj) => {
+                        if (valid) {
+                            this.assignDesignerSubmitBtnStatus = true;
+                            assign(this.formName).then(res=>{
+                                this.assignDesignerSubmitBtnStatus = false;
+                                if(res.error){
+                                    this.$message({
+                                        message: res.error,
+                                        type: 'error'
+                                    });
+                                    if(res.nologin === 1){//未登录
+                                        setTimeout(()=>{
+                                            that.$router.push('/');
+                                        },3000);
+                                    }
+                                    return false;
+                                }
+                                this.$message({
+                                    message:res.success,
+                                    type:'success'
+                                });
+                                this.resetAssignDesignerForm();
+                            }).catch(error=>{
+                                this.assignDesignerSubmitBtnStatus = false;
+                            });
+                        }
+                    });
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                    this.assignDesignerSubmitBtnStatus = false;
+                }
             }
         },
         components:{

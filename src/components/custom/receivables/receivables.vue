@@ -4,7 +4,7 @@
             :data="receivablesRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange"
             @cell-click='cellClickHandle'>
@@ -12,6 +12,7 @@
                 type="index"
                 :index="1"
                 label='序号'
+                width='100px'
                 >
             </el-table-column>
             <el-table-column
@@ -23,40 +24,46 @@
             <el-table-column
                 prop="name"
                 label="收款人"
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="times"
                 label="收款时间"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="voucher"
                 label="收款凭证号"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="money"
-                label="收款金额">
+                label="收款金额"
+                min-width='140px'>
             </el-table-column>
             <el-table-column
                 prop="discount"
                 label="抵扣金额"
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="remarks"
-                label="收款备注">
+                label="收款备注"
+                min-width='200px'>
             </el-table-column>
             <el-table-column
-                label="发票图片">
+                label="发票图片"
+                min-width='118px'>
                 <template slot-scope='scope' v-if='scope.row.image_id'>
                     <img :src="scope.row.l_image" width="100%" height="87" />
                 </template>
             </el-table-column>
             <el-table-column
                 prop="is_retainage_name"
-                label="是否尾款">
+                label="是否尾款"
+                min-width='100px'>
             </el-table-column>
         </el-table>
         <div class="btns">

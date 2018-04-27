@@ -4,7 +4,7 @@
             :data="measurementRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange"
             @cell-click='cellClickHandle'>
@@ -12,6 +12,7 @@
                 type="index"
                 :index="1"
                 label='序号'
+                width='100px'
                 >
             </el-table-column>
             <el-table-column
@@ -23,26 +24,27 @@
             <el-table-column
                 prop="measure_name"
                 label="测量人"
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="measure_time"
                 label="测量起始时间"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="end_time"
                 label="测量结束时间"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="duration"
                 label="测量时长"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 label="量尺图片"
-                width='118'>
+                min-width='118px'>
                 <template slot-scope="scope" v-if='scope.row.image_id.length>0'>
                     <img :src="scope.row.image_id[0]" width="100%" height="87" />
                     <i class="el-icon-zoom-in image_item_icon"></i>
@@ -51,11 +53,13 @@
             <el-table-column
                 prop="information"
                 label="量尺信息"
+                min-width='200px'
                 >
             </el-table-column>
             <el-table-column
                 prop="feedback"
                 label="信息回馈"
+                min-width='200px'
                 :show-overflow-tooltip='true'>
             </el-table-column>
         </el-table>

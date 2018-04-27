@@ -4,13 +4,14 @@
             :data="communicateRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange">
             <el-table-column
                 type="index"
                 :index="1"
                 label='序号'
+                width='100px'
                 >
             </el-table-column>
             <el-table-column
@@ -22,56 +23,58 @@
             <el-table-column
                 prop="mode"
                 label="沟通方式"
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="contact_time"
                 label="沟通开始时间"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="end_time"
                 label="沟通结束时间"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="duration"
                 label="沟通时长"
-                width='140'
+                min-width='140'
                 >
             </el-table-column>
             <el-table-column
                 prop="bespeak_time"
                 label="预约到店时间"
-                width='160'
+                min-width='160'
                 >
             </el-table-column>
             <el-table-column
                 prop="is_arrival_name"
                 label="是否到店"
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="is_bespeak_name"
                 label="是否预约成功"
-                width='120px'
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="reason"
                 label="预约失败原因"
-                width='200px'
+                min-width='200px'
                 >
             </el-table-column>
             <el-table-column
                 prop="scale_time"
                 label="预约量尺时间"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="outline"
                 label="沟通概要"
-                width='200px'>
+                min-width='200px'>
             </el-table-column>
         </el-table>
         <div class="btns">
@@ -83,16 +86,16 @@
         <el-dialog title="沟通记录" :visible.sync="communicationDialogVisible" class='customRelationInfoDialog' @close='resetCommunicationEdit'>
             <communicationEdit :informationItem='infomation' v-on:closeCustomCommunicateInfoDialog='updateCommunicationRecord' :editInfos='editActiveRow' ref='communicationEdit'></communicationEdit>
         </el-dialog>
-        <el-dialog title="分配设计师" :visible.sync="assignDesignerFormDialogVisible" class='customRelationInfoDialog' @close='resetAssignDesignerForm'>
+        <el-dialog title="分配设计师" :visible.sync="assignDesignerFormDialogVisible" class='assignDesignerDialog' @close='resetAssignDesignerForm'>
             <el-form ref="assignDesignerForm" :model="assignDesignerForm" :rules='assignDesignerFormRules' label-width="80px">
-                <el-form-item prop='information_id' class='hide-form-item'></el-form-item>
+                <!-- <el-form-item prop='information_id' class='hide-form-item'></el-form-item> -->
                 <el-form-item prop='to_id' label='符合预约时间的设计师'>
-                    <el-select v-model="assignDesignerForm.to_id" placeholder="请选择设计师">
+                    <el-select v-model="assignDesignerForm.to_id" clearable placeholder="请选择设计师">
                         <el-option
                             v-for="item in assignDesignerLists"
-                            :key="item.member_role_id"
+                            :key="item.member_id"
                             :label="item.name"
-                            :value="item.member_role_id">
+                            :value="item.member_id">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -120,7 +123,7 @@
                 assignDesignerFormDialogVisible:false,
                 assignDesignerLists:[],//可分配设计师列表
                 assignDesignerForm:{
-                    information_id:this.infomation.id,
+                    // information_id:this.infomation.id,
                     to_id:''
                 },
                 assignDesignerFormRules:{
@@ -219,7 +222,8 @@
                     this.$refs[formName].validate((valid,obj) => {
                         if (valid) {
                             this.assignDesignerSubmitBtnStatus = true;
-                            assign(this.formName).then(res=>{
+                            this.assignDesignerForm.information_id = this.infomation.id;
+                            assign(this.assignDesignerForm).then(res=>{
                                 this.assignDesignerSubmitBtnStatus = false;
                                 if(res.error){
                                     this.$message({
@@ -266,5 +270,8 @@
     .btns{
         text-align: right;
         padding: 26px 40px 25px 0;
+    }
+    .assignDesignerDialog .btns{
+        text-align: center;
     }
 </style>

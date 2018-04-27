@@ -196,6 +196,16 @@ html{
     min-height: 0;
     height: 0;
 }
+/*客户列表表格样式修改*/
+.customListsTableInfo .el-table__body-wrapper{
+    overflow: auto;
+    flex:1;
+}
+/*底部表格样式修改*/
+.custom_container .el-tabs__content .el-table--scrollable-x .el-table__body-wrapper{
+    overflow: auto;
+    height: 253px;
+}
 /*新增客户基本信息*/
 .basicForm_container .el-form-item .el-form-item__content{
     margin-left: 0 !important;
@@ -231,5 +241,22 @@ html{
     line-height: 0;
 }
 .customRelationInfoDialog .el-select{
+    width: 100%;
+}
+/*分配设计师*/
+.assignDesignerDialog .el-form-item__label{
+    width: auto !important;
+    display: block;
+    float: inherit;
+    text-align: left;
+    margin-bottom: 15px;
+}
+.assignDesignerDialog .el-dialog__body{
+    padding: 30px 160px;
+}
+.assignDesignerDialog .el-form-item__content{
+    margin-left: 0 !important;
+}
+.assignDesignerDialog .el-select{
     width: 100%;
 }

@@ -4,13 +4,14 @@
             :data="programmeRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange">
             <el-table-column
                 type="index"
                 :index="1"
                 label='序号'
+                width='100px'
                 >
             </el-table-column>
             <el-table-column

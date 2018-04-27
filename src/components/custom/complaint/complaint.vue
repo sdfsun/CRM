@@ -4,13 +4,14 @@
             :data="complaintRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange">
             <el-table-column
                 type="index"
                 :index="1"
                 label='序号'
+                width='100px'
                 >
             </el-table-column>
             <el-table-column
@@ -22,21 +23,24 @@
             <el-table-column
                 prop="type_name"
                 label="类型"
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="name"
                 label="接待人"
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="outline"
                 label="概要"
-                width='160'>
+                min-width='200'>
             </el-table-column>
             <el-table-column
                 prop="createtime"
-                label="创建时间">
+                label="创建时间"
+                min-width='160px'>
             </el-table-column>
         </el-table>
         <div class="btns">

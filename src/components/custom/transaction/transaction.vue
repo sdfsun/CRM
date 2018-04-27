@@ -4,13 +4,14 @@
             :data="transactionRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange">
             <el-table-column
                 type="index"
                 :index="1"
                 label='序号'
+                width='100px'
                 >
             </el-table-column>
             <el-table-column
@@ -22,25 +23,31 @@
             <el-table-column
                 prop="name"
                 label="接待人"
+                min-width='140px'
                 >
             </el-table-column>
             <el-table-column
                 prop="times"
                 label="交易时间"
-                width='160'>
+                min-width='160'>
             </el-table-column>
             <el-table-column
                 prop="money"
-                label="交易金额">
+                label="交易金额"
+                min-width='120px'
+                >
             </el-table-column>
             <el-table-column
                 prop="order_id"
                 label="交易订单号"
-                width='160'>
+                min-width='140px'
+                >
             </el-table-column>
             <el-table-column
                 prop="detail"
-                label="交易清单">
+                label="交易清单"
+                min-width='200px'
+                >
             </el-table-column>
         </el-table>
         <div class="btns">

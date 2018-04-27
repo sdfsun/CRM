@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar">
         <div class="side_header">
-            张某某<small class="roleName">设计主管</small>
+            {{memberRoleId.name}}<small class="roleName">{{memberRoleId.role_name}}</small>
         </div>
         <div class="side_menu">
             <el-menu
@@ -16,26 +16,28 @@
                         <span>客户管理</span>
                     </template>
                     <el-menu-item index="/custom/0">客户列表</el-menu-item>
-                    <el-menu-item index="/custom/1">待联系列表</el-menu-item>
-                    <el-menu-item index="/custom/2">已联系列表</el-menu-item>
-                    <el-menu-item index="/custom/3">待分配列表</el-menu-item>
+                    <template v-if='memberRoleId.member_role_id !== "designer"'>
+                        <el-menu-item index="/custom/1">待联系列表</el-menu-item>
+                        <el-menu-item index="/custom/2">已联系列表</el-menu-item>
+                        <el-menu-item index="/custom/3">待分配列表</el-menu-item>
+                    </template>
                     <el-menu-item index="/custom/4">待测量列表</el-menu-item>
                     <el-menu-item index="/custom/5">待上传方案列表</el-menu-item>
                 </el-submenu>
-                <el-submenu index="2">
+                <el-submenu index="2" v-if='memberRoleId.member_role_id !== "service"'>
                     <template slot="title">
                         <span>工时管理</span>
                     </template>
                     <el-menu-item index="/designer">设计师列表</el-menu-item>
                     <el-menu-item index="/hours">工时上报</el-menu-item>
                 </el-submenu>
-                <el-submenu index="3">
+                <el-submenu index="3" v-if='memberRoleId.member_role_id !== "designer"'>
                     <template slot="title">
                         <span>基本配置</span>
                     </template>
                     <el-menu-item index="/source">渠道来源管理</el-menu-item>
                 </el-submenu>
-                <el-submenu index="4">
+                <el-submenu index="4" v-if='memberRoleId.member_role_id === "super"'>
                     <template slot="title">
                         <span>系统管理</span>
                     </template>
@@ -96,11 +98,14 @@
         text-align: center;
         position: relative;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .side_menu{
+        flex: 1;
     }
     .footer-btns{
-        position: absolute;
-        bottom: 28px;
-        padding: 0 30px;
+        padding: 30px;
         left: 0;
         right: 0;
     }

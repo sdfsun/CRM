@@ -2,8 +2,8 @@ import { setStore,getStore } from '@/utils/'
 
 export default{
     setMemberRoleId({commit},name){//设置当前登录的用户id
-        // const memberRoleId = JSON.parse(getStore(name));
-        // commit('SETCUSTOMSOURCE',customSources);
+        const memberRoleId = JSON.parse(getStore(name));
+        commit('SETMEMBERROLEID',memberRoleId);
     },
     setCustomSource({commit},name){//设置客户来源
         const customSources = JSON.parse(getStore(name));

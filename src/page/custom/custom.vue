@@ -60,7 +60,7 @@
             :data="customLists"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            class='customListsTableInfo'
             header-row-class-name='header_row_style'
             @row-click="handleCurrentChange">
             <el-table-column
@@ -72,65 +72,66 @@
             <el-table-column
                 prop="customer_number"
                 label="客户编号"
+                min-width='100px'
                 >
             </el-table-column>
             <el-table-column
                 prop="name"
                 label="客户"
-                width='120px'
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="tel"
                 label="电话"
-                width='120px'
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="mobile"
                 label="手机"
-                width='120px'
+                min-width='120px'
                 >
             </el-table-column>
             <el-table-column
                 prop="qq"
                 label="QQ"
-                width='120px'>
+                min-width='120px'>
             </el-table-column>
             <el-table-column
                 prop="weixin"
                 label="微信"
-                width='120px'>
+                min-width='120px'>
             </el-table-column>
             <el-table-column
                 prop="area"
                 label="客户地区"
-                width='200px'>
+                min-width='200px'>
             </el-table-column>
             <el-table-column
                 prop="addr"
                 label="客户地址"
-                width='200px'>
+                min-width='200px'>
             </el-table-column>
             <el-table-column
                 prop="house_type"
                 label="房屋类型"
-                width='100px'>
+                min-width='150px'>
             </el-table-column>
             <el-table-column
                 prop="house_status"
                 label="房屋状态"
-                width='100px'>
+                min-width='100px'>
             </el-table-column>
             <el-table-column
                 prop='source_name'
                 label="客户来源"
-                width='120px'>
+                min-width='120px'>
             </el-table-column>
             <el-table-column
                 prop="createtime"
                 label="创建时间"
-                width='160px'>
+                min-width='160px'>
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
@@ -495,6 +496,12 @@
     }
     .custom_header_form{
         padding: 18px 22px 0 41px;
+    }
+    .customListsTableInfo{
+        width: 100%;
+        text-align: center;
+        display:flex;
+        flex-direction: column;
     }
     .add_custom{
         width: 200px;

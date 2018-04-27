@@ -69,10 +69,10 @@
                                 setTimeout(function(){
                                     that.$router.push('/home');
                                 },3000);
-                                //设置客户来源
-                                if(res.member_role_id){
-                                    setStore("memberRoleId",res.member_role_id);
-                                    this.SETMEMBERROLEID(res.member_role_id);
+                                //设置当前登录账户相关信息
+                                if(res.data){
+                                    setStore("memberRoleId",res.data);
+                                    this.SETMEMBERROLEID(res.data);
                                 }
                                 //设置客户来源
                                 if(res.source && res.source.length>0){

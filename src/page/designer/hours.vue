@@ -90,7 +90,7 @@ export default {
                 });
             }else{
                 this.$message({
-                    message: res.error,
+                    message: result.error,
                     type: 'error'
                 });
             }
@@ -182,7 +182,10 @@ export default {
             {
                 return (/Date/).test(Object.prototype.toString.call(obj)) && !isNaN(obj.getTime());
             },
-
+            formatNumber = function(n) {
+                n = n.toString();
+                return n[1] ? n : '0' + n
+            },
             isLeapYear = function(year)
             {
                 // solution by Matti Virkkunen: http://stackoverflow.com/a/4881951
@@ -918,13 +921,14 @@ export default {
                             isToday = compareDates(day, now),
                             isEmpty = i < before || i >= (days + before);
 
-                            console.log(day);
+                            
                         var tempNum = 1 + (i - before);
                         var tempVal = '';
+                        var tempCurDate = year+formatNumber(month+1)+formatNumber(tempNum);
 
                         // curActive 是后台请求到的数据用作选中判断
                         for(var n=0;n<that.curActive.length;n++){
-                            if(that.curActive[n].work_date == tempNum){
+                            if(that.curActive[n].work_date == tempCurDate){
                                 tempVal = 'is-active'
                             }
                         }

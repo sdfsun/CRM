@@ -160,8 +160,8 @@
                 <span slot="label"><i class="el-icon-d-arrow-right"></i></span>
             </el-tab-pane>
         </el-tabs>
-        <!-- 新增客户基本信息弹框 -->
-        <el-dialog title="基本信息" :visible.sync="basicInfoDialogVisible" class='basicInfoDialog' @close='resetCustomBasicInfoEdit'>
+        <!-- 新增或编辑客户基本信息弹框 -->
+        <el-dialog title="基本信息" :visible.sync="basicInfoDialogVisible" class='basicInfoDialog' @close='resetCustomBasicInfoEdit' style='margin-top: -60px;'>
             <basicEdit v-on:closeCustomBasicInfoDialog='updateCustomBasicInfo' :editInfos='activeRow' ref='basicEdit'></basicEdit>
         </el-dialog>
     </div>

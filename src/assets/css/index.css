@@ -216,6 +216,7 @@ html{
 /*基本信息弹框*/
 .custom_container .basicInfoDialog .el-dialog{
     min-width: 600px;
+    max-width: 763px;
 }
 .custom_container .basicInfoDialog .el-form-item.is-success .el-input__inner{
     border-color: #dcdfe6;

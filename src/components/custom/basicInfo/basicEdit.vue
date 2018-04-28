@@ -77,12 +77,12 @@
                     <el-radio label="否"></el-radio>
                 </el-radio-group>
             </el-form-item> -->
-            <el-form-item label='是否预约成功' label-width='100px' prop='bespeak'>
+            <!-- <el-form-item label='是否预约成功' label-width='100px' prop='bespeak'>
                 <el-radio-group v-model="basicForm.bespeak">
                     <el-radio label="true">是</el-radio>
                     <el-radio label="false">否</el-radio>
                 </el-radio-group>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="客户来源" prop='source'>
                 <el-select v-model="basicForm.source" placeholder="请选择客户来源">
                     <el-option
@@ -95,7 +95,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="客户备注" class='remarks_item' prop='remarks'>
-                <el-input type="textarea" autosize v-model="basicForm.remarks" placeholder='客户备注'></el-input>
+                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="basicForm.remarks" placeholder='客户备注'></el-input>
             </el-form-item>
         </el-form>
         <div class="btns">
@@ -171,7 +171,7 @@
                     email:"",
                     source:'',
                     guest:"",
-                    bespeak:"false",
+                    // bespeak:"false",
                     demand:'',
                     area:[],
                     addr:"",
@@ -225,6 +225,10 @@
                             {
                                 value: '装修完',
                                 label: '装修完'
+                            },
+                            {
+                                value: '未知',
+                                label: '未知'
                             }
                         ]
                     },
@@ -239,6 +243,10 @@
                             {
                                 value: '已交房',
                                 label: '已交房',
+                            },
+                            {
+                                value: '未知',
+                                label: '未知'
                             }
                         ]
                     },
@@ -265,6 +273,10 @@
                             {
                                 value: '装修完',
                                 label: '装修完'
+                            },
+                            {
+                                value: '未知',
+                                label: '未知'
                             }
                         ]
                     }

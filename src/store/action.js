@@ -10,13 +10,18 @@ export default{
         commit('SETCUSTOMSOURCE',customSources);
     },
     updateCustomSource({state,commit},result){//更新客户来源
-        let customSources = state.customSource.slice();
-        const index = state.customSource.findIndex(function(item, index, arr) {
-            return item.id === result.id;
-        });
-        if(index !== -1){//编辑
-            customSources[index] = result;
-        }else{//新增
+        let customSources = [];
+        if(state.customSource && state.customSource.length>0){
+            customSources = state.customSource.slice();
+            const index = state.customSource.findIndex(function(item, index, arr) {
+                return item.id === result.id;
+            });
+            if(index !== -1){//编辑
+                customSources[index] = result;
+            }else{//新增
+                customSources.push(result);
+            }
+        }else{
             customSources.push(result);
         }
         setStore("customSource",customSources);
@@ -27,13 +32,18 @@ export default{
         commit('SETMEMBERROLES',memberRoles);
     },
     updateMemberRoles({state,commit},result){//更新用户等级
-        let memberRoles = state.memberRoles.slice();
-        const index = state.memberRoles.findIndex(function(item, index, arr) {
-            return item.member_role_id === result.member_role_id;
-        });
-        if(index !== -1){//编辑
-            memberRoles[index] = result;
-        }else{//新增
+        let memberRoles = [];
+        if(state.memberRoles && state.memberRoles.length>0){
+            memberRoles = state.memberRoles.slice();
+            const index = state.memberRoles.findIndex(function(item, index, arr) {
+                return item.member_role_id === result.member_role_id;
+            });
+            if(index !== -1){//编辑
+                memberRoles[index] = result;
+            }else{//新增
+                memberRoles.push(result);
+            }
+        }else{
             memberRoles.push(result);
         }
         setStore("memberRoles",memberRoles);

@@ -74,6 +74,7 @@
                     :limit='1'
                     :file-list="receivablesForm.imageLists"
                     :on-preview="handlePictureCardPreview"
+                    :before-upload="beforeAvatarUpload"
                     :on-remove="handleRemove"
                     :on-success='handleSuccess'>
                     <i class="el-icon-plus"></i>
@@ -182,11 +183,15 @@
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
+                this.receivablesForm.information_id = this.informationItem.id;
+                this.receivablesForm.status = this.informationItem.status;
                 if(newVal.receivables_id){
                     this.receivablesForm = Object.assign({},newVal);
                     if(newVal.imageLists && newVal.imageLists.length>0){
                         this.receivablesForm.imageLists = newVal.imageLists.slice();
                     }
+                }else{
+                    this.receivablesForm.imageLists = [];
                 }
             }
         },
@@ -204,6 +209,22 @@
                     this.receivablesForm.image_id = response.success[0].image_id;
                 }
                 this.receivablesForm.imageLists = fileList;
+            },
+            beforeAvatarUpload(file) {
+                // const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                // if (!isJPG) {
+                //   this.$message.error('上传头像图片只能是 JPG 格式!');
+                // }
+                if (!isLt2M) {
+                    this.$message({
+                        message:'上传头像图片大小不能超过 2MB!',
+                        type:'error'
+                    });
+                    return false;
+                }
+                return isLt2M;
             },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){

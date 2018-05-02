@@ -7,6 +7,7 @@
                 <el-col :span="8">
                     <el-form-item prop='type'>
                         <el-select v-model="complaintForm.type" placeholder="类型">
+                            <el-option label="售后" value="0"></el-option>
                             <el-option label="投诉" value="1"></el-option>
                             <el-option label="建议" value="2"></el-option>
                         </el-select>
@@ -33,7 +34,7 @@
             <el-row :gutter="10">
                 <el-col :span="24">
                     <el-form-item prop='outline'>
-                        <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" v-model="complaintForm.outline" placeholder='投诉建议概要...' ></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" v-model="complaintForm.outline" placeholder='售后、投诉、建议概要' ></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -57,7 +58,7 @@
                     id:"",
                     createtime:"",
                     name:'',//投诉人
-                    type:'1',//投诉类型
+                    type:'0',//投诉类型
                     outline:'',//投诉概要
                     status:this.informationItem.status//状态
                 },
@@ -90,6 +91,8 @@
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
+                this.complaintForm.information_id = this.informationItem.id;
+                this.complaintForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.complaintForm = Object.assign({},newVal);
                 }

@@ -112,14 +112,14 @@
     .footer-btns a{
         text-decoration: none;
         color: #fff;
-        font-size: 22px;
-        line-height: 28px;
+        font-size: 18px;
+        line-height: 24px;
         display: block;
         width: 84px;
-        height: 28px;
+        height: 24px;
         background: url('../../assets/img/logout.png') 0 center no-repeat;
-        background-size: 28px 28px;
-        padding-left: 38px;
+        background-size: 24px 24px;
+        padding-left: 20px;
         box-sizing: border-box;
     }
     .side_header{
@@ -127,13 +127,13 @@
         /*line-height: 90px;*/
         background-color: #1876EF;
         color: #fff;
-        font-size: 22px;
+        font-size: 20px;
         line-height: 36px;
         padding-top: 10px;
         box-sizing: border-box;
     }
     .side_header small{
-        font-size: 16px;
+        font-size: 14px;
         display: block;
     }
 </style>

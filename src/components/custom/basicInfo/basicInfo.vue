@@ -51,6 +51,10 @@
                 <span class="txt_1">客户来源：</span>
                 <span class="txt_2">{{basicInfoRecord.source_name}}</span>
             </li>
+            <li>
+                <span class="txt_1">来源说明：</span>
+                <span class="txt_2">{{basicInfoRecord.source_explain}}</span>
+            </li>
         </ul>
         <ul class="col_3">
             <li class="title"></li>
@@ -87,7 +91,7 @@
 <style scoped>
     .basicInfo_container{
         display: flex;
-        padding-top: 38px;
+        padding-top: 18px;
         overflow: hidden;
     }
     .basicInfo_container ul{

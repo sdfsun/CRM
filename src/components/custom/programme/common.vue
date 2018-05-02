@@ -2,7 +2,7 @@
     <section class="common_container">
         <el-form-item label='名称：'>
             <el-row :gutter="10">
-                <el-col :span="14.5">
+                <el-col :span="13">
                     <el-input  v-model="dataForm.name" placeholder='模块名称'></el-input>
                 </el-col>
                 <el-col :span="9">
@@ -10,7 +10,7 @@
                 </el-col>
             </el-row>
         </el-form-item>
-        <el-form-item prop='dataForm.image_url' label='图片：'>
+        <el-form-item label='图片：'>
             <el-upload
                 ref='upload'
                 action="/crm-upload_image.html"
@@ -19,6 +19,7 @@
                 :file-list="dataForm.imageLists"
                 :multiple='true'
                 :on-preview="handlePictureCardPreview"
+                :before-upload="beforeAvatarUpload"
                 :on-remove="handleRemove"
                 :on-success='handleSuccess'>
                 <i class="el-icon-plus"></i>
@@ -59,6 +60,22 @@
                     this.dataForm.image_url.push(response.success[0].image_id);
                 }
                 this.dataForm.imageLists = fileList;
+            },
+            beforeAvatarUpload(file) {
+                // const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                // if (!isJPG) {
+                //   this.$message.error('上传头像图片只能是 JPG 格式!');
+                // }
+                if (!isLt2M) {
+                    this.$message({
+                        message:'上传头像图片大小不能超过 2MB!',
+                        type:'error'
+                    });
+                    return false;
+                }
+                return isLt2M;
             },
             deleteModel(){//删除模块
                 this.$confirm('确定删除吗?', '提示', {

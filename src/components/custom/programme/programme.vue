@@ -33,6 +33,18 @@
                 prop="disabled_name"
                 label="是否定案">
             </el-table-column>
+            <el-table-column
+              label="操作"
+              width="120">
+                <template slot-scope="scope">
+                    <el-button
+                    @click.native.prevent="handleSave(scope.row.id)"
+                    type="text"
+                    size="medium">
+                        定案
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
         <div class="btns">
             <el-button type="primary" icon='el-icon-plus' @click='addprogrammeRecord'>新建方案记录</el-button>
@@ -46,7 +58,7 @@
 </template>
 <script>
     import programmeEdit from '@/components/custom/programme/programmeEdit';
-    import {programme_detail} from '@/service/getData';
+    import {programme_detail,confirm_scheme} from '@/service/getData';
 
     export default{
         name:'programme',
@@ -135,6 +147,28 @@
                 this.editActiveRow = {};
                 // this.images =[];
                 this.$refs['programmeEdit'].$refs['programmeForm'].resetFields();
+            },
+            async handleSave(id){//定案
+                try {
+                    const res = await confirm_scheme(id);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    this.$message({
+                        message:res.success,
+                        type:'success'
+                    });
+                    this.$emit('updateCustomProgrammeRecords',id);
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             }
         },
         components:{

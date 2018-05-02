@@ -5854,7 +5854,7 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   padding: 13px 20px;
-  font-size: 20px;
+  font-size: 16px;
   border-radius: 0; }
   .el-button + .el-button {
     margin-left: 10px; }
@@ -9471,7 +9471,7 @@
     -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     padding: 13px 20px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 0; }
     .el-radio-button__inner.is-round {
       padding: 13px 20px; }
@@ -10075,7 +10075,7 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     padding: 13px 20px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 0; }
     .el-checkbox-button__inner.is-round {
       padding: 13px 20px; }
@@ -13333,7 +13333,7 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   padding: 13px 20px;
-  font-size: 20px;
+  font-size: 16px;
   border-radius: 0; }
   .el-button + .el-button {
     margin-left: 10px; }
@@ -14348,7 +14348,7 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     padding: 13px 20px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 0; }
     .el-checkbox-button__inner.is-round {
       padding: 13px 20px; }
@@ -16183,7 +16183,7 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     padding: 13px 20px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 0; }
     .el-checkbox-button__inner.is-round {
       padding: 13px 20px; }
@@ -25820,7 +25820,7 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   padding: 13px 20px;
-  font-size: 20px;
+  font-size: 16px;
   border-radius: 0; }
   .el-button + .el-button {
     margin-left: 10px; }
@@ -40576,7 +40576,7 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   padding: 13px 20px;
-  font-size: 20px;
+  font-size: 16px;
   border-radius: 0; }
   .el-button + .el-button {
     margin-left: 10px; }
@@ -41471,7 +41471,7 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     padding: 13px 20px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 0; }
     .el-checkbox-button__inner.is-round {
       padding: 13px 20px; }

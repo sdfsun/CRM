@@ -74,7 +74,7 @@
             <receivablesEdit :informationItem='infomation' :editInfos='editActiveRow' ref='receivablesEdit'  v-on:closeCustomReceivablesInfoDialog='updatereceivablesRecord'></receivablesEdit>
         </el-dialog>
         <el-dialog title="发票图片" :visible.sync="receivablesImageDialogVisible">
-            <el-carousel :interval="4000" type="card" height="200px">
+            <el-carousel :autoplay='false' height="400px">
                 <el-carousel-item>
                     <img :src="image_url" class="image_carousel_item">
                 </el-carousel-item>
@@ -135,8 +135,10 @@
             },
             cellClickHandle(row, column, cell, event){
                 if(column.label === '发票图片'){
-                    this.receivablesImageDialogVisible = true;
-                    this.image_url = row.l_image;
+                    if(row.l_image){
+                        this.receivablesImageDialogVisible = true;
+                        this.image_url = row.l_image;
+                    }
                 }
             }
         },

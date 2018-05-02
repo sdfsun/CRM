@@ -51,10 +51,10 @@
             </el-table-column>
         </el-table>
         <div class="btns">
-            <el-button type="primary" icon='el-icon-plus' @click='addTransactionRecord'>新建交易记录</el-button>
+            <el-button type="primary" icon='el-icon-plus' @click='addTransactionRecord'>新建订单记录</el-button>
             <el-button type="primary"  class='add_custom' @click='editTransactionRecord'>编辑</el-button>
         </div>
-        <el-dialog title="交易记录" :visible.sync="transactionDialogVisible" class='customRelationInfoDialog' @close='resetTransactionEdit'>
+        <el-dialog title="订单记录" :visible.sync="transactionDialogVisible" class='customRelationInfoDialog' @close='resetTransactionEdit'>
             <transactionEdit :informationItem='infomation' :editInfos='editActiveRow' ref='transactionEdit'  v-on:closeCustomTransactionInfoDialog='updateTransactionRecord'></transactionEdit>
         </el-dialog>
     </div>

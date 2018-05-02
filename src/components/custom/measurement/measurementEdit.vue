@@ -5,12 +5,12 @@
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
             <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
             <el-row :gutter="10">
-                <el-col :span="7.7">
+                <el-col :span="7">
                     <el-form-item prop='measure_name'>
                         <el-input  v-model="measurementForm.measure_name" placeholder='测量人名称'></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="7.7">
+                <el-col :span="8">
                     <el-form-item prop='measure_time'>
                         <el-date-picker
                             v-model="measurementForm.measure_time"
@@ -20,12 +20,12 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-col :span="0.9">
+                <el-col :span="1">
                     <el-form-item>
                         至
                     </el-form-item>
                 </el-col>
-                <el-col :span="7.7">
+                <el-col :span="8">
                     <el-form-item prop='end_time'>
                         <el-date-picker
                             v-model="measurementForm.end_time"
@@ -71,6 +71,7 @@
                     :file-list="measurementForm.imageLists"
                     :multiple='true'
                     :on-preview="handlePictureCardPreview"
+                    :before-upload="beforeAvatarUpload"
                     :on-remove="handleRemove"
                     :on-success='handleSuccess'>
                     <i class="el-icon-plus"></i>
@@ -147,12 +148,17 @@
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
+                this.measurementForm.information_id = this.informationItem.id;
+                this.measurementForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.measurementForm = Object.assign({},newVal);
                     if(newVal.imageLists && newVal.imageLists.length>0){
                         this.measurementForm.image_id = newVal.image_id.slice();
                         this.measurementForm.imageLists = newVal.imageLists.slice();
                     }
+                }else{
+                    this.measurementForm.image_id = [];
+                    this.measurementForm.imageLists = [];
                 }
             }
         },
@@ -173,6 +179,22 @@
                     this.measurementForm.image_id.push(response.success[0].image_id);
                 }
                 this.measurementForm.imageLists = fileList;
+            },
+            beforeAvatarUpload(file) {
+                // const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                // if (!isJPG) {
+                //   this.$message.error('上传头像图片只能是 JPG 格式!');
+                // }
+                if (!isLt2M) {
+                    this.$message({
+                        message:'上传头像图片大小不能超过 2MB!',
+                        type:'error'
+                    });
+                    return false;
+                }
+                return isLt2M;
             },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){

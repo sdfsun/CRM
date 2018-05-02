@@ -5,7 +5,7 @@
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
             <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
             <el-row :gutter="8">
-                <el-col :span="7.7">
+                <el-col :span="7">
                     <el-form-item prop='mode'>
                         <el-select v-model="communicateForm.mode" placeholder="沟通方式">
                             <el-option label="店里沟通" value="店里沟通"></el-option>
@@ -15,7 +15,7 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="7.7">
+                <el-col :span="8">
                     <el-form-item prop='contact_time'>
                         <el-date-picker
                             v-model="communicateForm.contact_time"
@@ -25,12 +25,12 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-col :span="0.9">
+                <el-col :span="1">
                     <el-form-item>
                         至
                     </el-form-item>
                 </el-col>
-                <el-col :span="7.7">
+                <el-col :span="8">
                     <el-form-item prop='end_time'>
                         <el-date-picker
                             v-model="communicateForm.end_time"
@@ -65,6 +65,7 @@
                 <el-col :span="8">
                     <el-form-item prop='is_arrival'>
                         <el-select v-model="communicateForm.is_arrival" placeholder="是否已到店" clearable>
+                            <el-option label="未知" value="0"></el-option>
                             <el-option label="是" value="1"></el-option>
                             <el-option label="否" value="2"></el-option>
                         </el-select>
@@ -75,6 +76,7 @@
                 <el-col :span="8">
                     <el-form-item prop='is_bespeak' ref='isBespeakItem'>
                         <el-select v-model="communicateForm.is_bespeak" placeholder="是否预约成功" clearable @change='bespeakChange'>
+                            <el-option label="未知" value="0"></el-option>
                             <el-option label="是" value="1"></el-option>
                             <el-option label="否" value="2"></el-option>
                         </el-select>
@@ -196,7 +198,11 @@
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 // this.communicateForm = newVal;
-                this.communicateForm = Object.assign({}, newVal);
+                this.communicateForm.information_id = this.informationItem.id;
+                this.communicateForm.status = this.informationItem.status;
+                if(newVal.id){
+                    this.communicateForm = Object.assign({}, newVal);
+                }
             }
         },
         methods:{
@@ -210,7 +216,7 @@
             },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){
-                    return false;
+                    // return false;
                 }
                 try {
                     let that = this;

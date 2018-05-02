@@ -45,7 +45,7 @@
             <el-table-column
                 label="量尺图片"
                 min-width='118px'>
-                <template slot-scope="scope" v-if='scope.row.image_id.length>0'>
+                <template slot-scope="scope" v-if='scope.row.image_id && scope.row.image_id.length>0'>
                     <img :src="scope.row.image_id[0]" width="100%" height="87" />
                     <i class="el-icon-zoom-in image_item_icon"></i>
                 </template>
@@ -71,7 +71,7 @@
             <measurementEdit :informationItem='infomation' :editInfos='editActiveRow' ref='measurementEdit'  v-on:closeCustomMeasurementInfoDialog='updateMeasurementRecord'></measurementEdit>
         </el-dialog>
         <el-dialog title="量尺图片" :visible.sync="measurementImageDialogVisible">
-            <el-carousel :interval="4000" type="card" height="200px">
+            <el-carousel height="400px" :autoplay='false'>
                 <el-carousel-item v-for="(item,index) in images" :key="index">
                     <img :src="item" class="image_carousel_item">
                 </el-carousel-item>
@@ -114,14 +114,16 @@
                 }
                 this.editActiveRow = Object.assign({},this.currentrow);
                 this.editActiveRow.status = this.infomation.status;
-                this.editActiveRow.image_id = this.currentrow.image_id.slice();
                 if(this.editActiveRow.image_id && this.editActiveRow.image_id.length>0){
+                    this.editActiveRow.image_id = this.currentrow.image_id.slice();
                     let imageLists = [];
                     this.editActiveRow.image_id.forEach( function(item, index) {
                         imageLists.push({url:item});
                     });
                     // Object.assign(this.editActiveRow,{imageLists:imageLists});
                     this.editActiveRow.imageLists = imageLists.slice();
+                }else{
+                    this.editActiveRow.image_id = [];
                 }
                 this.measurementDialogVisible = true;
             },
@@ -138,8 +140,10 @@
             },
             cellClickHandle(row, column, cell, event){
                 if(column.label === '量尺图片'){
-                    this.measurementImageDialogVisible = true;
-                    this.images = Object.assign({}, row.image_id);
+                    if(row.image_id){
+                        this.measurementImageDialogVisible = true;
+                        this.images = Object.assign({}, row.image_id);
+                    }
                 }
             }
         },

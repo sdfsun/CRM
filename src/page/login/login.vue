@@ -67,7 +67,7 @@
                                     type:'success'
                                 });
                                 setTimeout(function(){
-                                    that.$router.push('/home');
+                                    that.$router.push('/custom/0');
                                 },3000);
                                 //设置当前登录账户相关信息
                                 if(res.data){

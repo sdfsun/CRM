@@ -6,94 +6,137 @@
             <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
             <el-form-item prop='customer_number' class='hide-form-item'></el-form-item>
             <el-form-item prop='org_id' class='hide-form-item'></el-form-item>
-            <el-form-item label="姓名" prop='name'>
-                <el-input v-model="basicForm.name"></el-input>
-            </el-form-item>
-            <el-form-item label="地区" prop='area'>
-                <el-cascader
-                    :options="areaOptions"
-                    v-model="basicForm.area">
-                </el-cascader>
-            </el-form-item>
-            <el-form-item label='性别' prop='sex'>
-                <el-radio-group v-model="basicForm.sex">
-                    <el-radio label="1">男士</el-radio>
-                    <el-radio label="2">女士</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="地址" prop='addr'>
-                <el-input v-model="basicForm.addr" placeholder='请输入详细地址'></el-input>
-            </el-form-item>
-            <el-form-item label="电话" prop='tel' ref='telItem'>
-                <el-input v-model="basicForm.tel"></el-input>
-            </el-form-item>
-            <el-form-item label="手机" prop='mobile' ref='mobileItem'>
-                <el-input v-model.number="basicForm.mobile" maxlength='11'></el-input>
-            </el-form-item>
-            <el-form-item label="qq" prop='qq' ref='qqItem'>
-                <el-input v-model="basicForm.qq"></el-input>
-            </el-form-item>
-            <el-form-item label="微信" prop='weixin' ref='weixinItem'>
-                <el-input v-model="basicForm.weixin"></el-input>
-            </el-form-item>
-            <el-form-item label="房屋类型" prop='houseTypeOptions'>
-                <el-cascader
-                    v-model="basicForm.houseTypeOptions"
-                    :options="houseOptions"
-                    @change="houseHandleChange">
-                </el-cascader>
-            </el-form-item>
-            <el-form-item label="户型"  prop='house_layout'>
-                <el-input type="textarea" autosize v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁'></el-input>
-            </el-form-item>
-            
-            <el-form-item label="装修预算"  prop='budget' class='budget_item'>
-                <el-input type='number' v-model="basicForm.budget" placeholder='装修预算'>
-                    <i slot="suffix">W</i>
-                </el-input>
-            </el-form-item>
-            <el-form-item label="装修需求" prop='demand'>
-                <el-select v-model="basicForm.demand" placeholder="装修需求">
-                    <el-option label="标准件" value="标准件"></el-option>
-                    <el-option label="全屋设计" value="全屋设计"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="状态" prop='status'>
-                <el-select v-model="basicForm.status" placeholder="状态">
-                    <el-option
-                        v-for="item in customStatus"
-                        :key="item.val"
-                        :label="item.label"
-                        :value="item.val">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="邮箱" prop='email' ref='emailItem'>
-                <el-input type='email' v-model="basicForm.email"></el-input>
-            </el-form-item>
-            <!-- <el-form-item label='是否装客'>
-                <el-radio-group v-model="basicForm.guest">
-                    <el-radio label="是"></el-radio>
-                    <el-radio label="否"></el-radio>
-                </el-radio-group>
-            </el-form-item> -->
-            <!-- <el-form-item label='是否预约成功' label-width='100px' prop='bespeak'>
-                <el-radio-group v-model="basicForm.bespeak">
-                    <el-radio label="true">是</el-radio>
-                    <el-radio label="false">否</el-radio>
-                </el-radio-group>
-            </el-form-item> -->
-            <el-form-item label="客户来源" prop='source'>
-                <el-select v-model="basicForm.source" placeholder="请选择客户来源">
-                    <el-option
-                        v-for="item in customSource"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                        v-if='item.disabled'>
-                    </el-option>
-                </el-select>
-            </el-form-item>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="姓名" prop='name'>
+                        <el-input v-model="basicForm.name"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="地区" prop='area'>
+                        <el-cascader
+                            :options="areaOptions"
+                            v-model="basicForm.area">
+                        </el-cascader>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label='性别' prop='sex'>
+                        <el-radio-group v-model="basicForm.sex">
+                            <el-radio label="1">男士</el-radio>
+                            <el-radio label="2">女士</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="地址" prop='addr'>
+                        <el-input v-model="basicForm.addr" placeholder='请输入详细地址'></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="电话" prop='tel' ref='telItem'>
+                        <el-input v-model="basicForm.tel"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="手机" prop='mobile' ref='mobileItem' >
+                        <el-input v-model.number="basicForm.mobile" maxlength='11'></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="qq" prop='qq' ref='qqItem'>
+                        <el-input v-model="basicForm.qq"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="微信" prop='weixin' ref='weixinItem'>
+                        <el-input v-model="basicForm.weixin"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="房屋类型" prop='houseTypeOptions'>
+                        <el-cascader
+                            v-model="basicForm.houseTypeOptions"
+                            :options="houseOptions"
+                            @change="houseHandleChange">
+                        </el-cascader>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="户型"  prop='house_layout'>
+                        <el-input type="textarea" autosize v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁'></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="装修预算"  prop='budget' class='budget_item'>
+                        <el-input type='number' v-model="basicForm.budget" placeholder='装修预算'>
+                            <i slot="suffix">W</i>
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="装修需求" prop='demand'>
+                        <el-select v-model="basicForm.demand" placeholder="装修需求">
+                            <el-option label="标准件" value="标准件"></el-option>
+                            <el-option label="全屋设计" value="全屋设计"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="状态" prop='status'>
+                        <el-select v-model="basicForm.status" placeholder="状态">
+                            <el-option
+                                v-for="item in customStatus"
+                                :key="item.val"
+                                :label="item.label"
+                                :value="item.val">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="邮箱" prop='email' ref='emailItem'>
+                        <el-input type='email' v-model="basicForm.email"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="客户类型" prop='client_type'>
+                        <el-select v-model="basicForm.client_type" placeholder="请选择客户类型">
+                            <el-option label="装修用户" value="1"></el-option>
+                            <el-option label="合作商" value="2"></el-option>
+                            <el-option label="其他" value="3"></el-option>
+                            <el-option label="未知" value="0"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="客户来源" prop='source'>
+                        <el-select v-model="basicForm.source" placeholder="请选择客户来源">
+                            <el-option
+                                v-for="item in customSource"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id"
+                                v-if='item.disabled'>
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
             <el-form-item label="客户备注" class='remarks_item' prop='remarks'>
                 <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="basicForm.remarks" placeholder='客户备注'></el-input>
             </el-form-item>
@@ -116,30 +159,24 @@
         data(){
             //校验电话、qq、微信、手机
             let checkRelateMethod = (rule, value, callback)=>{
-                if(this.basicForm.mobile === '' && this.basicForm.tel === '' && this.basicForm.qq === '' && this.basicForm.weixin === ''){
-                    callback(new Error('电话、手机、qq、微信必填一项'));
+                if(this.basicForm.mobile === '' && this.basicForm.tel === ''){
+                    callback(new Error('电话、手机必填一项'));
                     return false;
                 }
                 if(this.basicForm.mobile !== '' && !isPhone.test(this.basicForm.mobile)){
-                    callback(new Error('请输入正确的手机号码'));
-                    return false;
+                    if(rule.field === 'mobile'){
+                        callback(new Error('请输入正确的手机号码'));
+                        return false;
+                    }
                 }
                 if(rule.field === 'mobile'){
-                    this.$refs['qqItem'].clearValidate();
-                    this.$refs['weixinItem'].clearValidate();
-                    this.$refs['telItem'].clearValidate();
-                }else if(rule.field === 'tel'){
-                    this.$refs['qqItem'].clearValidate();
-                    this.$refs['weixinItem'].clearValidate();
-                    this.$refs['mobileItem'].clearValidate();
-                }else if(rule.field === 'qq'){
-                    this.$refs['mobileItem'].clearValidate();
-                    this.$refs['weixinItem'].clearValidate();
+                    // this.$refs['qqItem'].clearValidate();
+                    // this.$refs['weixinItem'].clearValidate();
                     this.$refs['telItem'].clearValidate();
                 }else{
-                    this.$refs['qqItem'].clearValidate();
+                    // this.$refs['qqItem'].clearValidate();
+                    // this.$refs['weixinItem'].clearValidate();
                     this.$refs['mobileItem'].clearValidate();
-                    this.$refs['telItem'].clearValidate();
                 }
                 callback();
             };
@@ -181,7 +218,8 @@
                     budget:"",
                     status:"0",
                     remarks:"",
-                    houseTypeOptions:[]//房屋类型
+                    houseTypeOptions:[],//房屋类型
+                    client_type:''
                 },
                 areaOptions:region,
                 submitBtnStatus:false,//是否可点击保存按钮
@@ -192,12 +230,12 @@
                     tel:[
                         { validator: checkRelateMethod}
                     ],
-                    qq:[
-                        { validator: checkRelateMethod}
-                    ],
-                    weixin:[
-                        { validator: checkRelateMethod}
-                    ],
+                    // qq:[
+                    //     { validator: checkRelateMethod}
+                    // ],
+                    // weixin:[
+                    //     { validator: checkRelateMethod}
+                    // ],
                     source: [
                         { required: true, message: '请选择客户来源', trigger: 'change' }
                     ],
@@ -255,8 +293,12 @@
                         label: '二手房/旧房翻新',
                         children: [
                             {
-                                value: '是否已拆',
-                                label: '是否已拆',
+                                value: '已拆',
+                                label: '已拆',
+                            },
+                            {
+                                value: '未拆',
+                                label: '未拆',
                             },
                             {
                                 value: '未交房',
@@ -366,14 +408,14 @@
     .basicForm_container .el-form{
         overflow: hidden;
     }
-    .basicForm_container .el-form-item{
+    /*.basicForm_container .el-form-item{
         width: 46%;
         float: left;
     }
     .basicForm_container .el-form-item:nth-child(2n){
         width: 52%;
         margin-left: 2%;
-    }
+    }*/
     .el-select,.el-cascader,.basicForm_container .remarks_item{
         width: 100%;
     }

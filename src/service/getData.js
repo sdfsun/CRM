@@ -64,6 +64,11 @@ export const receivables_save = (formData) => axios.post('/crm-receivables_save.
 //保存方案明细
 export const programme_save = (formData) => axios.post('/crm-programme_save.html',formData);
 
+//方案定案
+export const confirm_scheme = (id) => axios.post('/crm-confirm_scheme.html',{
+    id
+});
+
 //保存交易记录
 export const transaction_save = (formData) => axios.post('/crm-transaction_save.html',formData);
 

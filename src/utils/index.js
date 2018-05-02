@@ -30,8 +30,9 @@ export const getDuration = (startDate,endDate) => {
     if (ms < 0) {
         return -1;
     }
-    let result_h = Math.round(ms/1000/60/60);//时
-    let result_m = Math.round(ms/1000/60);//分
-    let result_s = Math.round(ms/1000);//秒
+    ms = ms/1000;//转换为秒数
+    let result_h = Math.floor(ms/60/60);//时
+    let result_m = Math.floor(ms/60%60);//分
+    let result_s = Math.floor(ms%60);//秒
     return result_h+"时"+result_m+"分"+result_s+"秒";
 }

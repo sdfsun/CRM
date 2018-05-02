@@ -144,16 +144,16 @@
             <el-tab-pane label="上门测量" name='上门测量'>
                 <measurement :measurementRecords='customInfoArray[2]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></measurement>
             </el-tab-pane>
-            <el-tab-pane label="收款管理" name='收款管理'>
+            <el-tab-pane label="收款记录" name='收款记录'>
                 <receivables :receivablesRecords='customInfoArray[3]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></receivables>
             </el-tab-pane>
             <el-tab-pane label="方案明细" name='方案明细'>
-                <programme :programmeRecords='customInfoArray[4]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></programme>
+                <programme :programmeRecords='customInfoArray[4]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem' v-on:updateCustomProgrammeRecords='updateCustomProgrammeRecordItem'></programme>
             </el-tab-pane>
-            <el-tab-pane label="交易信息" name='交易信息'>
+            <el-tab-pane label="订单记录" name='订单记录'>
                 <transaction :transactionRecords='customInfoArray[5]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></transaction>
             </el-tab-pane>
-            <el-tab-pane label="投诉建议" name='投诉建议'>
+            <el-tab-pane label="售后记录" name='售后记录'>
                 <complaint :complaintRecords='customInfoArray[6]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></complaint>
             </el-tab-pane>
             <el-tab-pane>
@@ -327,16 +327,16 @@
                         case '上门测量':
                             this.initElPaneData(2,customer_id);
                             break;
-                        case '收款管理':
+                        case '收款记录':
                             this.initElPaneData(3,customer_id);
                             break;
                         case '方案明细':
                             this.initElPaneData(4,customer_id);
                             break;
-                        case '交易信息':
+                        case '订单记录':
                             this.initElPaneData(5,customer_id);
                             break;
-                        case '投诉建议':
+                        case '售后记录':
                             this.initElPaneData(6,customer_id);
                             break;
                         default:
@@ -430,7 +430,7 @@
             editCustomBasicInfo(){//编辑客户基本信息
                 if(Object.keys(this.currentRow).length === 0){
                     this.$message({
-                        message:'请先选中需要编辑的交易记录！',
+                        message:'请先选中需要编辑的客户信息记录！',
                         type:'error'
                     });
                     return false;
@@ -467,12 +467,27 @@
                             return item[key_name] === callbackData.data[key_name];
                         });
                         Vue.set(this.customInfoArray[callbackData.num],index,callbackData.data);
-                        //重置基本信息中的status
-                        Vue.set(this.currentRow,'status',callbackData.data.information_status);
-                        Vue.set(this.customInfoArray[0],'status',callbackData.data.information_status);
-                        Vue.set(this.customInfoArray[0],'status_name',this.customStatus[callbackData.data.information_status].label);
+                        
                     }
+                    //重置基本信息中的status
+                    Vue.set(this.currentRow,'status',callbackData.data.information_status);
+                    Vue.set(this.customInfoArray[0],'status',callbackData.data.information_status);
+                    Vue.set(this.customInfoArray[0],'status_name',this.customStatus[callbackData.data.information_status].label);
                 }
+            },
+            updateCustomProgrammeRecordItem(id){//处理定案数据
+                const index = this.customInfoArray[4].findIndex(function(item, index, arr) {
+                    return item.id === id;
+                });
+                this.customInfoArray[4].forEach( function(item, il) {
+                    if(il === index){
+                        Vue.set(item,'disabled','true');
+                        Vue.set(item,'disabled_name','是');
+                    }else{
+                        Vue.set(item,'disabled','false');
+                        Vue.set(item,'disabled_name','否');
+                    }
+                });
             }
         },
         components:{

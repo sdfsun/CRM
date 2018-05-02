@@ -46,11 +46,11 @@ html{
 }
 /*侧边栏*/
 .el-submenu__title{
-    font-size: 22px;
+    font-size: 20px;
     background-color: #2C3031 !important;
 }
 .el-menu-item{
-    font-size: 18px;
+    font-size: 16px;
     background-color: #25292A !important;
     color: #999 !important;
     position: relative;
@@ -123,9 +123,9 @@ html{
 }
 .custom_container .el-tabs__item{
     flex: 1;
-    height: 66px;
-    line-height: 66px;
-    font-size: 20px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 18px;
     text-align: center;
     color: #fff !important;
     margin-top: 10px !important;
@@ -139,7 +139,7 @@ html{
     line-height: 34px;
     background-color: #1876EF;
     border-top-left-radius: 20px;
-    margin-top: 42px !important;
+    margin-top: 39px !important;
     margin-left: 20px;
 }
 /*此时处于上拉状态*/
@@ -190,7 +190,7 @@ html{
     width: 100%;
 }
 .custom_container .el_tabs_footer > .el-tabs__content .el-tab-pane{
-    height: 400px;
+    height: 320px;
 }
 .custom_container.down .el_tabs_footer > .el-tabs__content .el-tab-pane{
     min-height: 0;
@@ -215,8 +215,7 @@ html{
 }
 /*基本信息弹框*/
 .custom_container .basicInfoDialog .el-dialog{
-    min-width: 600px;
-    max-width: 763px;
+    width: 763px;
 }
 .custom_container .basicInfoDialog .el-form-item.is-success .el-input__inner{
     border-color: #dcdfe6;
@@ -260,4 +259,30 @@ html{
 }
 .assignDesignerDialog .el-select{
     width: 100%;
+}
+.el_tabs_footer .el-table{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+}
+.el_tabs_footer .el-table .el-table__body-wrapper{
+    flex:1;
+    overflow: auto;
+}
+.el-carousel__container .image_carousel_item{
+    width: auto !important;
+    height: 100%;
+}
+.el-carousel__container .el-carousel__item{
+    text-align: center;
+}
+.el-dialog__header{
+    padding: 20px 60px;
+}
+.el-dialog__body{
+    padding: 30px 60px;
+}
+.el-upload-list--picture-card .el-upload-list__item,.el-upload--picture-card{
+    width: 128px;
+    height: 128px;
 }

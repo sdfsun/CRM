@@ -1,6 +1,6 @@
 <template>
     <section class="programmeEdit_container">
-        <el-form ref="programmeForm" label-position="left" :rules='programmeFormRules' label-width='60px'>
+        <el-form ref="programmeForm" label-position="left" :model="programmeForm" :rules='programmeFormRules' label-width='55px'>
             <el-form-item prop='id' class='hide-form-item'></el-form-item>
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
             <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
@@ -25,9 +25,9 @@
                     </template>
                 </el-col>
             </el-row>
-            <el-row>
+            <el-row style='margin-top:10px;'>
                 <el-col :span="8">
-                    <el-form-item label='状态' prop='status' required>
+                    <el-form-item label='状态' prop='status'>
                         <el-select v-model="programmeForm.status" placeholder="请选择客户状态">
                             <el-option
                                 v-for="item in customStatus"
@@ -78,7 +78,7 @@
                 'customStatus'
             ])
         },
-        created(){
+        mounted(){
             if(this.editInfos && this.editInfos.id){
                 this.programmeForm = Object.assign({},this.editInfos);
                 // this.$nextTick(()=>{
@@ -99,6 +99,8 @@
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
+                this.programmeForm.information_id = this.informationItem.id;
+                this.programmeForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.programmeForm = Object.assign({},newVal);
                     // this.$nextTick(()=>{
@@ -115,6 +117,17 @@
                     //         re.image_url = re.image_url.slice();
                     //     });
                     // });
+                }else{//新增
+                    this.programmeForm.scheme = [{
+                        name:'',
+                        image_url:[],
+                        imageLists:[]
+                    }];
+                    this.programmeForm.relevant_data = [{
+                        name:'',
+                        image_url:[],
+                        imageLists:[]
+                    }];
                 }
             }
         },

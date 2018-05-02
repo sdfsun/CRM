@@ -5,11 +5,13 @@
 .page_hours .el-tabs__header{height:70px;line-height:70px;margin:0;background:#fff;padding-top:20px;}
 .page_hours .el-tabs__nav-wrap{padding:0 80px;}
 .page_hours .el-tabs__nav-wrap::after{height:0;}
+
 .page_hours .el-tabs__item{font-size:20px;font-weight:bold;}
 .page_hours .el-tabs__active-bar{height:4px;}
+.page_hours .el-tab-pane{padding:0 40px;}
 
 /*日期*/
-.pika-single{display:block;position:relative;width:90%;min-width:300px;box-sizing:border-box;margin:40px auto;box-shadow:0 5px 5px rgba(0,0,0,0.1)}
+.pika-single{display:block;position:relative;width:100%;min-width:300px;box-sizing:border-box;margin:40px auto;box-shadow:0 5px 5px rgba(0,0,0,0.1)}
 .pika-title{position:relative;text-align:center;background:#5A98E8;height:80px;overflow:hidden;}
 .pika-label{display:inline-block;position:relative;z-index:9999;overflow:hidden;margin:0;padding:0 3px;font-size:24px;line-height:80px;font-weight:700;color:#fff;}
 .pika-title select{cursor:pointer;position:absolute;z-index:9998;margin:0;left:0;top:25px;filter:alpha(opacity=0);opacity:0}
@@ -25,7 +27,7 @@
 .pika-table th abbr{text-decoration:none;}
 .pika-button{cursor:pointer;display:block;outline:0;border:0;margin:0;color:#1876EF;font-size:32px;line-height:40px;text-align:right;height:70px;padding:10px;background:none;}
 .is-today .pika-button{color:#F7A903;font-weight:700}
-/*.is-selected .pika-button{color:#F25406;font-weight:700;background:#FFF6EE;}*/
+.is-selected .pika-button{color:#F25406;font-weight:700;background:#FFF6EE;}
 .is-disabled .pika-button{pointer-events:none;cursor:default;color:#999;opacity:.3}
 .is-active .pika-button{color:#F25406;font-weight:700;background:#FFF6EE;}
 .pika-button:hover{color:#F25406!important;background:#FFF6EE!important;}

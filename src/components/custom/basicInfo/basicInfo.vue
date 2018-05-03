@@ -41,7 +41,7 @@
             </li>
             <li>
                 <span class="txt_1">预算：</span>
-                <span class="txt_2">{{basicInfoRecord.budget}}</span>
+                <span class="txt_2" v-if='basicInfoRecord.budget'>{{basicInfoRecord.budget}}万</span>
             </li>
             <li>
                 <span class="txt_1">装修需求：</span>
@@ -63,6 +63,11 @@
                 <span class="txt_2" v-if='basicInfoRecord.guest'>是</span>
                 <span class="txt_2" v-else>否</span>
             </li>
+            <li>
+                <span class="txt_1">客户类型：</span>
+                <span class="txt_2">{{basicInfoRecord.client_type_name}}</span>
+            </li>
+            
             <li>
                 <span class="txt_1">归属设计师：</span>
                 <span class="txt_2">{{basicInfoRecord.member_name}}</span>
@@ -96,19 +101,19 @@
     }
     .basicInfo_container ul{
         flex: 1;
-        font-size: 16px;
-        line-height: 22px;
+        font-size: 14px;
+        line-height: 20px;
         color: #4D4D4D;
     }
     ul .title{
-        font-size: 18px;
+        font-size: 16px;
         color: #010101;
-        margin-bottom: 28px;
+        margin-bottom: 16px;
         height: 22px;
     }
     ul li{
         list-style: none;
-        margin-bottom: 17px;
+        margin-bottom: 14px;
         display: flex;
     }
     ul li .txt_1{

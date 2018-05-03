@@ -1,9 +1,9 @@
 <template>
     <section class="userEdit_container">
         <el-form ref="userForm" :model="userForm" :rules='userFormRules' label-width="90px" >
-            <el-form-item prop='member_id' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='member_id' class='hide-form-item'></el-form-item>
             <el-form-item prop='password_account' class='hide-form-item'  v-if='!editInfos.member_id'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
+            <el-form-item prop='createtime' class='hide-form-item'></el-form-item> -->
             <el-form-item prop='login_account' label='用户名' v-if='!editInfos.member_id'>
                 <el-input  v-model="userForm.login_account" placeholder='请输入用户名' clearable></el-input>
             </el-form-item>
@@ -59,16 +59,13 @@
         data(){
             return{
                 userForm:{
-                    member_id:'',
                     login_account:'',//用户名
                     login_password:'',//登录密码
-                    password_account:'',//登录密码加密所用账号
                     name:'',//姓名
                     member_role_id:'',//用户等级
                     mobile:'',//手机号码
                     status:'1',//是否启用
                     org_id:'5',//所属门店
-                    createtime:''
                 },
                 orgs:[
                     {
@@ -124,16 +121,25 @@
         mounted(){
             if(this.editInfos && this.editInfos.member_id){
                 this.userForm = Object.assign({},this.editInfos);
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 if(newVal.member_id){
                     this.userForm = Object.assign({},newVal);
+                }else{
+                    this.resetFormData();
                 }
             }
         },
         methods:{
+            resetFormData(){
+                delete this.userForm['member_id'];
+                delete this.userForm['password_account'];
+                delete this.userForm['createtime'];
+            },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){
                     return false;

@@ -1,10 +1,10 @@
 <template>
     <section class="programmeEdit_container">
         <el-form ref="programmeForm" label-position="left" :model="programmeForm" :rules='programmeFormRules' label-width='55px'>
-            <el-form-item prop='id' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
             <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
-            <el-form-item prop='disabled' class='hide-form-item'></el-form-item>
+            <el-form-item prop='disabled' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-row>
@@ -57,10 +57,6 @@
             return{
                 programmeForm:{
                     information_id:this.informationItem.id,//客户id
-                    id:'',
-                    createtime:'',
-                    update_time:'',
-                    disabled:'false',
                     scheme:[{}],//效果明細
                     relevant_data:[{}],//相关资料
                     status:this.informationItem.status//状态
@@ -95,6 +91,8 @@
                 //         re.image_url = re.image_url.slice();
                 //     });
                 // });
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
@@ -118,6 +116,7 @@
                     //     });
                     // });
                 }else{//新增
+                    this.resetFormData();
                     this.programmeForm.scheme = [{
                         name:'',
                         image_url:[],
@@ -132,6 +131,12 @@
             }
         },
         methods:{
+            resetFormData(){
+                delete this.programmeForm['id'];
+                delete this.programmeForm['createtime'];
+                delete this.programmeForm['update_time'];
+                delete this.programmeForm['disabled'];
+            },
             addScheme(){//添加效果明细
                 this.programmeForm.scheme.push({});
             },

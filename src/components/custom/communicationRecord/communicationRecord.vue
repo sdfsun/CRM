@@ -269,7 +269,7 @@
     }
     .btns{
         text-align: right;
-        padding: 26px 40px 25px 0;
+        padding: 16px 40px 16px 0;
     }
     .assignDesignerDialog .btns{
         text-align: center;

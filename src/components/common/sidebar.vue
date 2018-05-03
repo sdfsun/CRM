@@ -95,6 +95,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .sidebar{
+        width: 100%;
         text-align: center;
         position: relative;
         height: 100%;

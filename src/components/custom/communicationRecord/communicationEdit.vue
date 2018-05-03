@@ -1,9 +1,9 @@
 <template>
     <section class="communicationEdit_container">
         <el-form ref="communicateForm" :model="communicateForm"  :rules="communicateFormRules" label-width="0">
-            <el-form-item prop='id' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
+            <el-form-item prop='update_time' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="8">
                 <el-col :span="7">
                     <el-form-item prop='mode'>
@@ -144,9 +144,6 @@
             return{
                 communicateForm:{
                     information_id:this.informationItem.id,//客户id
-                    id:'',
-                    createtime:'',
-                    update_time:'',
                     mode:'',//沟通方式
                     contact_time:'',//沟通开始时间
                     end_time:'',//沟通结束时间
@@ -193,6 +190,8 @@
             if(this.editInfos && this.editInfos.id){
                 // this.communicateForm = this.editInfos;
                 this.communicateForm = Object.assign({}, this.editInfos);
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
@@ -202,10 +201,17 @@
                 this.communicateForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.communicateForm = Object.assign({}, newVal);
+                }else{
+                    this.resetFormData();
                 }
             }
         },
         methods:{
+            resetFormData(){
+                delete this.communicateForm['id'];
+                delete this.communicateForm['createtime'];
+                delete this.communicateForm['update_time'];
+            },
             bespeakChange(val){//是否预约成功联动预约失败原因
                 if(val === '2'){//预约失败
                     this.reasonVisibleFlag = true;

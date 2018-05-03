@@ -1,6 +1,6 @@
 <template>
     <el-container>
-        <el-aside width="212px">
+        <el-aside width="180px">
             <sidebar></sidebar>
         </el-aside>
         <el-main>
@@ -28,5 +28,6 @@
     }
     .el-aside{
         background-color: #2C3031;
+        overflow-x: hidden;
     }
 </style>

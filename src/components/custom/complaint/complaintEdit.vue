@@ -1,8 +1,8 @@
 <template>
     <section class="complaintEdit_container">
         <el-form ref="complaintForm" :model="complaintForm" :rules='complaintFormRules' label-width="0" >
-            <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
+            <el-form-item prop='createtime' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="8">
                     <el-form-item prop='type'>
@@ -55,8 +55,6 @@
             return{
                 complaintForm:{
                     information_id:this.informationItem.id,//客户id
-                    id:"",
-                    createtime:"",
                     name:'',//投诉人
                     type:'0',//投诉类型
                     outline:'',//投诉概要
@@ -87,6 +85,8 @@
         mounted(){
             if(this.editInfos && this.editInfos.id){
                 this.complaintForm = Object.assign({},this.editInfos);
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
@@ -95,10 +95,16 @@
                 this.complaintForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.complaintForm = Object.assign({},newVal);
+                }else{
+                    this.resetFormData();
                 }
             }
         },
         methods:{
+            resetFormData(){
+                delete this.complaintForm['id'];
+                delete this.complaintForm['createtime'];
+            },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){
                     return false;

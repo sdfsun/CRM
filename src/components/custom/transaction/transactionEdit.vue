@@ -1,8 +1,8 @@
 <template>
     <section class="transactionEdit_container">
         <el-form ref="transactionForm" :model="transactionForm" :rules='transactionFormRules' label-width="0" >
-            <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
+            <el-form-item prop='createtime' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="6">
                     <el-form-item prop='name'>
@@ -66,8 +66,6 @@
             return{
                 transactionForm:{
                     information_id:this.informationItem.id,//客户id
-                    id:'',
-                    createtime:'',
                     name:'',//交易人
                     times:'',//交易时间
                     order_id:'',//交易订单号
@@ -100,6 +98,8 @@
         mounted(){
             if(this.editInfos && this.editInfos.id){
                 this.transactionForm = Object.assign({},this.editInfos);
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
@@ -108,10 +108,16 @@
                 this.transactionForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.transactionForm = Object.assign({},newVal);
+                }else{
+                    this.resetFormData();
                 }
             }
         },
         methods:{
+            resetFormData(){
+                delete this.transactionForm['id'];
+                delete this.transactionForm['createtime'];
+            },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){
                     return false;

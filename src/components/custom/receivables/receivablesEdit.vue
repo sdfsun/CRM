@@ -1,9 +1,9 @@
 <template>
     <section class="receivablesEdit_container">
         <el-form ref="receivablesForm" :model="receivablesForm" :rules='receivablesFormRules' label-width="0" >
-            <el-form-item prop='receivables_id' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='receivables_id' class='hide-form-item'></el-form-item>
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
+            <el-form-item prop='update_time' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="8">
                     <el-form-item prop='name'>
@@ -127,9 +127,6 @@
             return{
                 receivablesForm:{
                     information_id:this.informationItem.id,//客户id
-                    receivables_id:'',
-                    createtime:'',
-                    update_time:'',
                     name:'',//收款人
                     times:'',//收款时间
                     voucher:'',//收款凭证号
@@ -179,6 +176,8 @@
                 if(this.editInfos.imageLists && this.editInfos.imageLists.length>0){
                     this.receivablesForm.imageLists = this.editInfos.imageLists.slice();
                 }
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
@@ -190,12 +189,18 @@
                     if(newVal.imageLists && newVal.imageLists.length>0){
                         this.receivablesForm.imageLists = newVal.imageLists.slice();
                     }
-                }else{
+                }else{//新增
+                    this.resetFormData();
                     this.receivablesForm.imageLists = [];
                 }
             }
         },
         methods:{
+            resetFormData(){
+                delete this.receivablesForm['receivables_id'];
+                delete this.receivablesForm['createtime'];
+                delete this.receivablesForm['update_time'];
+            },
             handleRemove(file, fileList) {
                 this.receivablesForm.image_id = '';
                 this.receivablesForm.imageLists = fileList;

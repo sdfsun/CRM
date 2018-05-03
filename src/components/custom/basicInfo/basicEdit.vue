@@ -1,11 +1,11 @@
 <template>
     <section class="basicForm_container">
         <el-form ref="basicForms" :model="basicForm" :rules="basicFormRules" label-width="80px" >
-            <el-form-item prop='id' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
             <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
             <el-form-item prop='customer_number' class='hide-form-item'></el-form-item>
-            <el-form-item prop='org_id' class='hide-form-item'></el-form-item>
+            <el-form-item prop='org_id' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="姓名" prop='name'>
@@ -194,11 +194,6 @@
             };
             return{
                 basicForm:{
-                    id:'',
-                    customer_number:'',
-                    createtime:'',
-                    update_time:'',
-                    org_id:'',
                     name:"",
                     sex:"0",
                     tel:"",
@@ -334,16 +329,27 @@
         mounted(){
             if(this.editInfos && this.editInfos.id){
                 this.basicForm = Object.assign({},this.editInfos);
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 if(newVal.id){
                     this.basicForm = Object.assign({},newVal);
+                }else{
+                    this.resetFormData();
                 }
             }
         },
         methods:{
+            resetFormData(){//重置表单数据
+                delete this.basicForm['id'];
+                delete this.basicForm['customer_number'];
+                delete this.basicForm['createtime'];
+                delete this.basicForm['update_time'];
+                delete this.basicForm['org_id'];
+            },
             houseHandleChange(house){//房屋类型回调
                 this.basicForm.house_type = house[0];
                 this.basicForm.house_status = house[1];

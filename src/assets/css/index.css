@@ -123,8 +123,8 @@ html{
 }
 .custom_container .el-tabs__item{
     flex: 1;
-    height: 60px;
-    line-height: 60px;
+    height: 50px;
+    line-height: 50px;
     font-size: 18px;
     text-align: center;
     color: #fff !important;
@@ -139,7 +139,7 @@ html{
     line-height: 34px;
     background-color: #1876EF;
     border-top-left-radius: 20px;
-    margin-top: 39px !important;
+    margin-top: 28px !important;
     margin-left: 20px;
 }
 /*此时处于上拉状态*/
@@ -204,7 +204,7 @@ html{
 /*底部表格样式修改*/
 .custom_container .el-tabs__content .el-table--scrollable-x .el-table__body-wrapper{
     overflow: auto;
-    height: 253px;
+    /*height: 253px;*/
 }
 /*新增客户基本信息*/
 .basicForm_container .el-form-item .el-form-item__content{
@@ -285,4 +285,13 @@ html{
 .el-upload-list--picture-card .el-upload-list__item,.el-upload--picture-card{
     width: 128px;
     height: 128px;
+}
+.el-menu{
+    border-right: none;
+}
+/*响应式*/
+@media screen and (max-width: 1024px) {
+    .custom_container .el_tabs_footer > .el-tabs__content .el-tab-pane{
+        height: 260px;
+    }
 }

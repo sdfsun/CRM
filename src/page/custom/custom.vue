@@ -135,7 +135,7 @@
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
-            <el-tab-pane label="基本信息" name='基本信息'>
+            <el-tab-pane label="基本信息" name='基本信息' style='overflow:auto;'>
                 <basicInfo :basicInfoRecord='customInfoArray[0]'></basicInfo>
             </el-tab-pane>
             <el-tab-pane label="沟通记录" name='沟通记录'>

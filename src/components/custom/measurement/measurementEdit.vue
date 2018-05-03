@@ -1,9 +1,9 @@
 <template>
     <section class="measurementEdit_container">
         <el-form ref="measurementForm" :model="measurementForm" :rules='measurementFormRules' label-width="0" >
-            <el-form-item prop='id' class='hide-form-item'></el-form-item>
+            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
             <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
+            <el-form-item prop='update_time' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="7">
                     <el-form-item prop='measure_name'>
@@ -99,9 +99,6 @@
             return{
                 measurementForm:{
                     information_id:this.informationItem.id,//客户id
-                    id:'',
-                    createtime:'',
-                    update_time:'',
                     measure_name:'',//测量人
                     measure_time:'',//测量开始时间
                     end_time:'',//测量结束时间
@@ -144,6 +141,8 @@
                     this.measurementForm.image_id = this.editInfos.image_id.slice();
                     this.measurementForm.imageLists = this.editInfos.imageLists.slice();
                 }
+            }else{
+                this.resetFormData();
             }
         },
         watch:{
@@ -157,12 +156,18 @@
                         this.measurementForm.imageLists = newVal.imageLists.slice();
                     }
                 }else{
+                    this.resetFormData();
                     this.measurementForm.image_id = [];
                     this.measurementForm.imageLists = [];
                 }
             }
         },
         methods:{
+            resetFormData(){
+                delete this.measurementForm['id'];
+                delete this.measurementForm['createtime'];
+                delete this.measurementForm['update_time'];
+            },
             handleRemove(file, fileList) {
                 const index = this.measurementForm.image_id.findIndex(function(item, index, arr) {
                     return item === file.url;

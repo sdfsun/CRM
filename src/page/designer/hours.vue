@@ -1,7 +1,7 @@
 <template>
-    <div class="page_hours">
+    <div class="page_hours" :data='memberRoleId.member_role_id'>
         <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="我的日程" name="first">
+            <el-tab-pane label="我的日程" name="first" v-if='memberRoleId.member_role_id !== "shopowner" && memberRoleId.member_role_id !== "director"'>
                 <div class="hours_box">
                     <input type="hidden" id="datepicker"/>
                     <div class="h_footer">
@@ -43,8 +43,10 @@
     </div>
 </template>
 <script>
+import {mapState} from 'vuex';
 import { getVisitInit,postVisitSave,getAllPlan } from '@/service/getData';
 import {Pikaday} from '@/utils/date';
+
 export default {
     data() {
         return {
@@ -67,8 +69,17 @@ export default {
     },
     mounted: function () {
         this.$nextTick(function () {
-            this.init()
-        })
+            if(this.memberRoleId && this.memberRoleId.member_role_id === "shopowner" && this.memberRoleId.member_role_id !== "director"){
+                this.activeName = 'second';
+            }else{
+                this.init();
+            }
+        });
+    },
+    computed:{
+        ...mapState([
+            'memberRoleId'
+        ])
     },
     methods: {
         handleClick(tab, event) {

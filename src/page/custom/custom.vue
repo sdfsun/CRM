@@ -442,6 +442,8 @@
                 if(this.activeRow.area != ''){//地区
                     let areaTempArr = this.activeRow.area.split(" ");
                     this.activeRow.area = areaTempArr.slice();
+                }else{
+                    this.activeRow.area=[];
                 }
                 this.basicInfoDialogVisible = true;
             },

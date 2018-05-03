@@ -7,13 +7,6 @@ Vue.use(Vuex);
 
 const state = {
     memberRoleId:'',//当前登录账户的角色id
-    memberRolesDes:{//角色对应的说明
-        'super':'超级管理员',
-        'shopowner':'店长',
-        'director':'设计主管',
-        'designer':'设计师',
-        'service':'客服'
-    },
     customSource:[],//客户来源
     customStatus:[
         {val:'0',label:'未联系'},

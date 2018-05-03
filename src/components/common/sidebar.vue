@@ -64,8 +64,7 @@
         },
         computed:{
             ...mapState([
-                'memberRoleId',
-                'memberRolesDes'
+                'memberRoleId'
             ])
         },
         methods:{
@@ -76,7 +75,7 @@
                         this.$message({
                             message:res.success,
                             type:'success'
-                        });
+                           });
                         setTimeout(()=>{
                             this.$router.push('/');
                         },3000);

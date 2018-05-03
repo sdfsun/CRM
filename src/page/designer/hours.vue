@@ -77,6 +77,11 @@ export default {
                         message: res.error,
                         type: 'error'
                     });
+                    if(res.nologin === 1){//未登录
+                        setTimeout(()=>{
+                            this.$router.push('/');
+                        },3000);
+                    }
                 }else{
                     this.startTime = res.success.date;
                     for(var i=0;i<res.success.checkdate.length;i++){

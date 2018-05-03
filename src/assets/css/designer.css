@@ -23,9 +23,9 @@
 .pika-select{display:inline-block}
 .pika-table{width:100%;border-collapse:collapse;border-spacing:0;border:0;background:#fff;}
 .pika-table td,.pika-table th{width:14.285714285714286%;border:1px solid #e0e0e0;position:relative;padding:0;margin:0;}
-.pika-table th{color:#000;font-size:20px;line-height:50px;font-weight:700;text-align:center;background:#F2F6FA;}
+.pika-table th{color:#000;font-size:18px;line-height:50px;font-weight:700;text-align:center;background:#F2F6FA;}
 .pika-table th abbr{text-decoration:none;}
-.pika-button{cursor:pointer;display:block;outline:0;border:0;margin:0;color:#1876EF;font-size:32px;line-height:40px;text-align:right;height:70px;padding:10px;background:none;}
+.pika-button{cursor:pointer;display:block;outline:0;border:0;margin:0;color:#1876EF;font-size:28px;line-height:40px;text-align:right;height:60px;padding:10px;background:none;}
 .is-today .pika-button{color:#F7A903;font-weight:700}
 .is-selected .pika-button{color:#F25406;font-weight:700;background:#FFF6EE;}
 .is-disabled .pika-button{pointer-events:none;cursor:default;color:#999;opacity:.3}

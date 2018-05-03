@@ -10,27 +10,34 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="所有日程" name="second">
-                <div class="all_box">
-                    <input type="hidden" id="datepicker1"/>
-                </div>
-                <div class="h_left">
-                    <div class="h_hd">日程列表</div>
-                    <div class="h_ct">
-                        <el-table
-                          :data="tableData"
-                          style="width: 100%">
-                            <el-table-column
-                                prop="login_account"
-                                label="工号"></el-table-column>
-                            <el-table-column
-                                prop="name"
-                                label="姓名"></el-table-column>
-                            <el-table-column
-                                prop="mobile"
-                                label="电话"></el-table-column>
-                        </el-table>
-                    </div>
-                </div>
+
+                <el-row :gutter="20">
+                    <el-col :span="14">
+                        <input type="hidden" id="datepicker1"/>
+                    </el-col>
+                    <el-col :span="10">
+                        <div class="h_left">
+                            <div class="h_hd">日程列表</div>
+                            <div class="h_ct">
+                                <el-table
+                                  :data="tableData"
+                                  style="width: 100%">
+                                    <el-table-column
+                                        prop="login_account"
+                                        label="工号"
+                                        min-width="60"></el-table-column>
+                                    <el-table-column
+                                        prop="name"
+                                        label="姓名"></el-table-column>
+                                    <el-table-column
+                                        prop="mobile"
+                                        label="电话"
+                                        min-width="106"></el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-col>
+                </el-row>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -178,8 +185,8 @@ export default {
 .el-cascader{width:100%;margin-top:40px}
 .h_footer{width:90%;margin:0 auto;text-align:right;}
 
-.all_box{height:100%;padding-right:500px;min-height:300px;}
-.h_left{position:fixed;top:130px;right:40px;width:460px;background:#fff;min-height:300px;}
+
+.h_left{background:#fff;min-height:300px;margin-top:40px;}
 .h_hd{height:50px;line-height:50px;background:#5A98E8;font-size:22px;color:#fff;text-align:center;}
-.h_ct{padding:60px 30px 30px;text-align:center;}
+.h_ct{padding:60px 10px 30px;text-align:center;}
 </style>

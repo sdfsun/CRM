@@ -54,6 +54,11 @@ export default{
                         message: res.error,
                         type: 'error'
                     });
+                    if(res.nologin === 1){//未登录
+                        setTimeout(()=>{
+                            this.$router.push('/');
+                        },3000);
+                    }
                 }else{
                     this.tableData = res.success
                     this.page = res.success.length

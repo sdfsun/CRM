@@ -42,11 +42,18 @@
         },
         methods:{
             handleRemove(file, fileList) {
-                const index = this.dataForm.image_url.findIndex(function(item, index, arr) {
-                    return item === file.url;
-                });
-                this.dataForm.image_url.splice(index,1);
-                this.dataForm.imageLists = fileList;
+                if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                    var tempImageIds = [];
+                    fileList.forEach( function(item, index) {
+                        if(item.response && item.response.success && item.response.success.length>0){
+                            tempImageIds.push(item.response.success[0].image_id);
+                        }else if(item.status === 'success'){
+                            tempImageIds.push(item.url);
+                        }
+                    });
+                    this.dataForm.image_url = tempImageIds.slice();
+                    this.dataForm.imageLists = fileList;
+                }
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;

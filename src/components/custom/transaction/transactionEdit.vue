@@ -1,8 +1,6 @@
 <template>
     <section class="transactionEdit_container">
         <el-form ref="transactionForm" :model="transactionForm" :rules='transactionFormRules' label-width="0" >
-            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="6">
                     <el-form-item prop='name'>
@@ -30,19 +28,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="10" type="flex" align='middle'>
-                <el-col :span="8">
-                    <el-form-item prop='status'>
-                        <el-select v-model="transactionForm.status" placeholder="请选择客户状态">
-                            <el-option
-                                v-for="item in customStatus"
-                                :key="item.val"
-                                :label="item.label"
-                                :value="item.val">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
+            <el-row :gutter="10">
                 <el-col :span="16">
                     <el-form-item prop='detail'>
                         <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="transactionForm.detail" placeholder='交易备注' ></el-input>
@@ -57,7 +43,6 @@
 </template>
 <script>
     import {transaction_save} from '@/service/getData';
-    import { mapState } from 'vuex';
 
     export default{
         name:'transactionEdit',
@@ -70,8 +55,7 @@
                     times:'',//交易时间
                     order_id:'',//交易订单号
                     money:'',//交易金额
-                    detail:'',//交易备注
-                    status:this.informationItem.status//状态
+                    detail:''//交易备注
                 },
                 submitBtnStatus:false,//保存按钮是否可点击
                 transactionFormRules:{//规则校验
@@ -83,17 +67,9 @@
                     ],
                     money: [
                         { required: true, message: '请填写交易金额', trigger: 'blur'}
-                    ],
-                    status: [
-                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }
-        },
-        computed:{
-            ...mapState([
-                'customStatus'
-            ])
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
@@ -105,7 +81,6 @@
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 this.transactionForm.information_id = this.informationItem.id;
-                this.transactionForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.transactionForm = Object.assign({},newVal);
                 }else{

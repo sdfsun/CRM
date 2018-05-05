@@ -67,8 +67,9 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {mapActions} from 'vuex';
+    import {mapActions,mapMutations} from 'vuex';
     import {source_index,source_save} from '@/service/getData';
+    import { setStore } from '@/utils/';
 
     export default{
         name:'customerSource',
@@ -82,6 +83,9 @@
             this.init();
         },
         methods:{
+            ...mapMutations([
+                'SETCUSTOMSOURCE'
+            ]),
             ...mapActions([
                 'updateCustomSource'
             ]),
@@ -110,6 +114,8 @@
                     }else{
                         this.sourceLists = [];
                     }
+                    setStore("customSource",this.sourceLists);
+                    this.SETCUSTOMSOURCE(this.sourceLists);
                 } catch(e) {
                     this.$message({
                         message: e.message,

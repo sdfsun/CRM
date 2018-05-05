@@ -1,9 +1,12 @@
 <template>
     <section class="communicationEdit_container">
         <el-form ref="communicateForm" :model="communicateForm"  :rules="communicateFormRules" label-width="0">
-            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item> -->
+            <el-row :gutter="10">
+                <el-col :span="7">
+                    <el-form-item prop='mode'>
+                    </el-form-item>
+                </el-col>
+            </el-row>
             <el-row :gutter="8">
                 <el-col :span="7">
                     <el-form-item prop='mode'>
@@ -82,24 +85,12 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                    <el-form-item prop='status'>
-                        <el-select v-model="communicateForm.status" placeholder="请选择客户状态">
-                            <el-option
-                                v-for="item in customStatus"
-                                :key="item.val"
-                                :label="item.label"
-                                :value="item.val">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
             </el-row>
             <el-form-item prop='reason' class='form_item_style_width' v-show='reasonVisibleFlag' ref='reasonItem' :error='reasonError'>
-                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"  v-model="communicateForm.reason" placeholder='预约失败原因'></el-input>
+                <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="communicateForm.reason" placeholder='预约失败原因'></el-input>
             </el-form-item>
             <el-form-item prop='outline' class='form_item_style_width'>
-                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"  v-model="communicateForm.outline" placeholder='沟通概要'></el-input>
+                <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="communicateForm.outline" placeholder='沟通概要'></el-input>
             </el-form-item>
         </el-form>
         <div class="btns">
@@ -110,7 +101,6 @@
 <script>
     import {communicate_save} from '@/service/getData';
     import {getDuration} from '@/utils/index';
-    import { mapState } from 'vuex';
 
     export default{
         name:'communicationEdit',
@@ -144,6 +134,7 @@
             return{
                 communicateForm:{
                     information_id:this.informationItem.id,//客户id
+                    name:'',//接待人
                     mode:'',//沟通方式
                     contact_time:'',//沟通开始时间
                     end_time:'',//沟通结束时间
@@ -153,8 +144,7 @@
                     is_bespeak:'',//是否预约成功
                     scale_time:'',//预约量尺时间
                     reason:'',//预约失败原因
-                    outline:'',//沟通概要
-                    status:this.informationItem.status//状态
+                    outline:''//沟通概要
                 },
                 reasonVisibleFlag:false,//预约失败原因是否显示
                 submitBtnStatus:false,//保存按钮是否可点击
@@ -174,17 +164,9 @@
                     ],
                     reason:[
                         { validator: checkReason}
-                    ],
-                    status: [
-                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }
-        },
-        computed:{
-            ...mapState([
-                'customStatus'
-            ])
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
@@ -198,7 +180,6 @@
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 // this.communicateForm = newVal;
                 this.communicateForm.information_id = this.informationItem.id;
-                this.communicateForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.communicateForm = Object.assign({}, newVal);
                 }else{

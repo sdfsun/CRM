@@ -18,18 +18,6 @@
                         <el-input  v-model="complaintForm.name" placeholder='接待人名称'></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span='8'>
-                    <el-form-item prop='status'>
-                        <el-select v-model="complaintForm.status" placeholder="请选择客户状态">
-                            <el-option
-                                v-for="item in customStatus"
-                                :key="item.val"
-                                :label="item.label"
-                                :value="item.val">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
             </el-row>
             <el-row :gutter="10">
                 <el-col :span="24">
@@ -57,8 +45,7 @@
                     information_id:this.informationItem.id,//客户id
                     name:'',//投诉人
                     type:'0',//投诉类型
-                    outline:'',//投诉概要
-                    status:this.informationItem.status//状态
+                    outline:''//投诉概要
                 },
                 submitBtnStatus:false,//保存按钮是否可点击
                 complaintFormRules:{//规则校验
@@ -70,17 +57,9 @@
                     ],
                     outline: [
                         { required: true, message: '请填写投诉概要', trigger: 'blur'}
-                    ],
-                    status: [
-                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }
-        },
-        computed:{
-            ...mapState([
-                'customStatus'
-            ])
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
@@ -92,7 +71,6 @@
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 this.complaintForm.information_id = this.informationItem.id;
-                this.complaintForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.complaintForm = Object.assign({},newVal);
                 }else{

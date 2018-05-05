@@ -371,7 +371,7 @@
     border-radius: 4px;
     height: 36px; }
     .el-radio--medium.is-bordered .el-radio__label {
-      font-size: 14px; }
+      font-size: 12px; }
     .el-radio--medium.is-bordered .el-radio__inner {
       height: 14px;
       width: 14px; }
@@ -474,5 +474,5 @@
       -webkit-box-shadow: 0 0 2px 2px #1876EF;
       box-shadow: 0 0 2px 2px #1876EF; }
   .el-radio__label {
-    font-size: 14px;
+    font-size: 12px;
     padding-left: 10px; }

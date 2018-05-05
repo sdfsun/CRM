@@ -1,10 +1,6 @@
 <template>
     <section class="programmeEdit_container">
-        <el-form ref="programmeForm" label-position="left" :model="programmeForm" :rules='programmeFormRules' label-width='55px'>
-            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
-            <el-form-item prop='disabled' class='hide-form-item'></el-form-item> -->
+        <el-form ref="programmeForm" label-position="left" :model="programmeForm" label-width='55px'>
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-row>
@@ -25,20 +21,6 @@
                     </template>
                 </el-col>
             </el-row>
-            <el-row style='margin-top:10px;'>
-                <el-col :span="8">
-                    <el-form-item label='状态' prop='status'>
-                        <el-select v-model="programmeForm.status" placeholder="请选择客户状态">
-                            <el-option
-                                v-for="item in customStatus"
-                                :key="item.val"
-                                :label="item.label"
-                                :value="item.val">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
         </el-form>
         <div class="btns">
             <el-button type="primary" @click="onSubmit('programmeForm')" class='submit_btn'>保存</el-button>
@@ -48,7 +30,6 @@
 <script>
     import common from '@/components/custom/programme/common';
     import {programme_save} from '@/service/getData';
-    import { mapState } from 'vuex';
 
     export default{
         name:'programmeEdit',
@@ -58,39 +39,14 @@
                 programmeForm:{
                     information_id:this.informationItem.id,//客户id
                     scheme:[{}],//效果明細
-                    relevant_data:[{}],//相关资料
-                    status:this.informationItem.status//状态
+                    relevant_data:[{}]//相关资料
                 },
-                submitBtnStatus:false,//保存按钮是否可点击
-                programmeFormRules:{
-                    status: [
-                        {  required: true, message: '请选择状态', trigger: 'change' }
-                    ]
-                }
+                submitBtnStatus:false//保存按钮是否可点击
             }
-        },
-        computed:{
-            ...mapState([
-                'customStatus'
-            ])
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
                 this.programmeForm = Object.assign({},this.editInfos);
-                // this.$nextTick(()=>{
-                //     this.programmeForm.relevant_data = this.editInfos.relevant_data.slice();
-                //     this.programmeForm.scheme = this.editInfos.scheme.slice();
-                //     //渲染效果明细的图片列表
-                //     this.programmeForm.scheme.forEach( function(se, si) {
-                //         se.imageLists = se.imageLists.slice();
-                //         se.image_url = se.image_url.slice();
-                //     });
-                //     //渲染相关资料的图片列表
-                //     this.programmeForm.relevant_data.forEach( function(re, ri) {
-                //         re.imageLists = re.imageLists.slice();
-                //         re.image_url = re.image_url.slice();
-                //     });
-                // });
             }else{
                 this.resetFormData();
             }
@@ -98,23 +54,8 @@
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 this.programmeForm.information_id = this.informationItem.id;
-                this.programmeForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.programmeForm = Object.assign({},newVal);
-                    // this.$nextTick(()=>{
-                    //     this.programmeForm.relevant_data = newVal.relevant_data.slice();
-                    //     this.programmeForm.scheme = newVal.scheme.slice();
-                    //     //渲染效果明细的图片列表
-                    //     this.programmeForm.scheme.forEach( function(se, si) {
-                    //         se.imageLists = se.imageLists.slice();
-                    //         se.image_url = se.image_url.slice();
-                    //     });
-                    //     //渲染相关资料的图片列表
-                    //     this.programmeForm.relevant_data.forEach( function(re, ri) {
-                    //         re.imageLists = re.imageLists.slice();
-                    //         re.image_url = re.image_url.slice();
-                    //     });
-                    // });
                 }else{//新增
                     this.resetFormData();
                     this.programmeForm.scheme = [{

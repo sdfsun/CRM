@@ -1,9 +1,6 @@
 <template>
     <section class="receivablesEdit_container">
         <el-form ref="receivablesForm" :model="receivablesForm" :rules='receivablesFormRules' label-width="0" >
-            <!-- <el-form-item prop='receivables_id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="8">
                     <el-form-item prop='name'>
@@ -47,18 +44,6 @@
                 </el-col>
             </el-row>
             <el-row :gutter="10" type="flex" align='middle'>
-                <el-col :span="8">
-                    <el-form-item prop='status'>
-                        <el-select v-model="receivablesForm.status" placeholder="请选择客户状态">
-                            <el-option
-                                v-for="item in customStatus"
-                                :key="item.val"
-                                :label="item.label"
-                                :value="item.val">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
                 <el-col :span="16">
                     <el-form-item prop='remarks' :error='remarksError'>
                         <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="receivablesForm.remarks" placeholder='收款备注' ></el-input>
@@ -92,8 +77,7 @@
 </template>
 <script>
     import {receivables_save} from '@/service/getData';
-    import { mapState } from 'vuex';
-
+    
     export default{
         name:'receivablesEdit',
         props:['informationItem','editInfos'],
@@ -135,8 +119,7 @@
                     image_id:'',//发票图片
                     remarks:'',//收款备注
                     is_retainage:'false',//是否尾款
-                    imageLists:[],//图片列表
-                    status:this.informationItem.status//状态
+                    imageLists:[]//图片列表
                 },
                 remarksError:'',//备注错误信息提醒
                 submitBtnStatus:false,//保存按钮是否可点击
@@ -157,17 +140,9 @@
                     ],
                     remarks:[
                         { validator: checkRemarks}
-                    ],
-                    status: [
-                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }
-        },
-        computed:{
-            ...mapState([
-                'customStatus'
-            ])
         },
         mounted(){
             if(this.editInfos && this.editInfos.receivables_id){

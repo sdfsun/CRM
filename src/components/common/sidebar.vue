@@ -105,35 +105,38 @@
         flex: 1;
     }
     .footer-btns{
-        padding: 30px;
-        left: 0;
-        right: 0;
+        padding: 40px 30px;
+        position: relative;
     }
     .footer-btns a{
         text-decoration: none;
         color: #fff;
-        font-size: 18px;
+        font-size: 14px;
         line-height: 24px;
         display: block;
-        width: 84px;
-        height: 24px;
+        width: 60px;
+        height: 20px;
         background: url('../../assets/img/logout.png') 0 center no-repeat;
-        background-size: 24px 24px;
+        background-size: 20px 20px;
         padding-left: 20px;
         box-sizing: border-box;
+        position: absolute;
+        right: 30px;
+        bottom: 30px;
     }
     .side_header{
-        height: 90px;
-        /*line-height: 90px;*/
+        height: 80px;
         background-color: #1876EF;
         color: #fff;
-        font-size: 20px;
-        line-height: 36px;
-        padding-top: 10px;
+        font-size: 18px;
+        line-height: 26px;
+        padding-top: 15px;
         box-sizing: border-box;
+        font-weight: bold;
     }
     .side_header small{
         font-size: 14px;
         display: block;
+        font-weight: normal;
     }
 </style>

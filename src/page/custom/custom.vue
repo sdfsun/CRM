@@ -4,7 +4,7 @@
             <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo({type:true})'>新建客户信息</el-button>
             <el-form ref="form" :model="searchForm" class='search_form'>
                 <el-row :gutter="10" style='width:100%;'>
-                    <el-col :span='13'>
+                    <el-col :span='11'>
                         <el-form-item>
                             <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
                                 <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">
@@ -17,7 +17,7 @@
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span='11'>
+                    <el-col :span='13'>
                         <el-row :gutter="10">
                             <el-col :span='10'>
                                 <el-form-item class='search_form_item'>
@@ -135,28 +135,28 @@
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
-            <el-tab-pane label="基本信息" name='基本信息' style='overflow:auto;'>
+            <el-tab-pane label="基本信息" name='1' style='overflow:auto;'>
                 <basicInfo :basicInfoRecord='customInfoArray[0]'></basicInfo>
             </el-tab-pane>
-            <el-tab-pane label="沟通记录" name='沟通记录'>
+            <el-tab-pane label="沟通记录" name='2'>
                 <communicationRecord :communicateRecords='customInfoArray[1]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></communicationRecord>
             </el-tab-pane>
-            <el-tab-pane label="上门测量" name='上门测量'>
+            <el-tab-pane label="上门测量" name='3'>
                 <measurement :measurementRecords='customInfoArray[2]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></measurement>
             </el-tab-pane>
-            <el-tab-pane label="收款记录" name='收款记录'>
+            <el-tab-pane label="收款记录" name='4'>
                 <receivables :receivablesRecords='customInfoArray[3]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></receivables>
             </el-tab-pane>
-            <el-tab-pane label="方案明细" name='方案明细'>
+            <el-tab-pane label="方案明细" name='5'>
                 <programme :programmeRecords='customInfoArray[4]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem' v-on:updateCustomProgrammeRecords='updateCustomProgrammeRecordItem'></programme>
             </el-tab-pane>
-            <el-tab-pane label="订单记录" name='订单记录'>
+            <el-tab-pane label="订单记录" name='6'>
                 <transaction :transactionRecords='customInfoArray[5]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></transaction>
             </el-tab-pane>
-            <el-tab-pane label="售后记录" name='售后记录'>
+            <el-tab-pane label="售后记录" name='7'>
                 <complaint :complaintRecords='customInfoArray[6]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></complaint>
             </el-tab-pane>
-            <el-tab-pane>
+            <el-tab-pane name='8'>
                 <span slot="label"><i class="el-icon-d-arrow-right"></i></span>
             </el-tab-pane>
         </el-tabs>
@@ -303,10 +303,10 @@
                     this.activeName = '';
                     return false;
                 }
-                if(this.activeName === '7'){
+                if(this.activeName === '8'){
                     if(this.status === 'down'){
                         this.status = 'up';
-                        this.activeName = '基本信息';
+                        this.activeName = '1';
                     }else {
                         this.activeName = '';
                         this.status = 'down';
@@ -318,25 +318,25 @@
                     let result = null;
                     const customer_id = this.currentRow.id;
                     switch (this.activeName) {
-                        case '基本信息':
+                        case '1':
                             this.initElPaneData(0,customer_id);
                             break;
-                        case '沟通记录':
+                        case '2':
                             this.initElPaneData(1,customer_id);
                             break;
-                        case '上门测量':
+                        case '3':
                             this.initElPaneData(2,customer_id);
                             break;
-                        case '收款记录':
+                        case '4':
                             this.initElPaneData(3,customer_id);
                             break;
-                        case '方案明细':
+                        case '5':
                             this.initElPaneData(4,customer_id);
                             break;
-                        case '订单记录':
+                        case '6':
                             this.initElPaneData(5,customer_id);
                             break;
-                        case '售后记录':
+                        case '7':
                             this.initElPaneData(6,customer_id);
                             break;
                         default:
@@ -347,8 +347,17 @@
             },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
+                    if(currentrow.house_type !== '' && currentrow.house_status !== ''){//装修类型
+                        currentrow.houseTypeOptions = [currentrow.house_type,currentrow.house_status];
+                    }
+                    if(currentrow.area != ''){//地区
+                        let areaTempArr = currentrow.area.split(" ");
+                        currentrow.area = areaTempArr.slice();
+                    }else{
+                        currentrow.area=[];
+                    }
                     this.currentRow = currentrow;
-                    this.activeName = '基本信息';
+                    this.activeName = '1';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
                     this.isGetDataArray = new Array(7).fill("");//重置
                     this.up_down_tabs();
@@ -420,7 +429,7 @@
                         });
                         Vue.set(this.customLists,index,callbackData.data);
                         this.currentRow = callbackData.data;
-                        this.activeName = '基本信息';
+                        this.activeName = '1';
                         this.customInfoArray = [callbackData.data,[],[],[],[],[],[]];//重置
                         this.isGetDataArray = ["1","","","","","",""];//重置
                         this.$refs['customListsTable'].setCurrentRow(this.currentRow);
@@ -436,15 +445,15 @@
                     return false;
                 }
                 this.activeRow = Object.assign({},this.currentRow);
-                if(this.activeRow.house_type !== '' && this.activeRow.house_status !== ''){//装修类型
-                    this.activeRow.houseTypeOptions = [this.activeRow.house_type,this.activeRow.house_status];
-                }
-                if(this.activeRow.area != ''){//地区
-                    let areaTempArr = this.activeRow.area.split(" ");
-                    this.activeRow.area = areaTempArr.slice();
-                }else{
-                    this.activeRow.area=[];
-                }
+                // if(this.activeRow.house_type !== '' && this.activeRow.house_status !== ''){//装修类型
+                //     this.activeRow.houseTypeOptions = [this.activeRow.house_type,this.activeRow.house_status];
+                // }
+                // if(this.activeRow.area != ''){//地区
+                //     let areaTempArr = this.activeRow.area.split(" ");
+                //     this.activeRow.area = areaTempArr.slice();
+                // }else{
+                //     this.activeRow.area=[];
+                // }
                 this.basicInfoDialogVisible = true;
             },
             resetCustomBasicInfoEdit(){//关闭基本信息弹框后重置表单数据

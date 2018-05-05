@@ -1,11 +1,6 @@
 <template>
     <section class="basicForm_container">
         <el-form ref="basicForms" :model="basicForm" :rules="basicFormRules" label-width="80px" >
-            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item>
-            <el-form-item prop='customer_number' class='hide-form-item'></el-form-item>
-            <el-form-item prop='org_id' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="姓名" prop='name'>
@@ -60,7 +55,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="100" type='flex' align='middle'>
                 <el-col :span="12">
                     <el-form-item label="房屋类型" prop='houseTypeOptions'>
                         <el-cascader
@@ -72,7 +67,7 @@
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="户型"  prop='house_layout'>
-                        <el-input type="textarea" autosize v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁'></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 4}" v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -138,7 +133,7 @@
                 </el-col>
             </el-row>
             <el-form-item label="客户备注" class='remarks_item' prop='remarks'>
-                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="basicForm.remarks" placeholder='客户备注'></el-input>
+                <el-input type="textarea" :autosize="{ minRows: 4}" v-model="basicForm.remarks" placeholder='客户备注'></el-input>
             </el-form-item>
         </el-form>
         <div class="btns">

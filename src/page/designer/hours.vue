@@ -71,9 +71,8 @@ export default {
         this.$nextTick(function () {
             if(this.memberRoleId && this.memberRoleId.member_role_id === "shopowner" && this.memberRoleId.member_role_id !== "director"){
                 this.activeName = 'second';
-            }else{
-                this.init();
             }
+            this.init();
         });
     },
     computed:{
@@ -111,7 +110,7 @@ export default {
             } catch(e) {
                 this.$message({
                     showClose: true,
-                    message: e,
+                    message: e.message,
                     type: 'error'
                 });
             }
@@ -153,25 +152,27 @@ export default {
         },
         initday(){
             var that = this;
-            var picker = new Pikaday(
-            {
-                field: document.getElementById('datepicker'),
-                firstDay: 1,
-                bound:false,
-                initDate:that.sendDate,
-                openSelect:false,
-                minDate: new Date(that.startTime),
-                maxDate: new Date(that.endTime),
-                onSelect:function(){
-                    if (that.hasClass(event.target.parentNode, 'is-active')) {
-                        event.target.parentNode.className = '';
-                        that.sendDate.remove(picker.toString().replace(/\-/g,''));
-                    }else{
-                        event.target.parentNode.className = 'is-active';
-                        that.sendDate.push(picker.toString().replace(/\-/g,''))
+            if(this.memberRoleId.member_role_id !== "shopowner" && this.memberRoleId.member_role_id !== "director"){
+                var picker = new Pikaday(
+                {
+                    field: document.getElementById('datepicker'),
+                    firstDay: 1,
+                    bound:false,
+                    initDate:that.sendDate,
+                    openSelect:false,
+                    minDate: new Date(that.startTime),
+                    maxDate: new Date(that.endTime),
+                    onSelect:function(){
+                        if (that.hasClass(event.target.parentNode, 'is-active')) {
+                            event.target.parentNode.className = '';
+                            that.sendDate.remove(picker.toString().replace(/\-/g,''));
+                        }else{
+                            event.target.parentNode.className = 'is-active';
+                            that.sendDate.push(picker.toString().replace(/\-/g,''))
+                        }
                     }
-                }
-            })
+                })
+            }
 
             // 所有日程
             var picker1 = new Pikaday(

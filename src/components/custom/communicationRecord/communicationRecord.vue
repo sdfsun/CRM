@@ -83,8 +83,15 @@
             <el-button type="primary" icon='el-icon-plus' @click='addCommunicationRecord'>新增沟通记录</el-button>
             <el-button type="primary" @click='editCommunicationRecord'>编辑</el-button>
         </div>
-        <el-dialog title="沟通记录" :visible.sync="communicationDialogVisible" class='customRelationInfoDialog' @close='resetCommunicationEdit'>
-            <communicationEdit :informationItem='infomation' v-on:closeCustomCommunicateInfoDialog='updateCommunicationRecord' :editInfos='editActiveRow' ref='communicationEdit'></communicationEdit>
+        <el-dialog title="沟通记录" :visible.sync="communicationDialogVisible" class='customRelationInfoDialog communicationAndBasicDialog' @close='resetCommunicationEdit'>
+            <el-tabs type="border-card" class='el_tabs_footer' v-model='activeName'>
+                <el-tab-pane label="沟通记录" name='1'>
+                    <communicationEdit :informationItem='infomation' v-on:closeCustomCommunicateInfoDialog='updateCommunicationRecord' :editInfos='editActiveRow' ref='communicationEdit'></communicationEdit>
+                </el-tab-pane>
+                <el-tab-pane label="基本信息" name='2'>
+                    <basicEdit :editInfos='infomation'></basicEdit>
+                </el-tab-pane>
+            </el-tabs>
         </el-dialog>
         <el-dialog title="分配设计师" :visible.sync="assignDesignerFormDialogVisible" class='assignDesignerDialog' @close='resetAssignDesignerForm'>
             <el-form ref="assignDesignerForm" :model="assignDesignerForm" :rules='assignDesignerFormRules' label-width="80px">
@@ -108,6 +115,7 @@
 </template>
 <script>
     import communicationEdit from '@/components/custom/communicationRecord/communicationEdit';
+    import basicEdit from '@/components/custom/basicInfo/basicEdit';
     import {stylist,assign} from '@/service/getData';
 
     export default{
@@ -122,6 +130,7 @@
                 assignDesignerSubmitBtnStatus:false,//发送微信通知
                 assignDesignerFormDialogVisible:false,
                 assignDesignerLists:[],//可分配设计师列表
+                activeName:'1',
                 assignDesignerForm:{
                     // information_id:this.infomation.id,
                     to_id:''
@@ -175,6 +184,7 @@
                 this.communicationDialogVisible = true;
             },
             resetCommunicationEdit(){//重置表单数据
+                this.activeName = '1';
                 this.editActiveRow = {};
                 this.$refs['communicationEdit'].$refs['communicateForm'].resetFields();
             },
@@ -257,7 +267,8 @@
             }
         },
         components:{
-            communicationEdit
+            communicationEdit,
+            basicEdit
         }
     }
 </script>

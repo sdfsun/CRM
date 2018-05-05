@@ -1,9 +1,6 @@
 <template>
     <section class="measurementEdit_container">
         <el-form ref="measurementForm" :model="measurementForm" :rules='measurementFormRules' label-width="0" >
-            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item>
-            <el-form-item prop='update_time' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="7">
                     <el-form-item prop='measure_name'>
@@ -48,20 +45,6 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="20">
-                <el-col :span="8">
-                    <el-form-item prop='status'>
-                        <el-select v-model="measurementForm.status" placeholder="请选择客户状态">
-                            <el-option
-                                v-for="item in customStatus"
-                                :key="item.val"
-                                :label="item.label"
-                                :value="item.val">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
             <el-form-item prop='imageLists'>
                 <el-upload
                     ref='upload'
@@ -90,7 +73,6 @@
 <script>
     import {measure_save} from '@/service/getData';
     import {getDuration} from '@/utils/index';
-    import { mapState } from 'vuex';
 
     export default{
         name:'measurementEdit',
@@ -106,8 +88,7 @@
                     image_id:[],//量尺图片
                     information:'',//量尺信息
                     feedback:'',//信息回馈
-                    imageLists:[],//图片列表
-                    status:this.informationItem.status//状态
+                    imageLists:[]//图片列表
                 },
                 submitBtnStatus:false,//保存按钮是否可点击
                 dialogImageUrl:'',
@@ -121,17 +102,9 @@
                     ],
                     end_time: [
                         {  required: true, message: '请选择测量结束时间', trigger: 'change' }
-                    ],
-                    status: [
-                        {  required: true, message: '请选择状态', trigger: 'change' }
                     ]
                 }
             }
-        },
-        computed:{
-            ...mapState([
-                'customStatus'
-            ])
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
@@ -148,7 +121,6 @@
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 this.measurementForm.information_id = this.informationItem.id;
-                this.measurementForm.status = this.informationItem.status;
                 if(newVal.id){
                     this.measurementForm = Object.assign({},newVal);
                     if(newVal.imageLists && newVal.imageLists.length>0){
@@ -169,11 +141,18 @@
                 delete this.measurementForm['update_time'];
             },
             handleRemove(file, fileList) {
-                const index = this.measurementForm.image_id.findIndex(function(item, index, arr) {
-                    return item === file.url;
-                });
-                this.measurementForm.image_id.splice(index,1);
-                this.measurementForm.imageLists = fileList;
+                if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                    var tempImageIds = [];
+                    fileList.forEach( function(item, index) {
+                        if(item.response && item.response.success && item.response.success.length>0){
+                            tempImageIds.push(item.response.success[0].image_id);
+                        }else if(item.status === 'success'){
+                            tempImageIds.push(item.url);
+                        }
+                    });
+                    this.measurementForm.imageLists = fileList;
+                    this.measurementForm.image_id = tempImageIds.slice();
+                }
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;

@@ -33,6 +33,9 @@
                                         prop="mobile"
                                         label="电话"
                                         min-width="106"></el-table-column>
+                                    <el-table-column
+                                        prop="visit_type"
+                                        label="时间"></el-table-column>
                                 </el-table>
                             </div>
                         </div>
@@ -102,7 +105,7 @@ export default {
                 }else{
                     this.startTime = res.success.date;
                     for(var i=0;i<res.success.checkdate.length;i++){
-                        this.sendDate.push(res.success.checkdate[i].work_date);
+                        this.sendDate.push({'type_am':res.success.checkdate[i].type_am,'type_pm':res.success.checkdate[i].type_pm,'work_date':res.success.checkdate[i].work_date});
                     };
                     this.endTimeFun();
                     this.initday();
@@ -124,7 +127,7 @@ export default {
             this.endTime = y + '-' + m + '-' + d
         },
         async postPaidan(){
-            let result = await postVisitSave({'work_date':this.sendDate});
+            let result = await postVisitSave({'visit':this.sendDate});
             if(result.success){
                 this.$message({
                     message: '恭喜你，' + result.success,
@@ -160,18 +163,77 @@ export default {
                     bound:false,
                     initDate:that.sendDate,
                     openSelect:false,
+                    openAmPm:true,
                     minDate: new Date(that.startTime),
                     maxDate: new Date(that.endTime),
                     onSelect:function(){
-                        if (that.hasClass(event.target.parentNode, 'is-active')) {
-                            event.target.parentNode.className = '';
-                            that.sendDate.remove(picker.toString().replace(/\-/g,''));
-                        }else{
-                            event.target.parentNode.className = 'is-active';
-                            that.sendDate.push(picker.toString().replace(/\-/g,''))
-                        }
                     }
                 })
+            }
+
+
+            document.body.onclick = function(event){
+                let isPush3 = true,isPush4 = true;
+                if (that.hasClass(event.target.parentNode, 'd_msg')) {
+                    if (that.hasClass(event.target, 'active')) {
+                        event.target.className = '';
+                        if(event.target.innerHTML=='AM'){
+                            for(let i=0;i<that.sendDate.length;i++){
+                                if(that.sendDate[i].work_date == event.target.getAttribute('data')){
+                                    that.$set(that.sendDate[i],'type_am','');
+                                    that.$nextTick(function(){
+                                        if(!that.sendDate[i].type_pm){
+                                            that.sendDate.splice(i, 1);
+                                            event.target.parentNode.parentNode.className = '';
+                                            isPush3 = true;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        if(event.target.innerHTML=='PM'){
+                            for(let j=0;j<that.sendDate.length;j++){
+                                if(that.sendDate[j].work_date == event.target.getAttribute('data')){
+                                    that.$set(that.sendDate[j],'type_pm','');
+                                    that.$nextTick(function(){
+                                        if(!that.sendDate[j].type_am){
+                                            that.sendDate.splice(j, 1);
+                                            event.target.parentNode.parentNode.className = '';
+                                            isPush4 = true;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }else{
+                        event.target.className = 'active';
+                        if(event.target.innerHTML=='AM'){
+                            for(let n=0;n<that.sendDate.length;n++){
+                                if(that.sendDate[n].work_date == event.target.getAttribute('data')){
+                                    that.sendDate[n].type_am = '1';
+                                    isPush3 = false;
+                                }
+                            }
+                            if(isPush3){
+                                that.sendDate.push({'type_am':'1','type_pm':'','work_date':event.target.getAttribute('data')});
+                                event.target.parentNode.parentNode.className = 'is-active';
+                            }
+                        }
+
+                        if(event.target.innerHTML=='PM'){
+                            for(let m=0;m<that.sendDate.length;m++){
+                                if(that.sendDate[m].work_date == event.target.getAttribute('data')){
+                                    that.sendDate[m].type_pm = '2';
+                                    isPush4 = false;
+                                }
+                            }
+                            if(isPush4){
+                                that.sendDate.push({'type_am':'','type_pm':'2','work_date':event.target.getAttribute('data')});
+                                event.target.parentNode.parentNode.className = 'is-active';
+                            }
+                        }
+                    }
+                }
             }
 
             // 所有日程
@@ -180,7 +242,7 @@ export default {
                 field: document.getElementById('datepicker1'),
                 firstDay: 1,
                 bound:false,
-                initDate:[that.startTime.replace(/\-/g,'')],
+                initDate:[],
                 openSelect:true,
                 minDate: new Date(that.startTime),
                 maxDate: new Date(that.endTime),
@@ -197,8 +259,7 @@ export default {
 .el-cascader{width:100%;margin-top:40px}
 .h_footer{width:90%;margin:0 auto;text-align:right;}
 
-
-.h_left{background:#fff;min-height:300px;margin-top:40px;}
-.h_hd{height:50px;line-height:50px;background:#5A98E8;font-size:22px;color:#fff;text-align:center;}
+.h_left{background:#fff;min-height:466px;margin-top:40px;}
+.h_hd{height:60px;line-height:60px;background:#5A98E8;font-size:20px;color:#fff;text-align:center;}
 .h_ct{padding:60px 10px 30px;text-align:center;}
 </style>

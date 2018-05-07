@@ -12,10 +12,10 @@
 
 /*日期*/
 .pika-single{display:block;position:relative;width:100%;min-width:300px;box-sizing:border-box;margin:40px auto;box-shadow:0 5px 5px rgba(0,0,0,0.1)}
-.pika-title{position:relative;text-align:center;background:#5A98E8;height:80px;overflow:hidden;}
-.pika-label{display:inline-block;position:relative;z-index:9999;overflow:hidden;margin:0;padding:0 3px;font-size:24px;line-height:80px;font-weight:700;color:#fff;}
-.pika-title select{cursor:pointer;position:absolute;z-index:9998;margin:0;left:0;top:25px;filter:alpha(opacity=0);opacity:0}
-.pika-next,.pika-prev{display:block;cursor:pointer;position:relative;outline:0;border:0;padding:0;width:40px;height:80px;line-height:80px;overflow:hidden;color:#fff;font-size:30px;}
+.pika-title{position:relative;text-align:center;background:#5A98E8;height:60px;overflow:hidden;}
+.pika-label{display:inline-block;position:relative;z-index:9999;overflow:hidden;margin:0;padding:0 3px;font-size:22px;line-height:60px;font-weight:700;color:#fff;}
+.pika-title select{cursor:pointer;position:absolute;z-index:9998;margin:0;left:0;top:16px;filter:alpha(opacity=0);opacity:0}
+.pika-next,.pika-prev{display:block;cursor:pointer;position:relative;outline:0;border:0;padding:0;width:40px;height:60px;line-height:60px;overflow:hidden;color:#fff;font-size:30px;}
 .pika-next:hover,.pika-prev:hover{opacity:1}
 .is-rtl .pika-next,.pika-prev{float:left;margin-left:20%;}
 .is-rtl .pika-prev,.pika-next{float:right;margin-right:20%;}
@@ -23,12 +23,16 @@
 .pika-select{display:inline-block}
 .pika-table{width:100%;border-collapse:collapse;border-spacing:0;border:0;background:#fff;}
 .pika-table td,.pika-table th{width:14.285714285714286%;border:1px solid #e0e0e0;position:relative;padding:0;margin:0;}
-.pika-table th{color:#000;font-size:18px;line-height:50px;font-weight:700;text-align:center;background:#F2F6FA;}
+.pika-table th{color:#000;font-size:16px;line-height:50px;font-weight:700;text-align:center;background:#F2F6FA;}
 .pika-table th abbr{text-decoration:none;}
-.pika-button{cursor:pointer;display:block;outline:0;border:0;margin:0;color:#1876EF;font-size:28px;line-height:40px;text-align:right;height:60px;padding:10px;background:none;}
+.pika-button{cursor:pointer;display:block;outline:0;border:0;margin:0;color:#1876EF;font-size:24px;line-height:30px;text-align:right;height:60px;padding:10px 10px 0;background:none;}
 .is-today .pika-button{color:#F7A903;font-weight:700}
 .is-selected .pika-button{color:#F25406;font-weight:700;background:#FFF6EE;}
 .is-disabled .pika-button{pointer-events:none;cursor:default;color:#999;opacity:.3}
-.is-active .pika-button{color:#F25406;font-weight:700;background:#FFF6EE;}
-.pika-button:hover{color:#F25406!important;background:#FFF6EE!important;}
-.d_msg{position:absolute;text-align:center;bottom:15px;width:100%;font-size:16px;}
+.is-active .pika-button{color:#F25406;font-weight:700;}
+.is-active .d_msg .active{background:#FFF6EE;color:#F25406;}
+.d_msg{position:absolute;text-align:center;bottom:0px;width:100%;font-size:12px;height:24px;line-height:24px;border-top:1px solid #E0E0E0;}
+.d_msg div{width:50%;float:left;box-sizing:border-box;cursor:pointer;color:#1876EF}
+.d_msg div:first-child{border-right:1px solid #E0E0E0;}
+.d_msg div:hover{background:#FFF6EE;color:#F25406;}
+.is-disabled .d_msg{display:none;}

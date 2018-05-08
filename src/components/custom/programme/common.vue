@@ -27,7 +27,11 @@
                 <i class="el-icon-plus"></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-                <img width="100%" :src="dialogImageUrl" alt="">
+                <el-carousel height="400px" :autoplay='false' ref='carouselItems'>
+                    <el-carousel-item v-for="(item,index) in dataForm.imageLists" :key="index" :name='item.url'>
+                        <img :src="item.url" class="image_carousel_item">
+                    </el-carousel-item>
+                </el-carousel>
             </el-dialog>
         </el-form-item>
     </section>
@@ -59,8 +63,11 @@
                 }
             },
             handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
+                try {
+                    this.dialogVisible = true;
+                    this.$refs['carouselItems'].setActiveItem(file.url);
+                } catch(e) {
+                }
             },
             handleSuccess(response, file, fileList){//上传成功
                 if(response.success && response.success.length>0){

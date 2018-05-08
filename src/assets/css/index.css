@@ -350,13 +350,19 @@ body{
 /*表单样式修改*/
 .el-form-item__label,.el-input__inner,.el-checkbox__label,.el-input,.el-cascader__label{
     font-size: 12px;
+    line-height: 36px;
 }
 .el-textarea__inner {
     font-size: 12px !important;
+    line-height: 36px;
 }
 .el-form-item__content{
     line-height: 36px;
 }
 .el-form-item__error{
-    padding-top: 0;
+    padding-top: 2px;
+}
+.el-input-group--append .el-input__inner{
+    line-height: 38px;
+    height: 38px;
 }

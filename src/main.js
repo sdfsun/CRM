@@ -36,3 +36,7 @@ store.dispatch('setMemberRoleId','memberRoleId');
 store.dispatch('setCustomSource','customSource');
 //设置用户等级
 store.dispatch('setMemberRoles','memberRoles');
+//设置活动列表
+store.dispatch('setActivitys','activitys');
+//设置设计师列表
+store.dispatch('setDesigners','designers');

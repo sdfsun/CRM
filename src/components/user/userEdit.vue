@@ -48,7 +48,7 @@
 </template>
 <script>
     import {member_save} from '@/service/getData';
-    import { mapState } from 'vuex';
+    import { mapState,mapActions } from 'vuex';
 
     export default{
         name:'userEdit',
@@ -111,7 +111,6 @@
         },
         computed:{
             ...mapState([
-                'customStatus',
                 'memberRoles'
             ])
         },
@@ -132,6 +131,9 @@
             }
         },
         methods:{
+            ...mapActions([
+                'updateDesigners'
+            ]),
             resetFormData(){
                 delete this.userForm['member_id'];
                 delete this.userForm['password_account'];
@@ -166,6 +168,9 @@
                                     type:'success'
                                 });
                                 that.closeUserEditInfoDialog("userForm",res.data);
+                                if(res.data && res.data.org_id === '5' && res.data.lv_code === 'designer'){//厦门店设计师
+                                    this.updateDesigners(res.data);
+                                }
                             }).catch(error=>{
                                 this.submitBtnStatus = false;
                             });

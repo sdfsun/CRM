@@ -331,7 +331,17 @@
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
-                this.basicForm = Object.assign({},this.editInfos);
+                let newValData = Object.assign({},this.editInfos);
+                if(newValData.house_type !== '' && newValData.house_status !== ''){//装修类型
+                    newValData.houseTypeOptions = [newValData.house_type,newValData.house_status];
+                }
+                if(typeof newValData.area === 'string' && newValData.area != ''){//地区
+                    let areaTempArr = newValData.area.split(" ");
+                    newValData.area = areaTempArr.slice();
+                }else if(typeof newValData.area === 'string' && newValData.area === ''){
+                    newValData.area=[];
+                }
+                this.basicForm = Object.assign({},newValData);
             }else{
                 this.resetFormData();
             }
@@ -428,7 +438,7 @@
         overflow: hidden;
     }
     .el-form-item {
-        margin-bottom: 12px;
+        margin-bottom: 16px;
     }
     .el-select,.el-cascader,.basicForm_container .remarks_item{
         width: 100%;

@@ -76,9 +76,10 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {mapState,mapActions} from 'vuex';
+    import {mapMutations,mapActions} from 'vuex';
     import {member,password} from '@/service/getData';
     import userEdit from '@/components/user/userEdit';
+    import { setStore } from '@/utils/';
 
     export default{
         name:'user',
@@ -105,9 +106,8 @@
             this.init();
         },
         methods:{
-            ...mapActions([
-                'addCustomSource',
-                'updateCustomSource'
+            ...mapMutations([
+                'SETDESIGNERS'
             ]),
             async init(){
                 try {
@@ -130,6 +130,16 @@
                     }else{
                         this.roleLists = [];
                     }
+                    let tempDesigners = [];
+                    if(res.success && res.success.length>0){
+                        res.success.forEach( function(el, index) {
+                            if(el.org_id === '5' && el.lv_code === 'designer'){//设计师
+                                tempDesigners.push(el);
+                            }
+                        });
+                    }
+                    setStore("designers",tempDesigners);
+                    this.SETDESIGNERS(tempDesigners);
                 } catch(e) {
                     this.$message({
                         message: e.message,

@@ -16,5 +16,9 @@ export default {
     //设置活动列表
     [types.SETACTIVITYS](state,activitys){
         state.activitys = activitys;
+    },
+    //设置设计师
+    [types.SETDESIGNERS](state,data){
+        state.designers = data;
     }
 }

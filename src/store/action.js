@@ -49,12 +49,12 @@ export default{
         setStore("memberRoles",memberRoles);
         commit('SETMEMBERROLES',memberRoles);
     },
-    setActivitys({commit},name){//设置用户等级
+    setActivitys({commit},name){//设置活动列表
         const lists = JSON.parse(getStore(name));
         commit('SETACTIVITYS',lists);
     },
-    updateActivitys({state,commit},result){//更新用户等级
-        let lists = [];
+    updateActivitys({state,commit},result){//更新活动列表
+        let activitys=[];
         if(state.activitys && state.activitys.length>0){
             activitys = state.activitys.slice();
             const index = state.activitys.findIndex(function(item, index, arr) {
@@ -70,5 +70,27 @@ export default{
         }
         setStore("activitys",activitys);
         commit('SETACTIVITYS',activitys);
+    },
+    setDesigners({commit},name){//设置设计师列表
+        const lists = JSON.parse(getStore(name));
+        commit('SETDESIGNERS',lists);
+    },
+    updateDesigners({state,commit},result){//更新设计师列表
+        let tempLists=[];
+        if(state.designers && state.designers.length>0){
+            tempLists = state.designers.slice();
+            const index = tempLists.findIndex(function(item, index, arr) {
+                return item.id === result.id;
+            });
+            if(index !== -1){//编辑
+                tempLists[index] = result;
+            }else{//新增
+                tempLists.push(result);
+            }
+        }else{
+            tempLists.push(result);
+        }
+        setStore("designers",tempLists);
+        commit('SETDESIGNERS',tempLists);
     }
 }

@@ -13,7 +13,7 @@
                 </el-col>
                 <el-col :span="8">
                     <el-form-item prop='name'>
-                        <el-input  v-model="complaintForm.name" placeholder='接待人名称'></el-input>
+                        <el-input  v-model="complaintForm.name" placeholder='接待人名称' readonly='true'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>

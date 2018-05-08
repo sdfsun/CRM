@@ -19,7 +19,7 @@
                     </el-col>
                     <el-col :span='13'>
                         <el-row :gutter="10">
-                            <el-col :span='10'>
+                            <el-col :span='7'>
                                 <el-form-item class='search_form_item'>
                                     <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
                                         <el-option
@@ -31,7 +31,19 @@
                                     </el-select>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="14">
+                            <el-col :span='7'>
+                                <el-form-item class='search_form_item'>
+                                    <el-select v-model="searchForm.member_id" clearable placeholder="设计师" @change='searchFormDatas'>
+                                        <el-option
+                                            v-for="item in designers"
+                                            :key="item.member_id"
+                                            :label="item.name"
+                                            :value="item.member_id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
                                 <el-row :gutter="20" type='flex' align='middle'>
                                     <el-col :span='16'>
                                         <el-form-item class='search_form_item'>
@@ -82,26 +94,10 @@
                 >
             </el-table-column>
             <el-table-column
-                prop="tel"
-                label="电话"
-                min-width='120px'
-                >
-            </el-table-column>
-            <el-table-column
                 prop="mobile"
                 label="手机"
                 min-width='120px'
                 >
-            </el-table-column>
-            <el-table-column
-                prop="qq"
-                label="QQ"
-                min-width='120px'>
-            </el-table-column>
-            <el-table-column
-                prop="weixin"
-                label="微信"
-                min-width='120px'>
             </el-table-column>
             <el-table-column
                 prop="area"
@@ -122,6 +118,16 @@
                 prop="house_status"
                 label="房屋状态"
                 min-width='100px'>
+            </el-table-column>
+            <el-table-column
+                prop='status_name'
+                label="客户状态"
+                min-width='120px'>
+            </el-table-column>
+            <el-table-column
+                prop='member_name'
+                label="归属设计师"
+                min-width='120px'>
             </el-table-column>
             <el-table-column
                 prop='source_name'
@@ -191,7 +197,8 @@
                     content: '',
                     status:'',
                     time:'',
-                    searchName:''
+                    searchName:'',
+                    member_id:''
                 },
                 customLists: [],//客户列表
                 currentRow:{},//当前选中的行数
@@ -235,7 +242,7 @@
         },
         computed:{
             ...mapState([
-                'customSource',
+                'designers',
                 'customStatus'
             ])
         },
@@ -346,15 +353,6 @@
             },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
-                    if(currentrow.house_type !== '' && currentrow.house_status !== ''){//装修类型
-                        currentrow.houseTypeOptions = [currentrow.house_type,currentrow.house_status];
-                    }
-                    if(typeof currentrow.area === 'string' && currentrow.area != ''){//地区
-                        let areaTempArr = currentrow.area.split(" ");
-                        currentrow.area = areaTempArr.slice();
-                    }else if(typeof currentrow.area === 'string' && currentrow.area === ''){
-                        currentrow.area=[];
-                    }
                     this.currentRow = currentrow;
                     this.activeName = '1';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
@@ -480,19 +478,10 @@
                             const index2 = this.customLists.findIndex(function(item, index, arr) {
                                 return item.id === tempCallbackFormData.id;
                             });
-                            this.$set(this.customInfoArray,0,callbackData.data.information);
-                            this.$set(this.customLists,index2,callbackData.data.information);
-                            if(tempCallbackFormData.house_type !== '' && tempCallbackFormData.house_status !== ''){//装修类型
-                                tempCallbackFormData.houseTypeOptions = [tempCallbackFormData.house_type,tempCallbackFormData.house_status];
-                            }
-                            if(typeof tempCallbackFormData.area === 'string' && tempCallbackFormData.area != ''){//地区
-                                let areaTempArr = tempCallbackFormData.area.split(" ");
-                                tempCallbackFormData.area = areaTempArr.slice();
-                            }else if(typeof tempCallbackFormData.area === 'string' && tempCallbackFormData.area === ''){
-                                tempCallbackFormData.area=[];
-                            }
+                            this.$set(this.customInfoArray,0,tempCallbackFormData);
+                            this.$set(this.customLists,index2,tempCallbackFormData);
                             this.currentRow = tempCallbackFormData;
-                            this.$refs['customListsTable'].setCurrentRow(callbackData.data.information);
+                            this.$refs['customListsTable'].setCurrentRow(tempCallbackFormData);
                         }
                     }
                 }
@@ -553,7 +542,8 @@
         flex-direction: column;
     }
     .add_custom{
-        width: 200px;
+        width: 120px;
+        padding: 10px 14px;
     }
     .search_form{
         margin: 19px 0;

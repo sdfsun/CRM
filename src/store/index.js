@@ -32,7 +32,8 @@ const state = {
         {val:'20',label:'已结案'}
     ],
     memberRoles:[],//角色等级
-    activitys:[]//活动列表
+    activitys:[],//活动列表
+    designers:[],//设计师列表
 };
 
 export default new Vuex.Store({

@@ -43,7 +43,8 @@
                 'SETCUSTOMSOURCE',
                 'SETMEMBERROLES',
                 'SETMEMBERROLEID',
-                'SETACTIVITYS'
+                'SETACTIVITYS',
+                'SETDESIGNERS'
             ]),
             async login(formName){
                 if(this.loginBtnStatus){
@@ -89,6 +90,11 @@
                                 if(res.activity){
                                     setStore("activitys",res.activity);
                                     this.SETACTIVITYS(res.activity);
+                                }
+                                //设置设计师列表
+                                if(res.designer){
+                                    setStore("designers",res.designer);
+                                    this.SETDESIGNERS(res.designer);
                                 }
                             }).catch(error=>{
                                 this.loginBtnStatus = false;

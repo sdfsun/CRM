@@ -156,8 +156,11 @@
                 // this.communicateForm = this.editInfos;
                 this.communicateForm = Object.assign({}, this.editInfos);
                 this.communicateForm.name = this.$store.state.memberRoleId.name;
+                this.assignDesignerLists = this.editInfos.designer;
+                this.communicateForm.member_id = this.editInfos.select;
             }else{
                 this.resetFormData();
+                this.assignDesignerLists = [];
             }
         },
         watch:{
@@ -167,8 +170,11 @@
                 if(newVal.id){
                     this.communicateForm = Object.assign({}, newVal);
                     this.communicateForm.name = this.$store.state.memberRoleId.name;
+                    this.assignDesignerLists = newVal.designer;
+                    this.communicateForm.member_id = newVal.select;
                 }else{
                     this.resetFormData();
+                    this.assignDesignerLists = [];
                 }
             }
         },

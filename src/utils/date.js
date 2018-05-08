@@ -171,6 +171,8 @@ defaults = {
 
     openSelect:false,
 
+    openAmPm:false,
+
     // used internally (don't config outside)
     minYear: 0,
     maxYear: 9999,
@@ -225,7 +227,7 @@ renderDayName = function(opts, day, abbr)
     return abbr ? opts.i18n.weekdaysShort[day] : opts.i18n.weekdays[day];
 },
 
-renderDay = function(i, isSelected, isToday, isDisabled, isEmpty,isMsg)
+renderDay = function(i, isSelected, isToday, isDisabled, isEmpty,isMsg,isAm,isPm,isOpenAmPm,fullDate)
 {
     if (isEmpty) {
         return '<td class="is-empty"></td>';
@@ -240,7 +242,13 @@ renderDay = function(i, isSelected, isToday, isDisabled, isEmpty,isMsg)
     if (isSelected) {
         arr.push('is-selected');
     }
-    return '<td data-day="' + i + '" class="' + arr.join(' ') + ' '+ isMsg + '"><div class="pika-button">' + i + '</div><div class="d_msg"></div></td>';
+    if(isOpenAmPm){
+        var amClass = isAm ? 'active' : '';
+        var pmClass = isPm ? 'active' : '';
+        return '<td data-day="' + i + '" class="' + arr.join(' ') + ' '+ isMsg + '"><div class="pika-button">' + i + '</div><div class="d_msg"><div data="'+ fullDate +'" class="'+ amClass +'">AM</div><div data="'+ fullDate +'" class="'+ pmClass +'">PM</div></div></td>';
+    }else{
+        return '<td data-day="' + i + '" class="' + arr.join(' ') + ' '+ isMsg + '"><div class="pika-button">' + i + '</div></td>'; 
+    }
 },
 
 renderRow = function(days, isRTL)
@@ -832,17 +840,23 @@ Pikaday.prototype = {
                 
             var tempNum = 1 + (i - before);
             var tempVal = '';
+            var tempAm = 0,tempPm = 0; //上午下午是否有值
             var tempCurDate = year+formatNumber(month+1)+formatNumber(tempNum);
 
             // 后台请求到的数据赋值给sendDate用作选中判断
+
+
+            // 上午下午要让后台分开给
             if(!opts.openSelect){
                 for(var n=0;n<opts.initDate.length;n++){
-                    if(opts.initDate[n] == tempCurDate){
-                        tempVal = 'is-active'
+                    if(opts.initDate[n].work_date == tempCurDate){
+                        tempVal = 'is-active';
+                        tempAm = opts.initDate[n].type_am;
+                        tempPm = opts.initDate[n].type_pm
                     }
                 }
             }
-            row.push(renderDay(tempNum, isSelected, isToday, isDisabled, isEmpty,tempVal));
+            row.push(renderDay(tempNum, isSelected, isToday, isDisabled, isEmpty,tempVal,tempAm,tempPm,opts.openAmPm,tempCurDate));
             if (++r === 7) {
                 data.push(renderRow(row, opts.isRTL));
                 row = [];

@@ -27,7 +27,7 @@
                 <i class="el-icon-plus"></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-                <el-carousel height="400px" :autoplay='false' ref='carouselItems'>
+                <el-carousel height="400px" :autoplay='false'  ref='carouselItems' :initial-index='initialIndex'>
                     <el-carousel-item v-for="(item,index) in dataForm.imageLists" :key="index" :name='item.url'>
                         <img :src="item.url" class="image_carousel_item">
                     </el-carousel-item>
@@ -45,6 +45,7 @@
             return{
                 dialogImageUrl:'',
                 dialogVisible:false,
+                initialIndex:0
             }
         },
         methods:{
@@ -64,6 +65,11 @@
             },
             handlePictureCardPreview(file) {
                 try {
+                    let tempLists = this.dataForm.imageLists;
+                    const index = tempLists.findIndex(function(item, index, arr) {
+                        return item.url === file.url
+                    });
+                    this.initialIndex = index;
                     this.dialogVisible = true;
                     this.$refs['carouselItems'].setActiveItem(file.url);
                 } catch(e) {

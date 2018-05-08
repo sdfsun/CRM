@@ -3,8 +3,8 @@
         <section class="custom_header_form">
             <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo({type:true})'>新建客户信息</el-button>
             <el-form ref="form" :model="searchForm" class='search_form'>
-                <el-row :gutter="10" style='width:100%;' type='flex' justify='space-between'>
-                    <el-col :span='10' style='max-width: 460px;'>
+                <el-row :gutter="10" style='width:100%;'>
+                    <el-col :span='11'>
                         <el-form-item>
                             <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
                                 <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">

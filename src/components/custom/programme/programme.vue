@@ -90,7 +90,6 @@
             },
             addprogrammeRecord(){//新增方案记录
                 this.editActiveRow = {};
-                this.editActiveRow.status = this.infomation.status;
                 this.editActiveRow.type = "1";
                 this.programmeDialogVisible = true;
             },
@@ -117,7 +116,6 @@
                         return false;
                     }
                     this.editActiveRow = Object.assign({},res.success);
-                    this.editActiveRow.status = this.infomation.status;
                     //渲染效果明细的图片列表
                     this.editActiveRow.scheme.forEach( function(se, si) {
                         // se.image_url = se.image_url.slice();

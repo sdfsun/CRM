@@ -67,7 +67,7 @@
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="户型"  prop='house_layout'>
-                        <el-input type="textarea" :autosize="{ minRows: 4}" v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁'></el-input>
+                        <el-input  v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -89,16 +89,9 @@
                 </el-col>
             </el-row>
             <el-row :gutter="100">
-                <el-col :span="12" v-if='hideType != "1"'>
-                    <el-form-item label="状态" prop='status'>
-                        <el-select v-model="basicForm.status" placeholder="状态">
-                            <el-option
-                                v-for="item in customStatus"
-                                :key="item.val"
-                                :label="item.label"
-                                :value="item.val">
-                            </el-option>
-                        </el-select>
+                <el-col :span="12">
+                    <el-form-item label="推广成本" prop='cost'>
+                        <el-input  v-model="basicForm.cost" placeholder='请推广成本'></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -133,9 +126,16 @@
                 </el-col>
             </el-row>
             <el-row :gutter="100">
-                <el-col :span="12">
-                    <el-form-item label="推广成本" prop='cost'>
-                        <el-input  v-model="basicForm.cost" placeholder='请推广成本'></el-input>
+                <el-col :span="12" v-if='hideType != "1"'>
+                    <el-form-item label="状态" prop='status'>
+                        <el-select v-model="basicForm.status" placeholder="状态">
+                            <el-option
+                                v-for="item in customStatus"
+                                :key="item.val"
+                                :label="item.label"
+                                :value="item.val">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -427,14 +427,9 @@
     .basicForm_container .el-form{
         overflow: hidden;
     }
-    /*.basicForm_container .el-form-item{
-        width: 46%;
-        float: left;
+    .el-form-item {
+        margin-bottom: 12px;
     }
-    .basicForm_container .el-form-item:nth-child(2n){
-        width: 52%;
-        margin-left: 2%;
-    }*/
     .el-select,.el-cascader,.basicForm_container .remarks_item{
         width: 100%;
     }

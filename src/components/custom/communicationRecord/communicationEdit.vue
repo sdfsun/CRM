@@ -88,13 +88,7 @@
                         <el-input readonly='true' v-model="communicateForm.name"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                    <el-checkbox v-model="isBespeakFlag" label="是否预约失败" border @change='bespeakChange'></el-checkbox>
-                </el-col>
             </el-row>
-            <el-form-item prop='reason' class='form_item_style_width' v-show='reasonVisibleFlag' ref='reasonItem' :error='reasonError'>
-                <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="communicateForm.reason" placeholder='预约失败原因'></el-input>
-            </el-form-item>
             <el-form-item prop='outline' class='form_item_style_width'>
                 <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="communicateForm.outline" placeholder='沟通概要'></el-input>
             </el-form-item>
@@ -127,19 +121,6 @@
                 }
                 callback();
             };
-            let checkReason = (rule,val,callback)=>{
-                if( this.isBespeakFlag && val === ''){//预约失败则预约失败原因必填
-                    // this.reasonError = '请填写预约失败原因';
-                    callback(new Error('请填写预约失败原因'));
-                    return false;
-                }
-                if( this.isBespeakFlag && val !== ''){//预约失败则预约失败原因必填
-                    this.reasonError = '';
-                    callback();
-                    return false;
-                }
-                callback();
-            };
             return{
                 information_id:this.informationItem.id,//客户id
                 communicateForm:{
@@ -153,14 +134,10 @@
                     is_bespeak:'',//是否预约成功
                     scale_time:'',//预约量尺时间
                     member_id:'',//指派的设计师
-                    reason:'',//预约失败原因
                     outline:''//沟通概要
                 },
                 assignDesignerLists:[],//可指派设计师
-                isBespeakFlag:false,//是否预约失败临时存储
-                reasonVisibleFlag:false,//预约失败原因是否显示
                 submitBtnStatus:false,//保存按钮是否可点击
-                reasonError:'',//预约失败原因
                 communicateFormRules:{//规则校验
                     mode: [
                         { validator: checkMode}
@@ -170,9 +147,6 @@
                     ],
                     end_time: [
                         {  required: true, message: '请选择沟通结束时间', trigger: 'change' }
-                    ],
-                    reason:[
-                        { validator: checkReason}
                     ]
                 }
             }
@@ -182,17 +156,8 @@
                 // this.communicateForm = this.editInfos;
                 this.communicateForm = Object.assign({}, this.editInfos);
                 this.communicateForm.name = this.$store.state.memberRoleId.name;
-                if(this.editInfos.is_bespeak === '2'){//预约失败
-                    this.isBespeakFlag = true;
-                    this.reasonVisibleFlag = true;
-                }else{
-                    this.isBespeakFlag = false;
-                    this.reasonVisibleFlag = false;
-                }
             }else{
                 this.resetFormData();
-                this.isBespeakFlag = false;
-                this.reasonVisibleFlag = false;
             }
         },
         watch:{
@@ -202,17 +167,8 @@
                 if(newVal.id){
                     this.communicateForm = Object.assign({}, newVal);
                     this.communicateForm.name = this.$store.state.memberRoleId.name;
-                    if(newVal.is_bespeak === '2'){//预约失败
-                        this.isBespeakFlag = true;
-                        this.reasonVisibleFlag = true;
-                    }else{
-                        this.isBespeakFlag = false;
-                        this.reasonVisibleFlag = false;
-                    }
                 }else{
                     this.resetFormData();
-                    this.isBespeakFlag = false;
-                    this.reasonVisibleFlag = false;
                 }
             }
         },
@@ -221,16 +177,6 @@
                 delete this.communicateForm['id'];
                 delete this.communicateForm['createtime'];
                 delete this.communicateForm['update_time'];
-            },
-            bespeakChange(val){//是否预约成功联动预约失败原因
-                if(val){//预约失败
-                    this.reasonVisibleFlag = true;
-                    this.communicateForm.is_bespeak = '2';
-                }else{
-                    this.reasonVisibleFlag = false;
-                    this.communicateForm.is_bespeak = '';
-                    this.communicateForm.reason = "";
-                }
             },
             scaleTimeHandleChange(val){//预约量尺时间改变时触发
                 if(val && val !== ''){

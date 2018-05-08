@@ -187,7 +187,6 @@
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 this.receivablesForm.information_id = this.informationItem.id;
-                this.receivablesForm.status = this.informationItem.status;
                 if(newVal.receivables_id){
                     this.receivablesForm = Object.assign({},newVal);
                     if(newVal.imageLists && newVal.imageLists.length>0){

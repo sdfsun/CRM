@@ -103,7 +103,7 @@
             },
             addMeasurementRecord(type){//新增测量记录
                 let that = this;
-                this.$confirm('此动作会创建出行单到OSAP, 是否继续?', '提示', {
+                this.$confirm('此动作会在新OA上同步创建员工外出单，是否继续操作？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -125,7 +125,6 @@
                     return false;
                 }
                 this.editActiveRow = Object.assign({},this.currentrow);
-                // this.editActiveRow.status = this.infomation.status;
                 if(this.editActiveRow.image_id && this.editActiveRow.image_id.length>0){
                     this.editActiveRow.image_id = this.currentrow.image_id.slice();
                     let imageLists = [];

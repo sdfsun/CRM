@@ -79,7 +79,6 @@
             },
             addTransactionRecord(){//新增交易记录
                 this.editActiveRow = {};
-                this.editActiveRow.status = this.infomation.status;
                 this.transactionDialogVisible = true;
             },
             editTransactionRecord(){//编辑交易记录
@@ -91,7 +90,6 @@
                     return false;
                 }
                 this.editActiveRow = Object.assign({},this.currentrow);
-                this.editActiveRow.status = this.infomation.status;
                 this.transactionDialogVisible = true;
             },
             updateTransactionRecord(callbackData){

@@ -1,8 +1,6 @@
 <template>
     <section class="complaintEdit_container">
         <el-form ref="complaintForm" :model="complaintForm" :rules='complaintFormRules' label-width="0" >
-            <!-- <el-form-item prop='id' class='hide-form-item'></el-form-item>
-            <el-form-item prop='createtime' class='hide-form-item'></el-form-item> -->
             <el-row :gutter="10">
                 <el-col :span="8">
                     <el-form-item prop='type'>
@@ -43,7 +41,7 @@
             return{
                 complaintForm:{
                     information_id:this.informationItem.id,//客户id
-                    name:'',//投诉人
+                    name:this.$store.state.memberRoleId.name,//投诉人
                     type:'0',//投诉类型
                     outline:''//投诉概要
                 },

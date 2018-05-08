@@ -104,7 +104,6 @@
             },
             addreceivablesRecord(){//新增收款记录
                 this.editActiveRow = {};
-                this.editActiveRow.status = this.infomation.status;
                 this.receivablesDialogVisible = true;
             },
             editreceivablesRecord(){//编辑收款记录
@@ -116,7 +115,6 @@
                     return false;
                 }
                 this.editActiveRow = Object.assign({},this.currentrow);
-                this.editActiveRow.status = this.infomation.status;
                 if(this.editActiveRow.image_id !== ''){
                     Object.assign(this.editActiveRow,{imageLists:[{url:this.currentrow.l_image}]});
                 }

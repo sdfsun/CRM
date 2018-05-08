@@ -72,7 +72,6 @@
             },
             addComplaintRecord(){//新增投诉记录
                 this.editActiveRow = {};
-                this.editActiveRow.status = this.infomation.status;
                 this.complaintDialogVisible = true;
             },
             editComplaintRecord(){//编辑投诉记录
@@ -84,7 +83,6 @@
                     return false;
                 }
                 this.editActiveRow = Object.assign({},this.currentrow);
-                this.editActiveRow.status = this.infomation.status;
                 this.complaintDialogVisible = true;
             },
             updateComplaintRecord(callbackData){

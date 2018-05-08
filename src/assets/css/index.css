@@ -102,7 +102,8 @@ body{
 }
 /*弹框dialog*/
 .el-dialog{
-    left: 106px;
+    left: 90px;
+    max-height: 100%;
 }
 /*去除输入框校验成功的border样式*/
 .el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
@@ -267,7 +268,6 @@ body{
 /*客户相关记录弹框*/
 .customRelationInfoDialog .el-dialog,.custom_container .basicInfoDialog .el-dialog{
     width: 763px;
-    margin-top: 15px !important;
 }
 .customRelationInfoDialog .form_item_style_width .el-form-item__content,
     .customRelationInfoDialog .el-date-editor.el-input, .customRelationInfoDialog .el-date-editor.el-input__inner,
@@ -320,10 +320,13 @@ body{
     text-align: center;
 }
 .el-dialog__header{
-    padding: 20px 60px;
+    padding: 20px 60px 0;
 }
 .el-dialog__body{
-    padding: 30px 60px;
+    padding: 20px 60px;
+    background: #fff;
+    flex:1;
+    overflow: auto;
 }
 .el-upload-list--picture-card .el-upload-list__item,.el-upload--picture-card{
     width: 128px;
@@ -336,9 +339,13 @@ body{
     margin-top: 0 !important;
     display: flex;
     align-items: center;
+    overflow: hidden;
 }
 .el-dialog__wrapper .el-dialog{
     margin: 0 auto !important;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 /*表单样式修改*/
 .el-form-item__label,.el-input__inner,.el-checkbox__label,.el-input,.el-cascader__label{
@@ -349,4 +356,7 @@ body{
 }
 .el-form-item__content{
     line-height: 36px;
+}
+.el-form-item__error{
+    padding-top: 0;
 }

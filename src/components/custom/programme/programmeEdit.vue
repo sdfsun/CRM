@@ -164,6 +164,7 @@
     .btns{
         text-align: center;
         margin-top: 30px;
+        padding-bottom: 20px;
     }
     .btns .submit_btn{
         width: 120px;

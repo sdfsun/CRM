@@ -66,7 +66,6 @@
     </section>
 </template>
 <script>
-    import Vue from 'vue';
     import {mapActions,mapMutations} from 'vuex';
     import {source_index,source_save} from '@/service/getData';
     import { setStore } from '@/utils/';
@@ -128,7 +127,7 @@
             },
             handleEdit(index){//设置单元格可编辑
                 this.sourceLists[index].editFlag = true;
-                Vue.set(this.sourceLists,index,this.sourceLists[index]);
+                this.$set(this.sourceLists,index,this.sourceLists[index]);
             },
             async handleSave(index,formData){//保存
                 try {
@@ -166,7 +165,7 @@
                         let resData = res.data;
                         resData.editFlag = false;
                         resData.disabled = res.data.disabled === 'true'?true:false;
-                        Vue.set(this.sourceLists,index,resData);
+                        this.$set(this.sourceLists,index,resData);
                     }
                 } catch(e) {
                     this.submitBtnStatus = false;

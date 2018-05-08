@@ -48,5 +48,27 @@ export default{
         }
         setStore("memberRoles",memberRoles);
         commit('SETMEMBERROLES',memberRoles);
+    },
+    setActivitys({commit},name){//设置用户等级
+        const lists = JSON.parse(getStore(name));
+        commit('SETACTIVITYS',lists);
+    },
+    updateActivitys({state,commit},result){//更新用户等级
+        let lists = [];
+        if(state.activitys && state.activitys.length>0){
+            activitys = state.activitys.slice();
+            const index = state.activitys.findIndex(function(item, index, arr) {
+                return item.id === result.id;
+            });
+            if(index !== -1){//编辑
+                activitys[index] = result;
+            }else{//新增
+                activitys.push(result);
+            }
+        }else{
+            activitys.push(result);
+        }
+        setStore("activitys",activitys);
+        commit('SETACTIVITYS',activitys);
     }
 }

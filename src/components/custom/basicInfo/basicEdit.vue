@@ -4,7 +4,7 @@
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="姓名" prop='name'>
-                        <el-input v-model="basicForm.name"></el-input>
+                        <el-input v-model="basicForm.name" placeholder='请输入姓名'></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -34,24 +34,24 @@
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="电话" prop='tel' ref='telItem'>
-                        <el-input v-model="basicForm.tel"></el-input>
+                        <el-input v-model="basicForm.tel" placeholder='请输入电话'></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="手机" prop='mobile' ref='mobileItem' >
-                        <el-input v-model.number="basicForm.mobile" maxlength='11'></el-input>
+                        <el-input v-model.number="basicForm.mobile" maxlength='11' placeholder='请输入手机'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="qq" prop='qq' ref='qqItem'>
-                        <el-input v-model="basicForm.qq"></el-input>
+                        <el-input v-model="basicForm.qq" placeholder='请输入qq'></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="微信" prop='weixin' ref='weixinItem'>
-                        <el-input v-model="basicForm.weixin"></el-input>
+                        <el-input v-model="basicForm.weixin" placeholder='请输入微信'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -89,7 +89,7 @@
                 </el-col>
             </el-row>
             <el-row :gutter="100">
-                <el-col :span="12">
+                <el-col :span="12" v-if='hideType != "1"'>
                     <el-form-item label="状态" prop='status'>
                         <el-select v-model="basicForm.status" placeholder="状态">
                             <el-option
@@ -103,7 +103,7 @@
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="邮箱" prop='email' ref='emailItem'>
-                        <el-input type='email' v-model="basicForm.email"></el-input>
+                        <el-input type='email' v-model="basicForm.email" placeholder='请输入邮箱'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -132,11 +132,18 @@
                     </el-form-item>
                 </el-col>
             </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item label="推广成本" prop='cost'>
+                        <el-input  v-model="basicForm.cost" placeholder='请推广成本'></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
             <el-form-item label="客户备注" class='remarks_item' prop='remarks'>
                 <el-input type="textarea" :autosize="{ minRows: 4}" v-model="basicForm.remarks" placeholder='客户备注'></el-input>
             </el-form-item>
         </el-form>
-        <div class="btns">
+        <div class="btns" v-if='hideType != "1"'>
             <el-button type="primary" @click="onSubmit('basicForms')" class='submit_btn'>保存</el-button>
         </div>
     </section>
@@ -150,7 +157,7 @@
 
     export default{
         name:'basicEdit',
-        props:['editInfos'],
+        props:['editInfos','hideType'],
         data(){
             //校验电话、qq、微信、手机
             let checkRelateMethod = (rule, value, callback)=>{
@@ -209,7 +216,8 @@
                     status:"0",
                     remarks:"",
                     houseTypeOptions:[],//房屋类型
-                    client_type:''
+                    client_type:'',
+                    cost:''
                 },
                 areaOptions:region,
                 submitBtnStatus:false,//是否可点击保存按钮
@@ -331,7 +339,17 @@
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 if(newVal.id){
-                    this.basicForm = Object.assign({},newVal);
+                    let newValData = Object.assign({},newVal);
+                    if(newValData.house_type !== '' && newValData.house_status !== ''){//装修类型
+                        newValData.houseTypeOptions = [newValData.house_type,newValData.house_status];
+                    }
+                    if(typeof newValData.area === 'string' && newValData.area != ''){//地区
+                        let areaTempArr = newValData.area.split(" ");
+                        newValData.area = areaTempArr.slice();
+                    }else if(typeof newValData.area === 'string' && newValData.area === ''){
+                        newValData.area=[];
+                    }
+                    this.basicForm = Object.assign({},newValData);
                 }else{
                     this.resetFormData();
                 }

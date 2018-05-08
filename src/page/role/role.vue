@@ -136,7 +136,7 @@
             },
             handleEdit(index){//设置单元格可编辑
                 this.roleLists[index].editFlag = true;
-                Vue.set(this.roleLists,index,this.roleLists[index]);
+                this.$set(this.roleLists,index,this.roleLists[index]);
             },
             async handleSave(index,formData){//保存
                 try {
@@ -181,7 +181,7 @@
                         this.updateMemberRoles(resData);
                         resData.editFlag = false;
                         resData.disabled = res.data.disabled === 'true'?true:false;
-                        Vue.set(this.roleLists,index,resData);
+                        this.$set(this.roleLists,index,resData);
                     }
                 } catch(e) {
                     this.submitBtnStatus = false;

@@ -36,3 +36,47 @@ export const getDuration = (startDate,endDate) => {
     let result_s = Math.floor(ms%60);//秒
     return result_h+"时"+result_m+"分"+result_s+"秒";
 }
+
+/**
+ * 格式化时间
+ */
+export const formatDate = (date,format) => {
+    var args = {
+       "M+": date.getMonth() + 1,
+       "d+": date.getDate(),
+       "h+": date.getHours(),
+       "m+": date.getMinutes(),
+       "s+": date.getSeconds(),
+       "q+": Math.floor((date.getMonth() + 3) / 3),  //quarter
+       "S": date.getMilliseconds()
+    };
+    if (/(y+)/.test(format))
+        format = format.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var i in args) {
+        var n = args[i];
+        if (new RegExp("(" + i + ")").test(format))
+           format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+    }
+    return format;
+}
+/**
+ * 返回上传图片类型对应的icon
+ */
+export const getUploadIcon = (fileName) =>{
+    let iconUrl = '';
+    if(fileName.indexOf('doc')!=-1){
+        iconUrl = 'https://pic.solux.cn/PC/crm/word.png';
+    }else if(fileName.indexOf('xls')!=-1){
+        iconUrl = 'https://pic.solux.cn/PC/crm/excel.png';
+    }
+    else if(fileName.indexOf('txt')!=-1){
+        iconUrl = 'https://pic.solux.cn/PC/crm/txt.png';
+    }
+    else if(fileName.indexOf('pdf')!=-1){
+        iconUrl = 'https://pic.solux.cn/PC/crm/pdf.png';
+    }
+    else if(fileName.indexOf('ppt')!=-1){
+        iconUrl = 'https://pic.solux.cn/PC/crm/ppt.png';
+    }
+    return iconUrl;
+}

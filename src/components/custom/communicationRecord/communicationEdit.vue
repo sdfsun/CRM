@@ -1,12 +1,6 @@
 <template>
     <section class="communicationEdit_container">
         <el-form ref="communicateForm" :model="communicateForm"  :rules="communicateFormRules" label-width="0">
-            <el-row :gutter="10">
-                <el-col :span="7">
-                    <el-form-item prop='mode'>
-                    </el-form-item>
-                </el-col>
-            </el-row>
             <el-row :gutter="8">
                 <el-col :span="7">
                     <el-form-item prop='mode'>
@@ -19,7 +13,7 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item prop='contact_time'>
+                    <el-form-item prop='contact_time' ref='concactTimeItem'>
                         <el-date-picker
                             v-model="communicateForm.contact_time"
                             type="datetime"
@@ -61,10 +55,25 @@
                             v-model="communicateForm.scale_time"
                             type="datetime"
                             placeholder="预约量尺时间"
-                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            @change='scaleTimeHandleChange'>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
+                <el-col :span="8">
+                    <el-form-item prop='member_id'>
+                        <el-select v-model="communicateForm.member_id" clearable placeholder="请选择设计师">
+                            <el-option
+                                v-for="item in assignDesignerLists"
+                                :key="item.member_id"
+                                :label="item.name"
+                                :value="item.member_id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="10">
                 <el-col :span="8">
                     <el-form-item prop='is_arrival'>
                         <el-select v-model="communicateForm.is_arrival" placeholder="是否已到店" clearable>
@@ -74,16 +83,13 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-            </el-row>
-            <el-row :gutter="10">
                 <el-col :span="8">
-                    <el-form-item prop='is_bespeak' ref='isBespeakItem'>
-                        <el-select v-model="communicateForm.is_bespeak" placeholder="是否预约成功" clearable @change='bespeakChange'>
-                            <el-option label="未知" value="0"></el-option>
-                            <el-option label="是" value="1"></el-option>
-                            <el-option label="否" value="2"></el-option>
-                        </el-select>
+                    <el-form-item prop='name'>
+                        <el-input readonly='true' v-model="communicateForm.name"></el-input>
                     </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-checkbox v-model="isBespeakFlag" label="是否预约失败" border @change='bespeakChange'></el-checkbox>
                 </el-col>
             </el-row>
             <el-form-item prop='reason' class='form_item_style_width' v-show='reasonVisibleFlag' ref='reasonItem' :error='reasonError'>
@@ -94,37 +100,40 @@
             </el-form-item>
         </el-form>
         <div class="btns">
-            <el-button type="primary" @click="onSubmit('communicateForm')" class='submit_btn'>保存</el-button>
+            <el-button type="primary" @click="onSubmit('communicateForm','1')" class='submit_btn'>保存记录</el-button>
+            <el-button type="primary" @click="onSubmit('communicateForm','2')" class='submit_btn'>客户拒绝</el-button>
         </div>
     </section>
 </template>
 <script>
-    import {communicate_save} from '@/service/getData';
-    import {getDuration} from '@/utils/index';
+    import {stylist,communicate_save} from '@/service/getData';
+    import {getDuration,formatDate} from '@/utils/index';
+    import {mapState} from 'vuex';
 
     export default{
         name:'communicationEdit',
-        props:['informationItem','editInfos'],
+        props:['informationItem','editInfos','communicateBasicFormDatas'],
         data(){
-            let checkIsBespeak = (rule,val,callback)=>{
-                if(val !== '2'){
-                    this.$refs['isBespeakItem'].clearValidate();
-                    callback();
+            let checkMode = (rule,val,callback) => {
+                if( val === null || val === ''){
+                    callback(new Error('请选择沟通方式'));
                     return false;
                 }
-                if( val === '2' && this.communicateForm.reason === ''){//预约失败则预约失败原因必填
-                    this.reasonError = '请填写预约失败原因';
+                if(val !== '' && val === '电话沟通' && !this.communicateForm.contact_time){
+                    this.communicateForm.contact_time = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
+                    this.$refs['concactTimeItem'].clearValidate();
+                    callback();
                     return false;
                 }
                 callback();
             };
             let checkReason = (rule,val,callback)=>{
-                if( this.communicateForm.is_bespeak === '2' && val === ''){//预约失败则预约失败原因必填
+                if( this.isBespeakFlag && val === ''){//预约失败则预约失败原因必填
                     // this.reasonError = '请填写预约失败原因';
                     callback(new Error('请填写预约失败原因'));
                     return false;
                 }
-                if( this.communicateForm.is_bespeak === '2' && val !== ''){//预约失败则预约失败原因必填
+                if( this.isBespeakFlag && val !== ''){//预约失败则预约失败原因必填
                     this.reasonError = '';
                     callback();
                     return false;
@@ -132,9 +141,9 @@
                 callback();
             };
             return{
+                information_id:this.informationItem.id,//客户id
                 communicateForm:{
-                    information_id:this.informationItem.id,//客户id
-                    name:'',//接待人
+                    name:this.$store.state.memberRoleId.name,//接待人
                     mode:'',//沟通方式
                     contact_time:'',//沟通开始时间
                     end_time:'',//沟通结束时间
@@ -143,24 +152,24 @@
                     is_arrival:'',//是否到店
                     is_bespeak:'',//是否预约成功
                     scale_time:'',//预约量尺时间
+                    member_id:'',//指派的设计师
                     reason:'',//预约失败原因
                     outline:''//沟通概要
                 },
+                assignDesignerLists:[],//可指派设计师
+                isBespeakFlag:false,//是否预约失败临时存储
                 reasonVisibleFlag:false,//预约失败原因是否显示
                 submitBtnStatus:false,//保存按钮是否可点击
                 reasonError:'',//预约失败原因
                 communicateFormRules:{//规则校验
                     mode: [
-                        { required: true, message: '请选择沟通方式', trigger: 'change' }
+                        { validator: checkMode}
                     ],
                     contact_time: [
                         {  required: true, message: '请选择沟通开始时间', trigger: 'change' }
                     ],
                     end_time: [
                         {  required: true, message: '请选择沟通结束时间', trigger: 'change' }
-                    ],
-                    is_bespeak:[
-                        { validator: checkIsBespeak, trigger: 'change'}
                     ],
                     reason:[
                         { validator: checkReason}
@@ -172,8 +181,18 @@
             if(this.editInfos && this.editInfos.id){
                 // this.communicateForm = this.editInfos;
                 this.communicateForm = Object.assign({}, this.editInfos);
+                this.communicateForm.name = this.$store.state.memberRoleId.name;
+                if(this.editInfos.is_bespeak === '2'){//预约失败
+                    this.isBespeakFlag = true;
+                    this.reasonVisibleFlag = true;
+                }else{
+                    this.isBespeakFlag = false;
+                    this.reasonVisibleFlag = false;
+                }
             }else{
                 this.resetFormData();
+                this.isBespeakFlag = false;
+                this.reasonVisibleFlag = false;
             }
         },
         watch:{
@@ -182,8 +201,18 @@
                 this.communicateForm.information_id = this.informationItem.id;
                 if(newVal.id){
                     this.communicateForm = Object.assign({}, newVal);
+                    this.communicateForm.name = this.$store.state.memberRoleId.name;
+                    if(newVal.is_bespeak === '2'){//预约失败
+                        this.isBespeakFlag = true;
+                        this.reasonVisibleFlag = true;
+                    }else{
+                        this.isBespeakFlag = false;
+                        this.reasonVisibleFlag = false;
+                    }
                 }else{
                     this.resetFormData();
+                    this.isBespeakFlag = false;
+                    this.reasonVisibleFlag = false;
                 }
             }
         },
@@ -194,16 +223,50 @@
                 delete this.communicateForm['update_time'];
             },
             bespeakChange(val){//是否预约成功联动预约失败原因
-                if(val === '2'){//预约失败
+                if(val){//预约失败
                     this.reasonVisibleFlag = true;
+                    this.communicateForm.is_bespeak = '2';
                 }else{
                     this.reasonVisibleFlag = false;
+                    this.communicateForm.is_bespeak = '';
                     this.communicateForm.reason = "";
                 }
             },
-            onSubmit(formName){
+            scaleTimeHandleChange(val){//预约量尺时间改变时触发
+                if(val && val !== ''){
+                    this.getAssignDesignerLists();
+                }else{
+                    this.communicateForm.member_id = '';
+                    this.assignDesignerLists = [];
+                }
+            },
+            async getAssignDesignerLists(){//获取可分配设计师列表
+                try {
+                    let that = this;
+                    const res = await stylist(this.informationItem.id,this.communicateForm.scale_time);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin === 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.assignDesignerLists = res.success;
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            onSubmit(formName,type){
                 if(this.submitBtnStatus === true){
-                    // return false;
+                    return false;
                 }
                 try {
                     let that = this;
@@ -221,7 +284,12 @@
                             }else{
                                 this.communicateForm.duration  = tempDuration;
                             }
-                            communicate_save(this.communicateForm).then(res=>{
+                            let tempFormData = {};
+                            tempFormData.information_id = this.informationItem.id;
+                            tempFormData.information_type = type;
+                            tempFormData.information = this.communicateBasicFormDatas.id?this.communicateBasicFormDatas:this.informationItem;
+                            tempFormData.communicate = this.communicateForm;
+                            communicate_save(tempFormData).then(res=>{
                                 this.submitBtnStatus = false;
                                 if(res.error){
                                     this.$message({

@@ -1,20 +1,30 @@
 <template>
-    <section class="userEdit_container">
-        <el-form ref="userForm" :model="userForm" :rules='userFormRules' label-width="90px" >
-            <el-form-item prop='login_account' label='用户名' v-if='!editInfos.member_id'>
-                <el-input  v-model="userForm.login_account" placeholder='请输入用户名' clearable></el-input>
+    <section class="activityEdit_container">
+        <el-form ref="activityForm" :model="activityForm" :rules='activityFormRules' label-width="90px" >
+            <el-form-item prop='title' label='活动主题'>
+                <el-input  v-model="activityForm.title" placeholder='请输入活动主题' clearable></el-input>
             </el-form-item>
-            <el-form-item prop='login_password' label='密码' v-if='!editInfos.member_id'>
-                <el-input type='password' v-model="userForm.login_password" placeholder='请输入密码' clearable></el-input>
+            <el-form-item prop='content' label='活动内容'>
+                <el-input  type="textarea" :autosize="{ minRows: 4}" v-model="activityForm.content" placeholder='活动内容' clearable></el-input>
             </el-form-item>
-            <el-form-item prop='name' label='姓名'>
-                <el-input  v-model="userForm.name" placeholder='请输入姓名' clearable></el-input>
+            <el-form-item prop='start_time' label='开始时间'>
+                <el-date-picker
+                    v-model="activityForm.start_time"
+                    type="datetime"
+                    placeholder="沟通起始时间"
+                    value-format='yyyy-MM-dd HH:mm:ss'>
+                </el-date-picker>
             </el-form-item>
-            <el-form-item prop='mobile' label='手机号码'>
-                <el-input  type='number' maxlength='11' v-model="userForm.mobile" placeholder='请输入手机号码' clearable></el-input>
+            <el-form-item prop='end_time' label='结束时间'>
+                <el-date-picker
+                    v-model="activityForm.end_time"
+                    type="datetime"
+                    placeholder="沟通结束时间"
+                    value-format='yyyy-MM-dd HH:mm:ss'>
+                </el-date-picker>
             </el-form-item>
             <el-form-item label="所属门店" prop='org_id'>
-                <el-select v-model="userForm.org_id" placeholder="请选择所属门店">
+                <el-select v-model="activityForm.org_id" placeholder="请选择所属门店">
                     <el-option
                         v-for="item in orgs"
                         :key="item.value"
@@ -23,45 +33,35 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="用户等级" prop='member_role_id'>
-                <el-select v-model="userForm.member_role_id" placeholder="请选择用户等级">
-                    <el-option
-                        v-for="item in memberRoles"
-                        :key="item.member_role_id"
-                        :label="item.name"
-                        :value="item.member_role_id">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="用户状态" prop='status'>
+            <el-form-item label="是否激活" prop='disabled'>
                 <el-switch
-                    v-model="userForm.status"
-                    active-value="1"
-                    inactive-value="2">
+                    v-model="activityForm.disabled"
+                    active-value="true"
+                    inactive-value="false">
                 </el-switch>
             </el-form-item>
         </el-form>
         <div class="btns">
-            <el-button type="primary" @click="onSubmit('userForm')" class='submit_btn'>保存</el-button>
+            <el-button type="primary" @click="onSubmit('activityForm')" class='submit_btn'>保存</el-button>
         </div>
     </section>
 </template>
 <script>
-    import {member_save} from '@/service/getData';
-    import { mapState } from 'vuex';
+    import {activity_save} from '@/service/getData';
+    import {mapMutations,mapActions} from 'vuex';
+    import {getDuration} from '@/utils/index';
 
     export default{
-        name:'userEdit',
+        name:'activityEdit',
         props:['editInfos'],
         data(){
             return{
-                userForm:{
-                    login_account:'',//用户名
-                    login_password:'',//登录密码
-                    name:'',//姓名
-                    member_role_id:'',//用户等级
-                    mobile:'',//手机号码
-                    status:'1',//是否启用
+                activityForm:{
+                    title:'',//活动主题
+                    content:'',//活动内容
+                    start_time:'',//开始时间
+                    end_time:'',//结束时间
+                    disabled:'true',//是否启用
                     org_id:'5',//所属门店
                 },
                 orgs:[
@@ -87,55 +87,48 @@
                     }
                 ],
                 submitBtnStatus:false,//保存按钮是否可点击
-                userFormRules:{//规则校验
-                    login_account: [
-                        {  required: true, message: '请输入用户名', trigger: 'blur' }
+                activityFormRules:{//规则校验
+                    title: [
+                        {  required: true, message: '请输入活动主题', trigger: 'blur' }
                     ],
-                    login_password: [
-                        {  required: true, message: '请输入密码', trigger: 'blur' }
+                    content: [
+                        {  required: true, message: '请输入活动内容', trigger: 'blur' }
                     ],
-                    name: [
-                        { required: true, message: '请输入姓名', trigger: 'blur'}
+                    start_time: [
+                        { required: true, message: '请选择开始时间', trigger: 'change'}
                     ],
-                    mobile: [
-                        {  required: true, message: '请输入手机号码', trigger: 'blur' }
+                    end_time: [
+                        {  required: true, message: '请选择结束时间', trigger: 'change' }
                     ],
                     org_id: [
                         {  required: true, message: '请选择所属门店', trigger: 'change' }
-                    ],
-                    member_role_id: [
-                        {  required: true, message: '请选择用户等级', trigger: 'change' }
                     ]
                 }
             }
         },
-        computed:{
-            ...mapState([
-                'customStatus',
-                'memberRoles'
-            ])
-        },
         mounted(){
-            if(this.editInfos && this.editInfos.member_id){
-                this.userForm = Object.assign({},this.editInfos);
+            if(this.editInfos && this.editInfos.id){
+                this.activityForm = Object.assign({},this.editInfos);
             }else{
                 this.resetFormData();
             }
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
-                if(newVal.member_id){
-                    this.userForm = Object.assign({},newVal);
+                if(newVal.id){
+                    this.activityForm = Object.assign({},newVal);
                 }else{
                     this.resetFormData();
                 }
             }
         },
         methods:{
+            ...mapActions([
+                'updateActivitys'
+            ]),
             resetFormData(){
-                delete this.userForm['member_id'];
-                delete this.userForm['password_account'];
-                delete this.userForm['createtime'];
+                delete this.activityForm['id'];
+                delete this.activityForm['createtime'];
             },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){
@@ -146,8 +139,16 @@
                     this.$refs[formName].validate((valid,obj) => {
                         if (valid) {
                             this.submitBtnStatus = true;
-                            this.userForm.password_account = this.userForm.login_account;
-                            member_save(this.userForm).then(res=>{
+                            let tempDuration = getDuration(this.activityForm.start_time,this.activityForm.end_time);
+                            if(tempDuration < 0){
+                                this.$message({
+                                    message:'活动结束时间不能小于活动开始时间',
+                                    type:'error'
+                                });
+                                this.submitBtnStatus = false;
+                                return false;
+                            }
+                            activity_save(this.activityForm).then(res=>{
                                 this.submitBtnStatus = false;
                                 if(res.error){
                                     this.$message({
@@ -165,7 +166,8 @@
                                     message:res.success,
                                     type:'success'
                                 });
-                                that.closeUserEditInfoDialog("userForm",res.data);
+                                this.closeActivityEditInfoDialog("activityForm",res.data);
+                                this.updateActivitys(res.data);
                             }).catch(error=>{
                                 this.submitBtnStatus = false;
                             });
@@ -179,12 +181,12 @@
                     this.submitBtnStatus = false;
                 }
             },
-            closeUserEditInfoDialog(formName,result){//关闭弹框
+            closeActivityEditInfoDialog(formName,result){//关闭弹框
                 this.$refs[formName].resetFields();//重置表单数据
-                if(this.editInfos && this.editInfos.member_id){//编辑
-                    this.$emit('closeUserInfoDialog',{data:result,type:'edit'});
+                if(this.editInfos && this.editInfos.id){//编辑
+                    this.$emit('closeActivityInfoDialog',{data:result,type:'edit'});
                 }else{//新增
-                    this.$emit('closeUserInfoDialog',{data:result,type:'add'});
+                    this.$emit('closeActivityInfoDialog',{data:result,type:'add'});
                 }
             }
         }

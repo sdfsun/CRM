@@ -64,7 +64,9 @@
             </el-table-column>
         </el-table>
         <div class="btns">
-            <el-button type="primary" icon='el-icon-plus' @click='addMeasurementRecord'>新建测量记录</el-button>
+            <el-button type="primary" icon='el-icon-plus' @click='addMeasurementRecord("1")'>我要量尺</el-button>
+            <el-button type="primary" icon='el-icon-plus' @click='addMeasurementRecord("2")' v-if='measurementRecords.length>0'>我要复尺</el-button>
+            <el-button type="primary" disabled icon='el-icon-plus' v-else>我要复尺</el-button>
             <el-button type="primary"  class='add_custom' @click='editMeasurementRecord'>编辑</el-button>
         </div>
         <el-dialog title="测量记录" :visible.sync="measurementDialogVisible" class='customRelationInfoDialog' @close='resetMeasurementEdit'>
@@ -99,10 +101,20 @@
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 this.currentrow = currentrow;
             },
-            addMeasurementRecord(){//新增测量记录
-                this.editActiveRow = {};
-                this.editActiveRow.status = this.infomation.status;
-                this.measurementDialogVisible = true;
+            addMeasurementRecord(type){//新增测量记录
+                let that = this;
+                this.$confirm('此动作会创建出行单到OSAP, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    setTimeout(function(){
+                        that.editActiveRow = {};
+                        that.editActiveRow.complex = type;
+                        that.measurementDialogVisible = true; 
+                    },200);
+                }).catch(() => {
+                });
             },
             editMeasurementRecord(){//编辑测量记录
                 if(!this.currentrow){
@@ -113,7 +125,7 @@
                     return false;
                 }
                 this.editActiveRow = Object.assign({},this.currentrow);
-                this.editActiveRow.status = this.infomation.status;
+                // this.editActiveRow.status = this.infomation.status;
                 if(this.editActiveRow.image_id && this.editActiveRow.image_id.length>0){
                     this.editActiveRow.image_id = this.currentrow.image_id.slice();
                     let imageLists = [];

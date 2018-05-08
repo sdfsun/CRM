@@ -18,12 +18,21 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item prop='voucher'>
-                        <el-input  v-model="receivablesForm.voucher" placeholder='收款凭证号'></el-input>
+                    <el-form-item prop='is_retainage'>
+                        <el-select v-model="receivablesForm.is_retainage" placeholder="请选择收款类型">
+                            <el-option label="定金" value="0"></el-option>
+                            <el-option label="预付款" value="1"></el-option>
+                            <el-option label="尾款" value="2"></el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="10">
+                <el-col :span="8">
+                    <el-form-item>
+                        <el-input :value='informationItem.budget+"万"' placeholder='装修预算' readonly='true'></el-input>
+                    </el-form-item>
+                </el-col>
                 <el-col :span="8">
                     <el-form-item prop='money'>
                         <el-input type='number' v-model="receivablesForm.money" placeholder='收款金额'></el-input>
@@ -34,19 +43,30 @@
                         <el-input  type='number' v-model="receivablesForm.discount" placeholder='抵扣金额'></el-input>
                     </el-form-item>
                 </el-col>
+            </el-row>
+            <el-row :gutter="10">
                 <el-col :span="8">
-                    <el-form-item prop='is_retainage' label='是否尾款' label-width='80px'>
-                        <el-radio-group v-model="receivablesForm.is_retainage">
-                            <el-radio label="true">是</el-radio>
-                            <el-radio label="false">否</el-radio>
-                        </el-radio-group>
+                    <el-form-item prop='voucher'>
+                        <el-input  v-model="receivablesForm.voucher" placeholder='收款凭证号'></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop='activity_id'>
+                        <el-select v-model="receivablesForm.activity_id" placeholder="请选择活动">
+                            <el-option
+                                v-for="item in activitys"
+                                :key="item.id"
+                                :label="item.title"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="10" type="flex" align='middle'>
-                <el-col :span="16">
+            <el-row :gutter="10">
+                <el-col :span="24">
                     <el-form-item prop='remarks' :error='remarksError'>
-                        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="receivablesForm.remarks" placeholder='收款备注' ></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 4}" v-model="receivablesForm.remarks" placeholder='收款备注' ></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -76,8 +96,10 @@
     </section>
 </template>
 <script>
+    import {mapState} from 'vuex';
     import {receivables_save} from '@/service/getData';
-    
+    import {formatDate} from '@/utils/index';
+
     export default{
         name:'receivablesEdit',
         props:['informationItem','editInfos'],
@@ -111,15 +133,16 @@
             return{
                 receivablesForm:{
                     information_id:this.informationItem.id,//客户id
-                    name:'',//收款人
+                    name:this.$store.state.memberRoleId.name,//收款人
                     times:'',//收款时间
                     voucher:'',//收款凭证号
                     money:'',//收款金额
                     discount:'',//抵扣金额
                     image_id:'',//发票图片
                     remarks:'',//收款备注
-                    is_retainage:'false',//是否尾款
-                    imageLists:[]//图片列表
+                    is_retainage:'0',//收款类型
+                    imageLists:[],//图片列表
+                    activity_id:''//活动
                 },
                 remarksError:'',//备注错误信息提醒
                 submitBtnStatus:false,//保存按钮是否可点击
@@ -144,6 +167,11 @@
                 }
             }
         },
+        computed:{
+            ...mapState([
+                'activitys'
+            ])
+        },
         mounted(){
             if(this.editInfos && this.editInfos.receivables_id){
                 // this.receivablesForm = this.editInfos;
@@ -153,6 +181,7 @@
                 }
             }else{
                 this.resetFormData();
+                this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
             }
         },
         watch:{
@@ -167,6 +196,7 @@
                 }else{//新增
                     this.resetFormData();
                     this.receivablesForm.imageLists = [];
+                    this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
                 }
             }
         },

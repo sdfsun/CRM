@@ -167,7 +167,6 @@
     </div>
 </template>
 <script>
-    import Vue from 'vue';
     import {mapState} from 'vuex';
     import basicInfo from '@/components/custom/basicInfo/basicInfo';
     import basicEdit from '@/components/custom/basicInfo/basicEdit';
@@ -350,10 +349,10 @@
                     if(currentrow.house_type !== '' && currentrow.house_status !== ''){//装修类型
                         currentrow.houseTypeOptions = [currentrow.house_type,currentrow.house_status];
                     }
-                    if(currentrow.area != ''){//地区
+                    if(typeof currentrow.area === 'string' && currentrow.area != ''){//地区
                         let areaTempArr = currentrow.area.split(" ");
                         currentrow.area = areaTempArr.slice();
-                    }else{
+                    }else if(typeof currentrow.area === 'string' && currentrow.area === ''){
                         currentrow.area=[];
                     }
                     this.currentRow = currentrow;
@@ -406,7 +405,7 @@
                             }
                             return false;
                         }
-                        Vue.set(this.customInfoArray,num,result.success);
+                        this.$set(this.customInfoArray,num,result.success);
                     }
                 } catch(e) {
                     this.$message({
@@ -427,7 +426,7 @@
                         const index = this.customLists.findIndex(function(item, index, arr) {
                             return item.id === callbackData.data.id;
                         });
-                        Vue.set(this.customLists,index,callbackData.data);
+                        this.$set(this.customLists,index,callbackData.data);
                         this.currentRow = callbackData.data;
                         this.activeName = '1';
                         this.customInfoArray = [callbackData.data,[],[],[],[],[],[]];//重置
@@ -445,15 +444,6 @@
                     return false;
                 }
                 this.activeRow = Object.assign({},this.currentRow);
-                // if(this.activeRow.house_type !== '' && this.activeRow.house_status !== ''){//装修类型
-                //     this.activeRow.houseTypeOptions = [this.activeRow.house_type,this.activeRow.house_status];
-                // }
-                // if(this.activeRow.area != ''){//地区
-                //     let areaTempArr = this.activeRow.area.split(" ");
-                //     this.activeRow.area = areaTempArr.slice();
-                // }else{
-                //     this.activeRow.area=[];
-                // }
                 this.basicInfoDialogVisible = true;
             },
             resetCustomBasicInfoEdit(){//关闭基本信息弹框后重置表单数据
@@ -463,41 +453,74 @@
             updateCustomRelationRecordItem(callbackData){//新增或更新沟通、测量、方案、收款等记录
                 if(callbackData.data){
                     if(callbackData.type === 'add'){
-                        this.customInfoArray[callbackData.num].push(callbackData.data);
+                        if(callbackData.num === 1){//沟通记录
+                            if(callbackData.data.communicate){//保存沟通记录
+                                this.customInfoArray[callbackData.num].push(callbackData.data.communicate);
+                            }
+                        }else {
+                            this.customInfoArray[callbackData.num].push(callbackData.data);
+                        }
                     }else{//编辑
-                        let key_name = 'id';
-                        switch (callbackData.num) {
-                            case 3:
-                                key_name = 'receivables_id';
-                                break;
-                            default:
-                                // statements_def
-                                break;
+                        let key_name = 'id',tempCallbackData = callbackData.data;
+                        if(callbackData.num === 3){
+                            key_name = 'receivables_id';
+                        }
+                        if(callbackData.num === 1){//沟通记录
+                            tempCallbackData = callbackData.data.communicate;
                         }
                         const index = this.customInfoArray[callbackData.num].findIndex(function(item, index, arr) {
-                            return item[key_name] === callbackData.data[key_name];
+                            return item[key_name] === tempCallbackData[key_name];
                         });
-                        Vue.set(this.customInfoArray[callbackData.num],index,callbackData.data);
+                        this.$set(this.customInfoArray[callbackData.num],index,tempCallbackData);
                         
                     }
-                    //重置基本信息中的status
-                    Vue.set(this.currentRow,'status',callbackData.data.information_status);
-                    Vue.set(this.customInfoArray[0],'status',callbackData.data.information_status);
-                    Vue.set(this.customInfoArray[0],'status_name',this.customStatus[callbackData.data.information_status].label);
+                    if(callbackData.num === 1){//沟通记录
+                        if(callbackData.data.information){//保存基本信息
+                            let tempCallbackFormData = Object.assign({},callbackData.data.information);
+                            const index2 = this.customLists.findIndex(function(item, index, arr) {
+                                return item.id === tempCallbackFormData.id;
+                            });
+                            this.$set(this.customInfoArray,0,callbackData.data.information);
+                            this.$set(this.customLists,index2,callbackData.data.information);
+                            if(tempCallbackFormData.house_type !== '' && tempCallbackFormData.house_status !== ''){//装修类型
+                                tempCallbackFormData.houseTypeOptions = [tempCallbackFormData.house_type,tempCallbackFormData.house_status];
+                            }
+                            if(typeof tempCallbackFormData.area === 'string' && tempCallbackFormData.area != ''){//地区
+                                let areaTempArr = tempCallbackFormData.area.split(" ");
+                                tempCallbackFormData.area = areaTempArr.slice();
+                            }else if(typeof tempCallbackFormData.area === 'string' && tempCallbackFormData.area === ''){
+                                tempCallbackFormData.area=[];
+                            }
+                            this.currentRow = tempCallbackFormData;
+                            this.$refs['customListsTable'].setCurrentRow(callbackData.data.information);
+                        }
+                    }
                 }
             },
-            updateCustomProgrammeRecordItem(id){//处理定案数据
-                const index = this.customInfoArray[4].findIndex(function(item, index, arr) {
-                    return item.id === id;
+            updateCustomProgrammeRecordItem(data){//处理定案数据
+                let that = this;
+                const index = that.customInfoArray[4].findIndex(function(item, index, arr) {
+                    return item.id === data.id;
                 });
-                this.customInfoArray[4].forEach( function(item, il) {
-                    if(il === index){
-                        Vue.set(item,'disabled','true');
-                        Vue.set(item,'disabled_name','是');
+                that.customInfoArray[4].forEach( function(item, il) {
+                    if(data.final){//最终定案
+                        if(il === index){
+                            that.$set(item,'final_disabled','true');
+                            that.$set(item,'final_disabled_name','是');
+                        }else{
+                            that.$set(item,'final_disabled','false');
+                            that.$set(item,'final_disabled_name','否');
+                        } 
                     }else{
-                        Vue.set(item,'disabled','false');
-                        Vue.set(item,'disabled_name','否');
+                        if(il === index){
+                            that.$set(item,'disabled','true');
+                            that.$set(item,'disabled_name','是');
+                        }else{
+                            that.$set(item,'disabled','false');
+                            that.$set(item,'disabled_name','否');
+                        }
                     }
+                    
                 });
             }
         },
@@ -546,7 +569,7 @@
     }
     .edit_btn{
         width: 80px;
-        height: 40px;
+        height: 36px;
         padding: 9px 0;
     }
     .el-select{

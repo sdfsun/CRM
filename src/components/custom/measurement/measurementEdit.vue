@@ -4,7 +4,7 @@
             <el-row :gutter="10">
                 <el-col :span="7">
                     <el-form-item prop='measure_name'>
-                        <el-input  v-model="measurementForm.measure_name" placeholder='测量人名称'></el-input>
+                        <el-input  v-model="measurementForm.measure_name" placeholder='测量人名称' readonly='true'></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -36,12 +36,12 @@
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item prop='information' class='form_item_style_width'>
-                        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"  v-model="measurementForm.information" placeholder='量尺信息'></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="measurementForm.information" placeholder='量尺信息'></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item prop='feedback' class='form_item_style_width'>
-                        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"  v-model="measurementForm.feedback" placeholder='信息回馈'></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="measurementForm.feedback" placeholder='信息回馈'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -81,7 +81,7 @@
             return{
                 measurementForm:{
                     information_id:this.informationItem.id,//客户id
-                    measure_name:'',//测量人
+                    measure_name:this.$store.state.memberRoleId.name,//测量人
                     measure_time:'',//测量开始时间
                     end_time:'',//测量结束时间
                     duration:'',//测量时长
@@ -108,7 +108,6 @@
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
-                // this.measurementForm = this.editInfos;
                 this.measurementForm = Object.assign({},this.editInfos);
                 if(this.editInfos.imageLists && this.editInfos.imageLists.length>0){
                     this.measurementForm.image_id = this.editInfos.image_id.slice();
@@ -116,6 +115,7 @@
                 }
             }else{
                 this.resetFormData();
+                this.measurementForm.complex = this.editInfos.complex;
             }
         },
         watch:{
@@ -131,6 +131,7 @@
                     this.resetFormData();
                     this.measurementForm.image_id = [];
                     this.measurementForm.imageLists = [];
+                    this.measurementForm.complex = newVal.complex;
                 }
             }
         },
@@ -200,6 +201,7 @@
                             }else{
                                 this.measurementForm.duration  = tempDuration;
                             }
+                            delete this.measurementForm.imageLists;
                             measure_save(this.measurementForm).then(res=>{
                                 this.submitBtnStatus = false;
                                 if(res.error){

@@ -101,19 +101,20 @@
     }
     .basicInfo_container ul{
         flex: 1;
-        font-size: 14px;
-        line-height: 20px;
+        font-size: 12px;
+        line-height: 18px;
         color: #4D4D4D;
     }
     ul .title{
-        font-size: 16px;
+        font-size: 13px;
         color: #010101;
-        margin-bottom: 16px;
-        height: 22px;
+        margin-bottom: 14px;
+        height: 20px;
+        font-weight: bold;
     }
     ul li{
         list-style: none;
-        margin-bottom: 14px;
+        margin-bottom: 10px;
         display: flex;
     }
     ul li .txt_1{

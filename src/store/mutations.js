@@ -12,5 +12,9 @@ export default {
     //设置用户等级
     [types.SETMEMBERROLES](state,memberRoles){
         state.memberRoles = memberRoles;
+    },
+    //设置活动列表
+    [types.SETACTIVITYS](state,activitys){
+        state.activitys = activitys;
     }
 }

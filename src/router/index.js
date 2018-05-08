@@ -6,6 +6,7 @@ const hours = r => require.ensure([], () => r(require('../page/designer/hours'))
 const source = r => require.ensure([], () => r(require('@/page/customerSource/customerSource.vue')), '渠道来源');
 const role = r => require.ensure([], () => r(require('@/page/role/role.vue')), '角色管理');
 const user = r => require.ensure([], () => r(require('@/page/user/user.vue')), '用户管理');
+const activity = r => require.ensure([], () => r(require('@/page/activity/activity.vue')), '活动管理');
 
 
 export default [
@@ -32,6 +33,10 @@ export default [
             {
                 path:'/user',
                 component: user
+            },
+            {
+                path:'/activity',
+                component: activity
             },
             {
                 path: '/designer',

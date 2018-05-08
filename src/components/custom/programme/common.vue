@@ -3,10 +3,11 @@
         <el-form-item label='名称：'>
             <el-row :gutter="10">
                 <el-col :span="13">
-                    <el-input  v-model="dataForm.name" placeholder='模块名称'></el-input>
+                    <el-input  v-model="dataForm.name" placeholder='模块名称' v-if='type != "2"'></el-input>
+                    <el-input  v-model="dataForm.name" readonly='true' placeholder='模块名称' v-else></el-input>
                 </el-col>
                 <el-col :span="9">
-                    <el-button type="primary" @click="deleteModel">删除模块</el-button>
+                    <el-button type="primary" @click="deleteModel" v-if='type != "2"'>删除模块</el-button>
                 </el-col>
             </el-row>
         </el-form-item>
@@ -16,6 +17,7 @@
                 action="/crm-upload_image.html"
                 list-type="picture-card"
                 name='mypic[]'
+                :disabled = 'type != "2"?false:true'
                 :file-list="dataForm.imageLists"
                 :multiple='true'
                 :on-preview="handlePictureCardPreview"
@@ -31,9 +33,10 @@
     </section>
 </template>
 <script>
+    import {getUploadIcon} from '@/utils/index';
     export default{
         name:'common',
-        props:['dataForm','index'],
+        props:['dataForm','index','type'],
         data(){
             return{
                 dialogImageUrl:'',
@@ -67,6 +70,10 @@
                     this.dataForm.image_url.push(response.success[0].image_id);
                 }
                 this.dataForm.imageLists = fileList;
+                let fileUrl = getUploadIcon(file.name);
+                if(fileUrl){
+                    file.url = fileUrl;
+                }
             },
             beforeAvatarUpload(file) {
                 // const isJPG = file.type === 'image/jpeg';

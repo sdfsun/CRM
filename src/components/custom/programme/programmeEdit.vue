@@ -5,25 +5,25 @@
                 <el-col :span="12">
                     <el-row>
                         <span class="title">效果明细</span>
-                        <el-button type="primary" @click="addScheme">添加模块</el-button>
+                        <el-button type="primary" @click="addScheme"  v-if='programmeForm.type != "2"'>添加模块</el-button>
                     </el-row>
                     <template v-for='(detail,index) in programmeForm.scheme'>
-                        <common :dataForm='detail' :index='index' v-on:deleteModal='deleteSchemeModal'></common>
+                        <common :dataForm='detail' :index='index' v-on:deleteModal='deleteSchemeModal' :type='programmeForm.type'></common>
                     </template>
                 </el-col>
                 <el-col :span="12">
                     <el-row>
                         <span class="title">相关资料</span>
-                        <el-button type="primary" @click="addRelevant">添加模块</el-button>
+                        <el-button type="primary" @click="addRelevant"  v-if='programmeForm.type != "2"'>添加模块</el-button>
                     </el-row>
                     <template v-for='(rel,ind) in programmeForm.relevant_data'>
-                        <common :dataForm='rel' :index='ind' v-on:deleteModal='deleteRelevantModal'></common>
+                        <common :dataForm='rel' :index='ind' v-on:deleteModal='deleteRelevantModal' :type='programmeForm.type'></common>
                     </template>
                 </el-col>
             </el-row>
         </el-form>
         <div class="btns">
-            <el-button type="primary" @click="onSubmit('programmeForm')" class='submit_btn'>保存</el-button>
+            <el-button type="primary" @click="onSubmit('programmeForm')" class='submit_btn'  v-if='programmeForm.type != "2"'>保存</el-button>
         </div>
     </section>
 </template>

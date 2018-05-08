@@ -34,21 +34,32 @@
                 label="是否定案">
             </el-table-column>
             <el-table-column
+                prop="final_disabled_name"
+                label="是否最终定案">
+            </el-table-column>
+            <el-table-column
               label="操作"
-              width="120">
+              width="160">
                 <template slot-scope="scope">
                     <el-button
-                    @click.native.prevent="handleSave(scope.row.id)"
+                    @click.native.prevent="handleSave(scope.row.id,'false')"
                     type="text"
                     size="medium">
-                        定案
+                        初次定案
+                    </el-button>
+                    <el-button
+                    @click.native.prevent="handleSave(scope.row.id,'true')"
+                    type="text"
+                    size="medium">
+                        最终定案
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
         <div class="btns">
             <el-button type="primary" icon='el-icon-plus' @click='addprogrammeRecord'>新建方案记录</el-button>
-            <el-button type="primary"  class='add_custom' @click='editprogrammeRecord'>编辑</el-button>
+            <el-button type="primary"  class='add_custom' @click='editprogrammeRecord("1")'>编辑</el-button>
+            <el-button type="primary"  @click='editprogrammeRecord("2")'>查看</el-button>
         </div>
         <el-dialog title="方案记录" :visible.sync="programmeDialogVisible" class='customRelationInfoDialog programmeEditDialog' @close='resetProgrammeEdit'>
             <programmeEdit :informationItem='infomation' :editInfos='editActiveRow' ref='programmeEdit'  v-on:closeCustomProgrammeInfoDialog='updateProgrammeRecord'></programmeEdit>
@@ -59,6 +70,7 @@
 <script>
     import programmeEdit from '@/components/custom/programme/programmeEdit';
     import {programme_detail,confirm_scheme} from '@/service/getData';
+    import {getUploadIcon} from '@/utils/index';
 
     export default{
         name:'programme',
@@ -79,9 +91,10 @@
             addprogrammeRecord(){//新增方案记录
                 this.editActiveRow = {};
                 this.editActiveRow.status = this.infomation.status;
+                this.editActiveRow.type = "1";
                 this.programmeDialogVisible = true;
             },
-            async editprogrammeRecord(){//编辑方案记录
+            async editprogrammeRecord(type){//编辑方案记录
                 if(!this.currentrow){
                     this.$message({
                         message:'请先选中需要编辑的方案记录！',
@@ -105,14 +118,16 @@
                     }
                     this.editActiveRow = Object.assign({},res.success);
                     this.editActiveRow.status = this.infomation.status;
-                    // this.editActiveRow.relevant_data = res.success.relevant_data.slice();
-                    // this.editActiveRow.scheme = res.success.scheme.slice();
                     //渲染效果明细的图片列表
                     this.editActiveRow.scheme.forEach( function(se, si) {
                         // se.image_url = se.image_url.slice();
                         if(se.image_url && se.image_url.length>0){
                             let seLists = [];
                             se.image_url.forEach( function(sUrl, sIndex) {
+                                let retUrl = getUploadIcon(sUrl);
+                                if(retUrl){
+                                    sUrl = retUrl;
+                                }
                                 seLists.push({url:sUrl});
                             });
                             se.imageLists = seLists;
@@ -124,11 +139,16 @@
                         if(re.image_url && re.image_url.length>0){
                             let reLists = [];
                             re.image_url.forEach( function(rUrl, rIndex) {
+                                let retUrl = getUploadIcon(sUrl);
+                                if(retUrl){
+                                    sUrl = retUrl;
+                                }
                                 reLists.push({url:rUrl});
                             });
                             re.imageLists = reLists;
                         }
                     });
+                    this.editActiveRow.type = type;
                     this.programmeDialogVisible = true;
                 } catch(e) {
                     this.$message({
@@ -148,9 +168,9 @@
                 // this.images =[];
                 this.$refs['programmeEdit'].$refs['programmeForm'].resetFields();
             },
-            async handleSave(id){//定案
+            async handleSave(id,final){//定案
                 try {
-                    const res = await confirm_scheme(id);
+                    const res = await confirm_scheme(id,final);
                     if(res.error){
                         this.$message({
                             message: res.error,
@@ -162,7 +182,7 @@
                         message:res.success,
                         type:'success'
                     });
-                    this.$emit('updateCustomProgrammeRecords',id);
+                    this.$emit('updateCustomProgrammeRecords',{id:id,final:final});
                 } catch(e) {
                     this.$message({
                         message: e.message,

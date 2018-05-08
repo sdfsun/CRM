@@ -78,45 +78,25 @@
             </el-table-column>
         </el-table>
         <div class="btns">
-            <el-button type="primary" disabled icon='el-icon-plus' v-if='statusForm.status == "3"'>分配设计师</el-button>
-            <el-button type="primary" icon='el-icon-plus' @click='getAssignDesignerLists' v-else>分配设计师</el-button>
             <el-button type="primary" icon='el-icon-plus' @click='addCommunicationRecord'>新增沟通记录</el-button>
             <el-button type="primary" @click='editCommunicationRecord'>编辑</el-button>
         </div>
         <el-dialog title="沟通记录" :visible.sync="communicationDialogVisible" class='customRelationInfoDialog communicationAndBasicDialog' @close='resetCommunicationEdit'>
-            <el-tabs type="border-card" class='el_tabs_footer' v-model='activeName'>
+            <el-tabs type="border-card" class='el_tabs_footer' v-model='activeName' @tab-click='communication_basic_et'>
                 <el-tab-pane label="沟通记录" name='1'>
-                    <communicationEdit :informationItem='infomation' v-on:closeCustomCommunicateInfoDialog='updateCommunicationRecord' :editInfos='editActiveRow' ref='communicationEdit'></communicationEdit>
+                    <communicationEdit :informationItem='infomation' v-on:closeCustomCommunicateInfoDialog='updateCommunicationRecord' :editInfos='editActiveRow' :communicateBasicFormDatas='communicateBasicFormData' ref='communicationEdit'></communicationEdit>
                 </el-tab-pane>
                 <el-tab-pane label="基本信息" name='2'>
-                    <basicEdit :editInfos='infomation'></basicEdit>
+                    <basicEdit :editInfos='communicateBasicFormData' :hideType='1' ref='communicateBasicForms'></basicEdit>
                 </el-tab-pane>
             </el-tabs>
-        </el-dialog>
-        <el-dialog title="分配设计师" :visible.sync="assignDesignerFormDialogVisible" class='assignDesignerDialog' @close='resetAssignDesignerForm'>
-            <el-form ref="assignDesignerForm" :model="assignDesignerForm" :rules='assignDesignerFormRules' label-width="80px">
-                <!-- <el-form-item prop='information_id' class='hide-form-item'></el-form-item> -->
-                <el-form-item prop='to_id' label='符合预约时间的设计师'>
-                    <el-select v-model="assignDesignerForm.to_id" clearable placeholder="请选择设计师">
-                        <el-option
-                            v-for="item in assignDesignerLists"
-                            :key="item.member_id"
-                            :label="item.name"
-                            :value="item.member_id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div class="btns">
-                <el-button type="primary" @click="onSubmitAssignDesignerForm('assignDesignerForm')" class='submit_btn'>保存</el-button>
-            </div>
         </el-dialog>
     </div>
 </template>
 <script>
     import communicationEdit from '@/components/custom/communicationRecord/communicationEdit';
     import basicEdit from '@/components/custom/basicInfo/basicEdit';
-    import {stylist,assign} from '@/service/getData';
+    import {assign} from '@/service/getData';
 
     export default{
         name:'communicationRecord',
@@ -126,48 +106,34 @@
                 communicationDialogVisible:false,
                 editActiveRow:{},//当前需要编辑的行
                 currentrow:null,
-                assignDesignerBtnStatus:false,//列表
-                assignDesignerSubmitBtnStatus:false,//发送微信通知
-                assignDesignerFormDialogVisible:false,
-                assignDesignerLists:[],//可分配设计师列表
                 activeName:'1',
-                assignDesignerForm:{
-                    // information_id:this.infomation.id,
-                    to_id:''
-                },
-                assignDesignerFormRules:{
-                    to_id: [
-                        {  required: true, message: '请选择需要分配的设计师', trigger: 'change' }
-                    ]
-                }
+                formSuccessData:null,//基本信息数据
+                communicateBasicFormData:null//基本信息数据
             }
         },
-        computed:{
-            statusForm:function(){
-                let statusFormTemp = {status:'3'};
-                if(this.communicateRecords && this.communicateRecords.length>0){
-                    statusFormTemp.status = this.communicateRecords[0].scale;
-                    if(this.communicateRecords[0].scale === "1"){
-                        statusFormTemp.member_id = this.communicateRecords[0].member_id;
-                        statusFormTemp.member_usercode = this.communicateRecords[0].member_usercode;
-                        statusFormTemp.member_name = this.communicateRecords[0].member_name;
-                    }
-                }
-                return statusFormTemp;
+        watch:{
+            infomation:function(newVal,oldVal){
+                this.communicateBasicFormData = Object.assign({},newVal);
             }
         },
         methods:{
+            communication_basic_et(){
+                if(this.activeName === '1'){
+                    let res = this.$refs['communicateBasicForms'].$refs['basicForms'].model;
+                    this.communicateBasicFormData = res;
+                }
+            },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 this.currentrow = currentrow;
             },
             addCommunicationRecord(){//新增沟通记录
                 this.editActiveRow = {};
-                this.editActiveRow.status = this.infomation.status;
                 this.communicationDialogVisible = true;
             },
             updateCommunicationRecord(callbackData){
                 this.communicationDialogVisible = false;
                 if(callbackData.data){//信息保存后回调
+                    this.formSuccessData = callbackData.data.information;
                     this.$emit('updateCustomRelationRecords',{data:callbackData.data,type:callbackData.type,num:1});
                 }
             },
@@ -180,89 +146,18 @@
                     return false;
                 }
                 this.editActiveRow = Object.assign({},this.currentrow);
-                this.editActiveRow.status = this.infomation.status;
+                // this.editActiveRow.status = this.infomation.status;
                 this.communicationDialogVisible = true;
             },
             resetCommunicationEdit(){//重置表单数据
                 this.activeName = '1';
                 this.editActiveRow = {};
                 this.$refs['communicationEdit'].$refs['communicateForm'].resetFields();
-            },
-            resetAssignDesignerForm(){//重置分配设计师表单
-                this.assignDesignerFormDialogVisible = false;
-                this.$refs['assignDesignerForm'].resetFields();
-            },
-            async getAssignDesignerLists(){//获取可分配设计师列表
-                try {
-                    let that = this;
-                    if(this.assignDesignerBtnStatus){
-                        return false;
-                    }
-                    this.assignDesignerBtnStatus = true;
-                    const res = await stylist(this.infomation.id,this.statusForm.member_id);
-                    this.assignDesignerBtnStatus = false;
-                    if(res.error){
-                        this.$message({
-                            message: res.error,
-                            type: 'error'
-                        });
-                        if(res.nologin === 1){//未登录
-                            setTimeout(()=>{
-                                that.$router.push('/');
-                            },3000);
-                        }
-                        return false;
-                    }
-                    this.assignDesignerLists = res.success;
-                    this.assignDesignerFormDialogVisible = true;
-                } catch(e) {
-                    this.assignDesignerBtnStatus = false;
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
-            },
-            onSubmitAssignDesignerForm(formName){//分配设计师 发送微信通知
-                if(this.assignDesignerSubmitBtnStatus === true){
-                    return false;
-                }
-                try {
-                    let that = this;
-                    this.$refs[formName].validate((valid,obj) => {
-                        if (valid) {
-                            this.assignDesignerSubmitBtnStatus = true;
-                            this.assignDesignerForm.information_id = this.infomation.id;
-                            assign(this.assignDesignerForm).then(res=>{
-                                this.assignDesignerSubmitBtnStatus = false;
-                                if(res.error){
-                                    this.$message({
-                                        message: res.error,
-                                        type: 'error'
-                                    });
-                                    if(res.nologin === 1){//未登录
-                                        setTimeout(()=>{
-                                            that.$router.push('/');
-                                        },3000);
-                                    }
-                                    return false;
-                                }
-                                this.$message({
-                                    message:res.success,
-                                    type:'success'
-                                });
-                                this.resetAssignDesignerForm();
-                            }).catch(error=>{
-                                this.assignDesignerSubmitBtnStatus = false;
-                            });
-                        }
-                    });
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                    this.assignDesignerSubmitBtnStatus = false;
+                // this.$refs['communicateBasicForms'].$refs['basicForms'].resetFields();
+                if(this.formSuccessData){
+                    this.communicateBasicFormData = Object.assign({},this.formSuccessData);
+                }else{
+                    this.communicateBasicFormData = Object.assign({},this.infomation);
                 }
             }
         },

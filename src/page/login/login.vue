@@ -42,7 +42,8 @@
             ...mapMutations([
                 'SETCUSTOMSOURCE',
                 'SETMEMBERROLES',
-                'SETMEMBERROLEID'
+                'SETMEMBERROLEID',
+                'SETACTIVITYS'
             ]),
             async login(formName){
                 if(this.loginBtnStatus){
@@ -84,6 +85,11 @@
                                     setStore("memberRoles",res.member_role);
                                     this.SETMEMBERROLES(res.member_role);
                                 }
+                                //设置活动列表
+                                if(res.activity){
+                                    setStore("activitys",res.activity);
+                                    this.SETACTIVITYS(res.activity);
+                                }
                             }).catch(error=>{
                                 this.loginBtnStatus = false;
                             });
@@ -109,9 +115,6 @@
         position: relative;
         background-size: auto 580px;
     }
-    .login_bg{
-        width: 100%;
-    }
     .login_form{
         width: 450px;
         position: absolute;
@@ -124,16 +127,6 @@
         text-align: center;
         box-shadow:5px 3px 6px rgba(0,0,0,0.1);
         z-index: 10;
-    }
-    .login_form:after{
-        /*content: '';
-        position: absolute;
-        width: 100%;
-        height: 91px;
-        background: url('../../assets/img/form_shadow.png') center center no-repeat ;
-        left: 0;
-        bottom: -40px;
-        z-index: -1;*/
     }
     .login_form .logo{
         margin-bottom: 50px;
@@ -158,7 +151,27 @@
     .remember_pasd{
         text-align: left;
         display: block;
-        margin: -5px 0 40px;
+        margin-bottom: 40px;
     }
-    
+    .el-form-item{
+        margin-bottom: 16px;
+    }
+    @media screen and (max-width: 1366px){
+        .login_container{
+            background: url('../../assets/img/login_bg_1366.jpg') center top no-repeat #EDEFF3;
+            position: relative;
+            background-size: auto 416px;
+        }
+        .login_form{
+            width: 380px;
+            padding: 40px 64px;
+            top:274px;
+        }
+        .login_form .logo{
+            margin-bottom: 32px;
+        }
+        .remember_pasd{
+            margin-bottom: 30px;
+        }
+    }
 </style>

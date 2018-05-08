@@ -65,8 +65,9 @@ export const receivables_save = (formData) => axios.post('/crm-receivables_save.
 export const programme_save = (formData) => axios.post('/crm-programme_save.html',formData);
 
 //方案定案
-export const confirm_scheme = (id) => axios.post('/crm-confirm_scheme.html',{
-    id
+export const confirm_scheme = (id,final) => axios.post('/crm-confirm_scheme.html',{
+    id,
+    final
 });
 
 //保存交易记录
@@ -109,9 +110,9 @@ export const postVisitSave = (formData) => axios.post('/crm-visit_save.html',for
 export const getAllPlan = (formData) => axios.post('/crm-schedules.html',formData);
 
 //获取可分配设计师列表
-export const stylist = (information_id,member_id) => axios.post('/crm-stylist.html',{
+export const stylist = (information_id,assign_times) => axios.post('/crm-stylist.html',{
     information_id,
-    member_id
+    assign_times
 });
 
 //分配设计师并发送微信通知
@@ -119,3 +120,9 @@ export const assign = (formData) => axios.post('/crm-assign.html',formData);
 
 //用户退出
 export const unset_member = () => axios.post('/crm-unset_member.html');
+
+// 获取活动列表
+export const activitys = () => axios.post('/crm-activity.html');
+
+//活动保存
+export const activity_save = (formData) => axios.post('/crm-activity_save.html',formData);

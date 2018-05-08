@@ -234,7 +234,7 @@ body{
     box-sizing: border-box;
 }
 .custom_container .el_tabs_footer > .el-tabs__content .el-tab-pane{
-    height: 320px;
+    height: 260px;
 }
 .custom_container.down .el_tabs_footer > .el-tabs__content .el-tab-pane{
     min-height: 0;
@@ -270,7 +270,8 @@ body{
     margin-top: 15px !important;
 }
 .customRelationInfoDialog .form_item_style_width .el-form-item__content,
-    .customRelationInfoDialog .el-date-editor.el-input, .customRelationInfoDialog .el-date-editor.el-input__inner{
+    .customRelationInfoDialog .el-date-editor.el-input, .customRelationInfoDialog .el-date-editor.el-input__inner,
+    .customRelationInfoDialog .el-checkbox{
     width: 100%;
 }
 /*方案明细弹框*/
@@ -337,11 +338,15 @@ body{
     align-items: center;
 }
 .el-dialog__wrapper .el-dialog{
-    margin: 0 auto;
+    margin: 0 auto !important;
 }
-/*响应式*/
-@media screen and (max-width: 1024px) {
-    .custom_container .el_tabs_footer > .el-tabs__content .el-tab-pane{
-        height: 260px;
-    }
+/*表单样式修改*/
+.el-form-item__label,.el-input__inner,.el-checkbox__label,.el-input,.el-cascader__label{
+    font-size: 12px;
+}
+.el-textarea__inner {
+    font-size: 12px !important;
+}
+.el-form-item__content{
+    line-height: 36px;
 }

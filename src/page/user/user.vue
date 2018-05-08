@@ -158,7 +158,7 @@
                         const index = this.roleLists.findIndex(function(item, index, arr) {
                             return item.member_id === callbackData.data.member_id;
                         });
-                        Vue.set(this.roleLists,index,callbackData.data);
+                        this.$set(this.roleLists,index,callbackData.data);
                     }
                 }
             },

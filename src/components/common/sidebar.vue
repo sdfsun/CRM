@@ -36,6 +36,7 @@
                         <span>基本配置</span>
                     </template>
                     <el-menu-item index="/source">渠道来源管理</el-menu-item>
+                    <el-menu-item index="/activity">活动管理</el-menu-item>
                 </el-submenu>
                 <el-submenu index="4" v-if='memberRoleId.member_role_id === "super"'>
                     <template slot="title">

@@ -55,18 +55,6 @@
                 >
             </el-table-column>
             <el-table-column
-                prop="is_bespeak_name"
-                label="是否预约成功"
-                min-width='120px'
-                >
-            </el-table-column>
-            <el-table-column
-                prop="reason"
-                label="预约失败原因"
-                min-width='200px'
-                >
-            </el-table-column>
-            <el-table-column
                 prop="scale_time"
                 label="预约量尺时间"
                 min-width='160'>

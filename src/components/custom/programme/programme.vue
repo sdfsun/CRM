@@ -137,9 +137,9 @@
                         if(re.image_url && re.image_url.length>0){
                             let reLists = [];
                             re.image_url.forEach( function(rUrl, rIndex) {
-                                let retUrl = getUploadIcon(sUrl);
+                                let retUrl = getUploadIcon(rUrl);
                                 if(retUrl){
-                                    sUrl = retUrl;
+                                    rUrl = retUrl;
                                 }
                                 reLists.push({url:rUrl});
                             });

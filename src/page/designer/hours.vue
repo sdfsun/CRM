@@ -259,7 +259,11 @@ export default {
 .el-cascader{width:100%;margin-top:40px}
 .h_footer{width:90%;margin:0 auto;text-align:right;}
 
-.h_left{background:#fff;min-height:466px;margin-top:40px;}
+.h_left{background:#fff;min-height:666px;margin-top:40px;}
 .h_hd{height:60px;line-height:60px;background:#5A98E8;font-size:20px;color:#fff;text-align:center;}
 .h_ct{padding:60px 10px 30px;text-align:center;}
+
+@media screen and (max-width: 1500px) {
+    .h_left{min-height:466px;}
+}
 </style>

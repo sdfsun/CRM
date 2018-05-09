@@ -94,6 +94,7 @@
                 this.programmeDialogVisible = true;
             },
             async editprogrammeRecord(type){//编辑方案记录
+                let that = this;
                 if(!this.currentrow){
                     this.$message({
                         message:'请先选中需要编辑的方案记录！',
@@ -147,7 +148,9 @@
                         }
                     });
                     this.editActiveRow.type = type;
-                    this.programmeDialogVisible = true;
+                    setTimeout(function(){
+                        that.programmeDialogVisible = true;
+                    },300);
                 } catch(e) {
                     this.$message({
                         message: e.message,

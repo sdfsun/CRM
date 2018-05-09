@@ -90,9 +90,24 @@
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
-                    <el-form-item label="推广成本" prop='cost'>
-                        <el-input  v-model="basicForm.cost" placeholder='请推广成本'></el-input>
-                    </el-form-item>
+                    <el-row :gutter="0">
+                        <el-col :span="18">
+                            <el-form-item label="推广成本" prop='cost_times'>
+                                <el-date-picker
+                                    v-model="basicForm.cost_times"
+                                    type="date"
+                                    placeholder="推广时间"
+                                    value-format='yyyy-MM-dd'
+                                    class='tuiguang_item1'>
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item  prop='cost'>
+                                <el-input  v-model="basicForm.cost" placeholder='成本' class='tuiguang_item2'></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="邮箱" prop='email' ref='emailItem'>
@@ -217,7 +232,8 @@
                     remarks:"",
                     houseTypeOptions:[],//房屋类型
                     client_type:'',
-                    cost:''
+                    cost:'',
+                    cost_times:''
                 },
                 areaOptions:region,
                 submitBtnStatus:false,//是否可点击保存按钮

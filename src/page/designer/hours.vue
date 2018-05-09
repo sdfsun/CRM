@@ -72,7 +72,7 @@ export default {
     },
     mounted: function () {
         this.$nextTick(function () {
-            if(this.memberRoleId && this.memberRoleId.member_role_id === "shopowner" && this.memberRoleId.member_role_id !== "director"){
+            if(this.memberRoleId && (this.memberRoleId.member_role_id === "shopowner" || this.memberRoleId.member_role_id === "director")){
                 this.activeName = 'second';
             }
             this.init();
@@ -264,6 +264,6 @@ export default {
 .h_ct{padding:60px 10px 30px;text-align:center;}
 
 @media screen and (max-width: 1500px) {
-    .h_left{min-height:466px;}
+    .h_left{min-height:466px;margin-top:30px;}
 }
 </style>

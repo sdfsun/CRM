@@ -54,6 +54,7 @@
                 prop="information"
                 label="量尺信息"
                 min-width='200px'
+                :show-overflow-tooltip='true'
                 >
             </el-table-column>
             <el-table-column

@@ -485,6 +485,11 @@
                             this.currentRow = tempCallbackFormData;
                             this.$refs['customListsTable'].setCurrentRow(tempCallbackFormData);
                         }
+                    }else{
+                        //重置基本信息中的status
+                        this.$set(this.currentRow,'status',callbackData.data.information_status);
+                        this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
+                        this.$set(this.customInfoArray[0],'status_name',this.customStatus[callbackData.data.information_status].label);
                     }
                 }
             },

@@ -35,7 +35,8 @@
             <el-table-column
                 prop="outline"
                 label="概要"
-                min-width='200'>
+                min-width='200'
+                :show-overflow-tooltip='true'>
             </el-table-column>
             <el-table-column
                 prop="createtime"

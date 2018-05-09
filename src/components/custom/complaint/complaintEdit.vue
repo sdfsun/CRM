@@ -20,7 +20,7 @@
             <el-row :gutter="10">
                 <el-col :span="24">
                     <el-form-item prop='outline'>
-                        <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" v-model="complaintForm.outline" placeholder='售后、投诉、建议概要' ></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 4}" v-model="complaintForm.outline" placeholder='售后、投诉、建议概要' ></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>

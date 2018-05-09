@@ -62,7 +62,8 @@
             <el-table-column
                 prop="outline"
                 label="沟通概要"
-                min-width='200px'>
+                min-width='200px'
+                :show-overflow-tooltip='true'>
             </el-table-column>
         </el-table>
         <div class="btns">

@@ -31,7 +31,7 @@
             <el-row :gutter="10">
                 <el-col :span="16">
                     <el-form-item prop='detail'>
-                        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="transactionForm.detail" placeholder='交易备注' ></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 4}" v-model="transactionForm.detail" placeholder='交易备注' ></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>

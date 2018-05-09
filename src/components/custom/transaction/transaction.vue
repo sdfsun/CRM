@@ -47,6 +47,7 @@
                 prop="detail"
                 label="交易清单"
                 min-width='200px'
+                :show-overflow-tooltip='true'
                 >
             </el-table-column>
         </el-table>

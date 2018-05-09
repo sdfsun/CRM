@@ -51,7 +51,8 @@
             <el-table-column
                 prop="remarks"
                 label="收款备注"
-                min-width='200px'>
+                min-width='200px'
+                :show-overflow-tooltip='true'>
             </el-table-column>
             <el-table-column
                 label="发票图片"

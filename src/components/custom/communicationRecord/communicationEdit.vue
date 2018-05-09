@@ -62,7 +62,7 @@
                 </el-col>
                 <el-col :span="8">
                     <el-form-item prop='member_id'>
-                        <el-select v-model="communicateForm.member_id" clearable placeholder="请选择设计师">
+                        <el-select  v-model="communicateForm.member_id" placeholder="请选择设计师" clearable>
                             <el-option
                                 v-for="item in assignDesignerLists"
                                 :key="item.member_id"
@@ -153,11 +153,15 @@
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
-                // this.communicateForm = this.editInfos;
-                this.communicateForm = Object.assign({}, this.editInfos);
+                let temp_data = Object.assign({}, this.editInfos);
+                if(temp_data.select){
+                    this.$set(temp_data,'member_id',temp_data.select);
+                }else{
+                    this.$set(temp_data,'member_id','');
+                }
+                this.communicateForm = Object.assign({}, temp_data);
                 this.communicateForm.name = this.$store.state.memberRoleId.name;
                 this.assignDesignerLists = this.editInfos.designer;
-                this.communicateForm.member_id = this.editInfos.select;
             }else{
                 this.resetFormData();
                 this.assignDesignerLists = [];
@@ -165,13 +169,17 @@
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
-                // this.communicateForm = newVal;
                 this.communicateForm.information_id = this.informationItem.id;
                 if(newVal.id){
-                    this.communicateForm = Object.assign({}, newVal);
+                    let temp_data1 = Object.assign({}, newVal);
+                    if(temp_data1.select){
+                        this.$set(temp_data1,'member_id',temp_data1.select);
+                    }else{
+                        this.$set(temp_data1,'member_id','');
+                    }
+                    this.communicateForm = Object.assign({}, temp_data1);
                     this.communicateForm.name = this.$store.state.memberRoleId.name;
                     this.assignDesignerLists = newVal.designer;
-                    this.communicateForm.member_id = newVal.select;
                 }else{
                     this.resetFormData();
                     this.assignDesignerLists = [];
@@ -185,10 +193,10 @@
                 delete this.communicateForm['update_time'];
             },
             scaleTimeHandleChange(val){//预约量尺时间改变时触发
+                this.communicateForm.member_id = '';
                 if(val && val !== ''){
                     this.getAssignDesignerLists();
                 }else{
-                    this.communicateForm.member_id = '';
                     this.assignDesignerLists = [];
                 }
             },

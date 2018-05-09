@@ -36,6 +36,7 @@
             <el-form-item label="用户状态" prop='status'>
                 <el-switch
                     v-model="userForm.status"
+                    active-color="#409EFF"
                     active-value="1"
                     inactive-value="2">
                 </el-switch>

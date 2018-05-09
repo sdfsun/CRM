@@ -1,7 +1,7 @@
 <template>
     <div class="custom_container" :class='status'>
         <section class="custom_header_form">
-            <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo({type:true})'>新建客户信息</el-button>
+            <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo({type:true})' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
             <el-form ref="form" :model="searchForm" class='search_form'>
                 <el-row :gutter="10" style='width:100%;'>
                     <el-col :span='11'>
@@ -244,7 +244,8 @@
         computed:{
             ...mapState([
                 'designers',
-                'customStatus'
+                'customStatus',
+                'memberRoleId'
             ])
         },
         mounted(){

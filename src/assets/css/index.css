@@ -344,6 +344,8 @@ body{
 .el-upload-list--picture-card .el-upload-list__item,.el-upload--picture-card{
     width: 128px;
     height: 128px;
+    position: relative;
+    overflow: hidden;
 }
 .el-menu{
     border-right: none;
@@ -430,3 +432,15 @@ body{
 .el-tooltip__popper{
     width: 200px;
 }
+/*上传控件*/
+/*.el-upload-list__item-name{
+    position: absolute;
+    bottom: 0;
+    z-index: 999;
+    display: block !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    left: 0;
+    right: 0;
+}*/

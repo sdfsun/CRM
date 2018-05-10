@@ -473,6 +473,7 @@
                 this.$refs['basicEdit'].$refs['basicForms'].resetFields();
             },
             updateCustomRelationRecordItem(callbackData){//新增或更新沟通、测量、方案、收款等记录
+                let that = this;
                 if(callbackData.data){
                     if(callbackData.type === 'add'){
                         if(callbackData.num === 1){//沟通记录
@@ -496,27 +497,29 @@
                         this.$set(this.customInfoArray[callbackData.num],index,tempCallbackData);
                         
                     }
+                    const index2 = this.customLists.findIndex(function(item, index, arr) {
+                        return item.id === that.currentRow.id;
+                    });
+                    let statusFormData = callbackData.data;
                     if(callbackData.num === 1){//沟通记录
+                        statusFormData = callbackData.data.communicate;
                         if(callbackData.data.information){//保存基本信息
                             let tempCallbackFormData = Object.assign({},callbackData.data.information);
-                            const index2 = this.customLists.findIndex(function(item, index, arr) {
-                                return item.id === tempCallbackFormData.id;
-                            });
                             this.$set(this.customInfoArray,0,tempCallbackFormData);
                             this.$set(this.customLists,index2,tempCallbackFormData);
                             this.currentRow = tempCallbackFormData;
                             this.$refs['customListsTable'].setCurrentRow(tempCallbackFormData);
                         }
-                    }else{
-                        //重置基本信息中的status
-                        this.$set(this.currentRow,'status',callbackData.data.information_status);
-                        this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
-                        for (let elm of this.customStatus.values()) {
-                            if(elm.val === callbackData.data.information_status){
-                                this.$set(this.customInfoArray[0],'status_name',elm.label);
-                            }
-                        }
                     }
+                    //重置基本信息中的status
+                    this.$set(this.currentRow,'status',statusFormData.information_status);
+                    this.$set(this.customInfoArray[0],'status',statusFormData.information_status);
+                    this.customStatus.forEach( function(elm, il) {
+                        if(elm.val === statusFormData.information_status){
+                            that.$set(that.customInfoArray[0],'status_name',elm.label);
+                            that.$set(that.customLists[index2],'status_name',elm.label);
+                        }
+                    });
                 }
             },
             updateCustomProgrammeRecordItem(data){//处理定案数据

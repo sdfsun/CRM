@@ -522,14 +522,16 @@
                     });
                 }
             },
-            updateCustomProgrammeRecordItem(data){//处理定案数据
+            updateCustomProgrammeRecordItem(callbackData){//处理定案数据
                 let that = this;
                 const index = that.customInfoArray[4].findIndex(function(item, index, arr) {
-                    return item.id === data.id;
+                    return item.id === callbackData.id;
                 });
-                console.log(data.final)
+                const index2 = this.customLists.findIndex(function(item, index, arr) {
+                    return item.id === that.currentRow.id;
+                });
                 that.customInfoArray[4].forEach( function(item, il) {
-                    if(data.final === 'true'){//最终定案
+                    if(callbackData.final === 'true'){//最终定案
                         if(il === index){
                             that.$set(item,'final_disabled','true');
                             that.$set(item,'final_disabled_name','是');
@@ -546,7 +548,15 @@
                             that.$set(item,'disabled_name','否');
                         }
                     }
-                    
+                });
+                //重置基本信息中的status
+                this.$set(this.currentRow,'status',callbackData.data.information_status);
+                this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
+                this.customStatus.forEach( function(elm, il) {
+                    if(elm.val === callbackData.data.information_status){
+                        that.$set(that.customInfoArray[0],'status_name',elm.label);
+                        that.$set(that.customLists[index2],'status_name',elm.label);
+                    }
                 });
             }
         },

@@ -1,6 +1,6 @@
 <template>
     <section class="programmeEdit_container">
-        <el-form ref="programmeForm" label-position="left" :model="programmeForm" label-width='55px'>
+        <el-form ref="programmeForm" label-position="left" :model="programmeForm" label-width='80px'>
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-row>

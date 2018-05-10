@@ -44,7 +44,8 @@
                     <el-button
                     @click.native.prevent="handleSave(scope.row.id,'false')"
                     type="text"
-                    size="medium">
+                    size="medium"
+                    v-if='statusData<10'>
                         初次定案
                     </el-button>
                     <el-button
@@ -82,6 +83,11 @@
                 image_url:'',
                 editActiveRow:{},//当前需要编辑的行
                 currentrow:null
+            }
+        },
+        computed:{
+            statusData:function(){
+                return Number(this.infomation.status) ? Number(this.infomation.status) : 0;
             }
         },
         methods:{
@@ -184,7 +190,7 @@
                         message:res.success,
                         type:'success'
                     });
-                    this.$emit('updateCustomProgrammeRecords',{id:id,final:final});
+                    this.$emit('updateCustomProgrammeRecords',{id:id,final:final,data:res.data});
                 } catch(e) {
                     this.$message({
                         message: e.message,

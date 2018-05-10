@@ -11,7 +11,7 @@
                 </el-col>
             </el-row>
         </el-form-item>
-        <el-form-item label='图片：'>
+        <el-form-item label='图片/文件：'>
             <el-upload
                 ref='upload'
                 action="/crm-upload_image.html"
@@ -65,13 +65,29 @@
             },
             handlePictureCardPreview(file) {
                 try {
-                    let tempLists = this.dataForm.imageLists;
-                    const index = tempLists.findIndex(function(item, index, arr) {
-                        return item.url === file.url
-                    });
-                    this.initialIndex = index;
-                    this.dialogVisible = true;
-                    this.$refs['carouselItems'].setActiveItem(file.url);
+                    let flag = false,fileUrl='';//是否为文件
+                    if(file.response && file.response.success && file.response.success.length>0){
+                        fileUrl = file.response.success[0].image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }else if(file.status === 'success'){
+                        fileUrl = file.url;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }
+                    if(flag){//非图片
+                        window.open(fileUrl);
+                    }else{
+                        let tempLists = this.dataForm.imageLists;
+                        const index = tempLists.findIndex(function(item, index, arr) {
+                            return item.url === file.url
+                        });
+                        this.initialIndex = index;
+                        this.dialogVisible = true;
+                        this.$refs['carouselItems'].setActiveItem(file.url);
+                    }
                 } catch(e) {
                 }
             },

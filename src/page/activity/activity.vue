@@ -72,7 +72,7 @@
     </section>
 </template>
 <script>
-    import {mapMutations} from 'vuex';
+    import {mapMutations,mapState} from 'vuex';
     import {activitys} from '@/service/getData';
     import activityEdit from '@/components/activity/activityEdit';
     import { setStore } from '@/utils/';
@@ -88,6 +88,11 @@
         },
         mounted(){
             this.init();
+        },
+        computed:{
+            ...mapState([
+                'memberRoleId'
+            ])
         },
         methods:{
             ...mapMutations([
@@ -114,8 +119,14 @@
                     }else{
                         this.activityLists = [];
                     }
-                    setStore("activitys",this.activityLists);
-                    this.SETACTIVITYS(this.activityLists);
+                    let tempLists = [];
+                    this.activityLists.forEach( function(el, index) {
+                        if(that.memberRoleId.org_id === el.org_id){
+                            tempLists.push(el);
+                        }
+                    });
+                    setStore("activitys",tempLists);
+                    this.SETACTIVITYS(tempLists);
                 } catch(e) {
                     this.$message({
                         message: e.message,

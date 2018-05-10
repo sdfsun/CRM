@@ -1,7 +1,7 @@
 <template>
     <div class="custom_container" :class='status'>
         <section class="custom_header_form">
-            <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo({type:true})' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
+            <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
             <el-form ref="form" :model="searchForm" class='search_form'>
                 <el-row :gutter="10" style='width:100%;'>
                     <el-col :span='11'>
@@ -32,7 +32,7 @@
                                     </el-select>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span='7'>
+                            <el-col :span='7' v-if='memberRoleId.member_role_id !== "designer"'>
                                 <el-form-item class='search_form_item'>
                                     <el-select v-model="searchForm.member_id" clearable placeholder="设计师" @change='searchFormDatas'>
                                         <el-option
@@ -315,6 +315,9 @@
                     if(this.status === 'down'){
                         this.status = 'up';
                         this.activeName = '1';
+                        this.$nextTick(function(){
+                            this.customTableScroll();
+                        });
                     }else {
                         this.activeName = '';
                         this.status = 'down';
@@ -322,6 +325,9 @@
                 }else{
                     if(this.status === 'down'){
                         this.status = 'up';
+                        this.$nextTick(function(){
+                            this.customTableScroll();
+                        });
                     }
                     let result = null;
                     const customer_id = this.currentRow.id;
@@ -353,6 +359,14 @@
                     }
                 }
             },
+            customTableScroll(){
+                let that = this;
+                let tableWrapper = document.querySelector(".customListsTableInfo .el-table__body-wrapper");
+                const index = this.customLists.findIndex(function(item, index, arr) {
+                    return item.id === that.currentRow.id;
+                });
+               this.$refs['customListsTable'].bodyWrapper.scrollTop =index*36;
+            },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
                     this.currentRow = currentrow;
@@ -360,6 +374,9 @@
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
                     this.isGetDataArray = new Array(7).fill("");//重置
                     this.up_down_tabs();
+                    this.$nextTick(function(){
+                        this.customTableScroll();
+                    });
                 }
             },
             async initElPaneData(num,customer_id){//初始化信息栏数据
@@ -427,12 +444,17 @@
                             return item.id === callbackData.data.id;
                         });
                         this.$set(this.customLists,index,callbackData.data);
-                        this.currentRow = callbackData.data;
-                        this.activeName = '1';
-                        this.customInfoArray = [callbackData.data,[],[],[],[],[],[]];//重置
-                        this.isGetDataArray = ["1","","","","","",""];//重置
-                        this.$refs['customListsTable'].setCurrentRow(this.currentRow);
                     }
+                    this.currentRow = callbackData.data;
+                    this.activeName = '1';
+                    this.customInfoArray = [callbackData.data,[],[],[],[],[],[]];//重置
+                    this.isGetDataArray = ["1","","","","","",""];//重置
+                    this.$nextTick(function(){
+                        this.$refs['customListsTable'].setCurrentRow(this.currentRow);
+                        if(callbackData.type === 'add'){
+                            this.up_down_tabs();
+                        }
+                    });
                 }
             },
             editCustomBasicInfo(){//编辑客户基本信息
@@ -489,7 +511,11 @@
                         //重置基本信息中的status
                         this.$set(this.currentRow,'status',callbackData.data.information_status);
                         this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
-                        this.$set(this.customInfoArray[0],'status_name',this.customStatus[callbackData.data.information_status].label);
+                        for (let elm of this.customStatus.values()) {
+                            if(elm.val === callbackData.data.information_status){
+                                this.$set(this.customInfoArray[0],'status_name',elm.label);
+                            }
+                        }
                     }
                 }
             },
@@ -498,8 +524,9 @@
                 const index = that.customInfoArray[4].findIndex(function(item, index, arr) {
                     return item.id === data.id;
                 });
+                console.log(data.final)
                 that.customInfoArray[4].forEach( function(item, il) {
-                    if(data.final){//最终定案
+                    if(data.final === 'true'){//最终定案
                         if(il === index){
                             that.$set(item,'final_disabled','true');
                             that.$set(item,'final_disabled_name','是');

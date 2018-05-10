@@ -1,14 +1,14 @@
 <template>
     <section class="receivablesEdit_container">
-        <el-form ref="receivablesForm" :model="receivablesForm" :rules='receivablesFormRules' label-width="0" >
-            <el-row :gutter="10">
-                <el-col :span="8">
-                    <el-form-item prop='name'>
-                        <el-input  v-model="receivablesForm.name" placeholder='收款人名称'></el-input>
+        <el-form ref="receivablesForm" :model="receivablesForm" :rules='receivablesFormRules' label-width="80px" >
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item prop='name' label='收款人'>
+                        <el-input  v-model="receivablesForm.name" placeholder='收款人名称' readonly='true'></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                    <el-form-item prop='times'>
+                <el-col :span="12">
+                    <el-form-item prop='times' label='收款时间'>
                         <el-date-picker
                             v-model="receivablesForm.times"
                             type="datetime"
@@ -17,8 +17,11 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                    <el-form-item prop='is_retainage'>
+                
+            </el-row>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item prop='is_retainage' label='收款类型'>
                         <el-select v-model="receivablesForm.is_retainage" placeholder="请选择收款类型">
                             <el-option label="定金" value="0"></el-option>
                             <el-option label="预付款" value="1"></el-option>
@@ -26,32 +29,48 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
+                <el-col :span="12">
+                    <el-form-item label='装修预算'>
+                        <el-input :value='informationItem.budget+"万"' placeholder='装修预算' readonly='true' v-if='informationItem.budget'></el-input>
+                        <el-input value='' placeholder='装修预算' readonly='true' v-else></el-input>
+                    </el-form-item>
+                </el-col>
             </el-row>
-            <el-row :gutter="10">
-                <el-col :span="8">
-                    <el-form-item>
-                        <el-input :value='informationItem.budget+"万"' placeholder='装修预算' readonly='true'></el-input>
-                    </el-form-item>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-row :gutter="0">
+                        <el-col :span="16">
+                            <el-form-item prop='payment' label='收款金额' class='receivables_item1'>
+                                <el-select v-model="receivablesForm.payment" placeholder="付款方式">
+                                    <el-option label="支付宝" value="支付宝"></el-option>
+                                    <el-option label="微信" value="微信"></el-option>
+                                    <el-option label="POS刷卡" value="POS刷卡"></el-option>
+                                    <el-option label="对公转账" value="对公转账"></el-option>
+                                    <el-option label="现金" value="现金"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item prop='money' labelWidth='0' class='receivables_item2'>
+                                <el-input type='number' v-model="receivablesForm.money" placeholder='收款金额'></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                 </el-col>
-                <el-col :span="8">
-                    <el-form-item prop='money'>
-                        <el-input type='number' v-model="receivablesForm.money" placeholder='收款金额'></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                    <el-form-item prop='discount'>
+                <el-col :span="12">
+                    <el-form-item prop='discount' label='抵扣金额'>
                         <el-input  type='number' v-model="receivablesForm.discount" placeholder='抵扣金额'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="10">
-                <el-col :span="8">
-                    <el-form-item prop='voucher'>
+            <el-row :gutter="100">
+                <el-col :span="12">
+                    <el-form-item prop='voucher' label='收款凭证号'>
                         <el-input  v-model="receivablesForm.voucher" placeholder='收款凭证号'></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                    <el-form-item prop='activity_id'>
+                <el-col :span="12">
+                    <el-form-item prop='activity_id' label='活动'>
                         <el-select v-model="receivablesForm.activity_id" placeholder="请选择活动">
                             <el-option
                                 v-for="item in activitys"
@@ -65,7 +84,7 @@
             </el-row>
             <el-row :gutter="10">
                 <el-col :span="24">
-                    <el-form-item prop='remarks' :error='remarksError'>
+                    <el-form-item prop='remarks' :error='remarksError' label='收款备注'>
                         <el-input type="textarea" :autosize="{ minRows: 4}" v-model="receivablesForm.remarks" placeholder='收款备注' ></el-input>
                     </el-form-item>
                 </el-col>
@@ -142,6 +161,7 @@
                     remarks:'',//收款备注
                     is_retainage:'0',//收款类型
                     imageLists:[],//图片列表
+                    payment:'',//收款方式
                     activity_id:''//活动
                 },
                 remarksError:'',//备注错误信息提醒

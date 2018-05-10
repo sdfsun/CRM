@@ -11,7 +11,7 @@
                 <el-date-picker
                     v-model="activityForm.start_time"
                     type="datetime"
-                    placeholder="沟通起始时间"
+                    placeholder="活动起始时间"
                     value-format='yyyy-MM-dd HH:mm:ss'>
                 </el-date-picker>
             </el-form-item>
@@ -19,7 +19,7 @@
                 <el-date-picker
                     v-model="activityForm.end_time"
                     type="datetime"
-                    placeholder="沟通结束时间"
+                    placeholder="活动结束时间"
                     value-format='yyyy-MM-dd HH:mm:ss'>
                 </el-date-picker>
             </el-form-item>
@@ -48,7 +48,7 @@
 </template>
 <script>
     import {activity_save} from '@/service/getData';
-    import {mapMutations,mapActions} from 'vuex';
+    import {mapState,mapMutations,mapActions} from 'vuex';
     import {getDuration} from '@/utils/index';
 
     export default{
@@ -122,6 +122,11 @@
                 }
             }
         },
+        computed:{
+            ...mapState([
+                'memberRoleId'
+            ])
+        },
         methods:{
             ...mapActions([
                 'updateActivitys'
@@ -167,7 +172,9 @@
                                     type:'success'
                                 });
                                 this.closeActivityEditInfoDialog("activityForm",res.data);
-                                this.updateActivitys(res.data);
+                                if(res.data && this.memberRoleId.org_id === res.data.org_id){
+                                    this.updateActivitys(res.data);
+                                }
                             }).catch(error=>{
                                 this.submitBtnStatus = false;
                             });

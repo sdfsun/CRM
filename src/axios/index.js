@@ -6,8 +6,22 @@ let loaddingIndex;
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
-        // 在发送请求之前做些什么
-        loaddingIndex = Loading.service();
+        let config_data = config.data;
+        let flag = false;
+        if(config_data && config_data.length>0){
+            config_data = config_data.split("&");
+            for (var i = 0; i < config_data.length; i++) {
+                let item = config_data[i].split("=");
+                if(item[0].indexOf('showLoad')!=-1){
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        if(!flag){
+            // 在发送请求之前做些什么
+            loaddingIndex = Loading.service();
+        }
         return config;
     }, function (error) {
         // 对请求错误做些什么

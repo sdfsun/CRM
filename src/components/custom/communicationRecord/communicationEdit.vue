@@ -153,13 +153,7 @@
         },
         mounted(){
             if(this.editInfos && this.editInfos.id){
-                let temp_data = Object.assign({}, this.editInfos);
-                if(temp_data.select){
-                    this.$set(temp_data,'member_id',temp_data.select);
-                }else{
-                    this.$set(temp_data,'member_id','');
-                }
-                this.communicateForm = Object.assign({}, temp_data);
+                this.communicateForm = Object.assign({}, this.editInfos);
                 this.communicateForm.name = this.$store.state.memberRoleId.name;
                 this.assignDesignerLists = this.editInfos.designer;
             }else{
@@ -171,13 +165,7 @@
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 this.communicateForm.information_id = this.informationItem.id;
                 if(newVal.id){
-                    let temp_data1 = Object.assign({}, newVal);
-                    if(temp_data1.select){
-                        this.$set(temp_data1,'member_id',temp_data1.select);
-                    }else{
-                        this.$set(temp_data1,'member_id','');
-                    }
-                    this.communicateForm = Object.assign({}, temp_data1);
+                    this.communicateForm = Object.assign({}, newVal);
                     this.communicateForm.name = this.$store.state.memberRoleId.name;
                     this.assignDesignerLists = newVal.designer;
                 }else{
@@ -194,10 +182,9 @@
             },
             scaleTimeHandleChange(val){//预约量尺时间改变时触发
                 this.communicateForm.member_id = '';
+                this.assignDesignerLists = [];
                 if(val && val !== ''){
                     this.getAssignDesignerLists();
-                }else{
-                    this.assignDesignerLists = [];
                 }
             },
             async getAssignDesignerLists(){//获取可分配设计师列表
@@ -249,6 +236,14 @@
                             tempFormData.information_type = type;
                             tempFormData.information = this.communicateBasicFormDatas.id?this.communicateBasicFormDatas:this.informationItem;
                             tempFormData.communicate = this.communicateForm;
+                            if(tempFormData.information.area){
+                                if(typeof tempFormData.information.area === 'string' && tempFormData.information.area !== ''){//地区
+                                    let areaTempArr = tempFormData.information.area.split(" ");
+                                    tempFormData.information.area = areaTempArr.slice();
+                                }
+                            }else{
+                                tempFormData.information.area=[];
+                            }
                             communicate_save(tempFormData).then(res=>{
                                 this.submitBtnStatus = false;
                                 if(res.error){

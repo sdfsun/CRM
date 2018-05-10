@@ -11,6 +11,7 @@ import 'normalize.css/normalize.css'
 import '../theme/index.css'
 import './assets/css/index.css'
 import './assets/css/designer.css'
+import {store_vain} from '@/service/getData/';
 
 Vue.config.productionTip = false
 
@@ -40,3 +41,8 @@ store.dispatch('setMemberRoles','memberRoles');
 store.dispatch('setActivitys','activitys');
 //设置设计师列表
 store.dispatch('setDesigners','designers');
+
+// 隔10分钟调用一次 保持session
+setInterval(function(){
+    store_vain();
+},600000);

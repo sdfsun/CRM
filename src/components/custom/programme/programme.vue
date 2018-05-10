@@ -96,8 +96,9 @@
             async editprogrammeRecord(type){//编辑方案记录
                 let that = this;
                 if(!this.currentrow){
+                    let msg = type==='2'?'查看':'编辑';
                     this.$message({
-                        message:'请先选中需要编辑的方案记录！',
+                        message:'请先选中需要'+msg+'的方案记录！',
                         type:'error'
                     });
                     return false;

@@ -351,10 +351,12 @@
                 if(newValData.house_type !== '' && newValData.house_status !== ''){//装修类型
                     newValData.houseTypeOptions = [newValData.house_type,newValData.house_status];
                 }
-                if(typeof newValData.area === 'string' && newValData.area != ''){//地区
-                    let areaTempArr = newValData.area.split(" ");
-                    newValData.area = areaTempArr.slice();
-                }else if(typeof newValData.area === 'string' && newValData.area === ''){
+                if(newValData.area){
+                    if(typeof newValData.area === 'string' && newValData.area !== ''){//地区
+                        let areaTempArr = newValData.area.split(" ");
+                        newValData.area = areaTempArr.slice();
+                    }
+                }else{
                     newValData.area=[];
                 }
                 this.basicForm = Object.assign({},newValData);
@@ -369,10 +371,12 @@
                     if(newValData.house_type !== '' && newValData.house_status !== ''){//装修类型
                         newValData.houseTypeOptions = [newValData.house_type,newValData.house_status];
                     }
-                    if(typeof newValData.area === 'string' && newValData.area != ''){//地区
-                        let areaTempArr = newValData.area.split(" ");
-                        newValData.area = areaTempArr.slice();
-                    }else if(typeof newValData.area === 'string' && newValData.area === ''){
+                    if(newValData.area){
+                        if(typeof newValData.area === 'string' && newValData.area !== ''){//地区
+                            let areaTempArr = newValData.area.split(" ");
+                            newValData.area = areaTempArr.slice();
+                        }
+                    }else{
                         newValData.area=[];
                     }
                     this.basicForm = Object.assign({},newValData);

@@ -126,3 +126,8 @@ export const activitys = () => axios.post('/crm-activity.html');
 
 //活动保存
 export const activity_save = (formData) => axios.post('/crm-activity_save.html',formData);
+
+// 保持session
+export const store_vain = () => axios.post('/crm-store_vain.html', {
+    showLoad: '3'
+});

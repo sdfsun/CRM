@@ -137,6 +137,11 @@
                 }else{
                     this.editActiveRow.image_id = [];
                 }
+                let measurementWrapper = document.querySelector(".measurement_container .el-table__body-wrapper");
+                let measurementLists = measurementWrapper.querySelectorAll("tr");
+                if(measurementLists && measurementLists.length === 1){
+                    this.editActiveRow.complex = "1";
+                }
                 this.measurementDialogVisible = true;
             },
             updateMeasurementRecord(callbackData){

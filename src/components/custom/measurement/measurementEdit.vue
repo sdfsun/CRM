@@ -13,7 +13,8 @@
                             v-model="measurementForm.measure_time"
                             type="datetime"
                             placeholder="测量起始时间"
-                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            :readonly='measurementForm.id?true:false'>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -28,7 +29,8 @@
                             v-model="measurementForm.end_time"
                             type="datetime"
                             placeholder="测量结束时间"
-                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            :readonly='measurementForm.id?true:false'>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>

@@ -42,7 +42,7 @@ store.dispatch('setActivitys','activitys');
 //设置设计师列表
 store.dispatch('setDesigners','designers');
 
-// 隔10分钟调用一次 保持session
+// 隔5分钟调用一次 保持session
 setInterval(function(){
     store_vain();
-},600000);
+},300000);

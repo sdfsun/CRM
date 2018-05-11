@@ -21,6 +21,12 @@
                 >
             </el-table-column>
             <el-table-column
+                prop="name"
+                label="接待人"
+                min-width='120px'
+                >
+            </el-table-column>
+            <el-table-column
                 prop="mode"
                 label="沟通方式"
                 min-width='120px'

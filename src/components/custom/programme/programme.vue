@@ -132,9 +132,10 @@
                             se.image_url.forEach( function(sUrl, sIndex) {
                                 let retUrl = getUploadIcon(sUrl);
                                 if(retUrl){
-                                    sUrl = retUrl;
+                                    seLists.push({url:retUrl,image_id:sUrl});
+                                }else{
+                                    seLists.push({url:sUrl,image_id:sUrl});
                                 }
-                                seLists.push({url:sUrl});
                             });
                             se.imageLists = seLists;
                         }
@@ -147,9 +148,10 @@
                             re.image_url.forEach( function(rUrl, rIndex) {
                                 let retUrl = getUploadIcon(rUrl);
                                 if(retUrl){
-                                    rUrl = retUrl;
+                                    reLists.push({url:retUrl,image_id:rUrl});
+                                }else{
+                                    reLists.push({url:rUrl,image_id:rUrl});
                                 }
-                                reLists.push({url:rUrl});
                             });
                             re.imageLists = reLists;
                         }

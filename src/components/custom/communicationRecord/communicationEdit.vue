@@ -211,6 +211,44 @@
                     });
                 }
             },
+            submitFormHandle(type){
+                let that = this;
+                let tempFormData = {};
+                tempFormData.information_id = this.informationItem.id;
+                tempFormData.information_type = type;
+                tempFormData.information = this.communicateBasicFormDatas.id?this.communicateBasicFormDatas:this.informationItem;
+                tempFormData.communicate = this.communicateForm;
+                if(tempFormData.information.area){
+                    if(typeof tempFormData.information.area === 'string' && tempFormData.information.area !== ''){//地区
+                        let areaTempArr = tempFormData.information.area.split(" ");
+                        tempFormData.information.area = areaTempArr.slice();
+                    }
+                }else{
+                    tempFormData.information.area=[];
+                }
+                communicate_save(tempFormData).then(res=>{
+                    this.submitBtnStatus = false;
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin === 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.$message({
+                        message:res.success,
+                        type:'success'
+                    });
+                    that.closeCommunicateInfoDialog("communicateForm",res.data);
+                }).catch(error=>{
+                    this.submitBtnStatus = false;
+                });
+            },
             onSubmit(formName,type){
                 if(this.submitBtnStatus === true){
                     return false;
@@ -231,45 +269,21 @@
                             }else{
                                 this.communicateForm.duration  = tempDuration;
                             }
-                            let tempFormData = {};
-                            tempFormData.information_id = this.informationItem.id;
-                            tempFormData.information_type = type;
-                            tempFormData.information = this.communicateBasicFormDatas.id?this.communicateBasicFormDatas:this.informationItem;
-                            tempFormData.communicate = this.communicateForm;
-                            if(tempFormData.information.area){
-                                if(typeof tempFormData.information.area === 'string' && tempFormData.information.area !== ''){//地区
-                                    let areaTempArr = tempFormData.information.area.split(" ");
-                                    tempFormData.information.area = areaTempArr.slice();
-                                }
-                            }else{
-                                tempFormData.information.area=[];
-                            }
-                            communicate_save(tempFormData).then(res=>{
-                                this.submitBtnStatus = false;
-                                if(res.error){
-                                    this.$message({
-                                        message: res.error,
-                                        type: 'error'
-                                    });
-                                    if(res.nologin === 1){//未登录
-                                        setTimeout(()=>{
-                                            that.$router.push('/');
-                                        },3000);
-                                    }
-                                    return false;
-                                }
-                                this.$message({
-                                    message:res.success,
-                                    type:'success'
+                            if(type === '2'){//客户拒绝
+                                this.$confirm('是否确认客户拒绝？', '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning'
+                                }).then(() => {
+                                    setTimeout(function(){
+                                        that.submitFormHandle(type);
+                                    },200);
+                                }).catch(() => {
+                                    this.submitBtnStatus = false;
                                 });
-                                that.closeCommunicateInfoDialog("communicateForm",res.data);
-                            }).catch(error=>{
-                                this.submitBtnStatus = false;
-                                // this.$message({
-                                //     message: error,
-                                //     type: 'error'
-                                // });
-                            });
+                            }else{
+                                that.submitFormHandle(type);
+                            }
                         }
                     })
                 } catch(e) {

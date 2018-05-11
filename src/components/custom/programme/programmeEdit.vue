@@ -5,7 +5,7 @@
                 <el-col :span="12">
                     <el-row>
                         <span class="title">效果明细</span>
-                        <el-button type="primary" @click="addScheme"  v-if='programmeForm.type != "2"'>添加模块</el-button>
+                        <el-button type="primary" @click="addScheme"  v-if='programmeForm.type === "1"'>添加模块</el-button>
                     </el-row>
                     <template v-for='(detail,index) in programmeForm.scheme'>
                         <common :dataForm='detail' :index='index' v-on:deleteModal='deleteSchemeModal' :type='programmeForm.type'></common>
@@ -14,7 +14,7 @@
                 <el-col :span="12">
                     <el-row>
                         <span class="title">相关资料</span>
-                        <el-button type="primary" @click="addRelevant"  v-if='programmeForm.type != "2"'>添加模块</el-button>
+                        <el-button type="primary" @click="addRelevant"  v-if='programmeForm.type === "1"'>添加模块</el-button>
                     </el-row>
                     <template v-for='(rel,ind) in programmeForm.relevant_data'>
                         <common :dataForm='rel' :index='ind' v-on:deleteModal='deleteRelevantModal' :type='programmeForm.type'></common>
@@ -23,7 +23,7 @@
             </el-row>
         </el-form>
         <div class="btns">
-            <el-button type="primary" @click="onSubmit('programmeForm')" class='submit_btn'  v-if='programmeForm.type != "2"'>保存</el-button>
+            <el-button type="primary" @click="onSubmit('programmeForm')" class='submit_btn'  v-if='programmeForm.type === "1"'>保存</el-button>
         </div>
     </section>
 </template>
@@ -39,7 +39,8 @@
                 programmeForm:{
                     information_id:this.informationItem.id,//客户id
                     scheme:[{}],//效果明細
-                    relevant_data:[{}]//相关资料
+                    relevant_data:[{}],//相关资料
+                    type:''
                 },
                 submitBtnStatus:false//保存按钮是否可点击
             }
@@ -49,6 +50,7 @@
                 this.programmeForm = Object.assign({},this.editInfos);
             }else{
                 this.resetFormData();
+                this.programmeForm.type = this.editInfos.type;
             }
         },
         watch:{
@@ -68,6 +70,7 @@
                         image_url:[],
                         imageLists:[]
                     }];
+                    this.programmeForm.type = newVal.type;
                 }
             }
         },
@@ -109,6 +112,7 @@
                             delete re.imageLists;
                         });
                     }
+                    delete this.programmeForm.type;
                     this.$refs[formName].validate((valid) => {
                         programme_save(this.programmeForm).then(res=>{
                             this.submitBtnStatus = false;

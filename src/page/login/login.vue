@@ -44,7 +44,8 @@
                 'SETMEMBERROLES',
                 'SETMEMBERROLEID',
                 'SETACTIVITYS',
-                'SETDESIGNERS'
+                'SETDESIGNERS',
+                'SETQRCODE'
             ]),
             async login(formName){
                 if(this.loginBtnStatus){
@@ -95,6 +96,10 @@
                                 if(res.designer){
                                     setStore("designers",res.designer);
                                     this.SETDESIGNERS(res.designer);
+                                }
+                                //是否需要微信绑定
+                                if(res.weixin){
+                                    this.SETQRCODE(res.weixin);
                                 }
                             }).catch(error=>{
                                 this.loginBtnStatus = false;

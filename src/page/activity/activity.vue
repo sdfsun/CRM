@@ -2,7 +2,6 @@
     <section class="customerSource_container">
         <el-button type="primary" icon='el-icon-plus' class='add_source' @click='insertCustomSource'>新建活动</el-button>
         <el-table
-            ref='customListsTable'
             :data="activityLists"
             stripe
             border
@@ -121,7 +120,7 @@
                     }
                     let tempLists = [];
                     this.activityLists.forEach( function(el, index) {
-                        if(that.memberRoleId.org_id === el.org_id){
+                        if(that.memberRoleId.org_id === el.org_id && el.disabled === 'true'){
                             tempLists.push(el);
                         }
                     });
@@ -140,10 +139,20 @@
             },
             handleEdit(curRow){//编辑
                 this.currentrow = Object.assign({},curRow);
+                if(this.currentrow.image_id && this.currentrow.image_id.length>0){
+                    this.currentrow.image_id = this.currentrow.image_id.slice();
+                    let imageLists = [];
+                    this.currentrow.image_id.forEach( function(item, index) {
+                        imageLists.push({url:item});
+                    });
+                    this.currentrow.imageLists = imageLists.slice();
+                }else{
+                    this.currentrow.image_id = [];
+                }
                 this.activityDialogVisible = true;
             },
             resetActivityEdit(){//重置用户表单数据
-                this.editActiveRow = {};
+                this.currentrow = {};
                 this.$refs['activityEdit'].$refs['activityForm'].resetFields();
             },
             updateActivityRecord(callbackData){//更新用户记录

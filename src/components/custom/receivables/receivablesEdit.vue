@@ -1,6 +1,6 @@
 <template>
     <section class="receivablesEdit_container">
-        <el-form ref="receivablesForm" :model="receivablesForm" :rules='receivablesFormRules' label-width="80px" >
+        <el-form ref="receivablesForm" :model="receivablesForm" :rules='receivablesFormRules' label-width="90px" >
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item prop='name' label='收款人'>
@@ -17,15 +17,15 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item prop='is_retainage' label='收款类型'>
-                        <el-select v-model="receivablesForm.is_retainage" placeholder="请选择收款类型">
-                            <el-option label="定金" value="0"></el-option>
-                            <el-option label="预付款" value="1"></el-option>
+                        <el-select v-model="receivablesForm.is_retainage" placeholder="请选择收款类型" clearable >
+                            <el-option label="小额定金" value="0"></el-option>
+                            <el-option label="预存款" value="1"></el-option>
                             <el-option label="尾款" value="2"></el-option>
+                            <el-option label="全款" value="3"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -36,12 +36,32 @@
                     </el-form-item>
                 </el-col>
             </el-row>
+            <!-- 预存款 -->
+            <el-row :gutter="100">
+                <el-col :span="24" v-if='receivablesForm.is_retainage === "1"'>
+                    <el-form-item label='预计合同金额'>
+                        <el-input v-model="receivablesForm.expect_money" placeholder='预计合同金额' clearable></el-input>
+                    </el-form-item>
+                </el-col>
+                <template v-else-if='receivablesForm.is_retainage === "2"'>
+                    <el-col :span="12">
+                        <el-form-item label='实际总额'>
+                            <el-input type='number' v-model="receivablesForm.actual_money" placeholder='实际总额' clearable @change='isActualMoneyHandle' @keyup.13='isActualMoneyHandle'></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label='应收尾款'>
+                            <el-input v-model="receivablesForm.total_amount" placeholder='应收尾款' readonly='true'></el-input>
+                        </el-form-item>
+                    </el-col>
+                </template>
+            </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-row :gutter="0">
                         <el-col :span="16">
-                            <el-form-item prop='payment' label='收款金额' class='receivables_item1'>
-                                <el-select v-model="receivablesForm.payment" placeholder="付款方式">
+                            <el-form-item prop='payment' label='收款金额' class='receivables_item1' required>
+                                <el-select v-model="receivablesForm.payment" placeholder="付款方式" clearable>
                                     <el-option label="支付宝" value="支付宝"></el-option>
                                     <el-option label="微信" value="微信"></el-option>
                                     <el-option label="POS刷卡" value="POS刷卡"></el-option>
@@ -52,26 +72,26 @@
                         </el-col>
                         <el-col :span="8">
                             <el-form-item prop='money' labelWidth='0' class='receivables_item2'>
-                                <el-input type='number' v-model="receivablesForm.money" placeholder='收款金额'></el-input>
+                                <el-input type='number' v-model="receivablesForm.money" placeholder='收款金额' clearable></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item prop='discount' label='抵扣金额'>
-                        <el-input  type='number' v-model="receivablesForm.discount" placeholder='抵扣金额'></el-input>
+                        <el-input  type='number' v-model="receivablesForm.discount" placeholder='抵扣金额' clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item prop='voucher' label='收款凭证号'>
-                        <el-input  v-model="receivablesForm.voucher" placeholder='收款凭证号'></el-input>
+                        <el-input  v-model="receivablesForm.voucher" placeholder='收款凭证号' clearable></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item prop='activity_id' label='活动'>
-                        <el-select v-model="receivablesForm.activity_id" placeholder="请选择活动">
+                        <el-select v-model="receivablesForm.activity_id" placeholder="请选择活动" clearable @change='activityHandle'>
                             <el-option
                                 v-for="item in activitys"
                                 :key="item.id"
@@ -85,11 +105,11 @@
             <el-row :gutter="10">
                 <el-col :span="24">
                     <el-form-item prop='remarks' :error='remarksError' label='收款备注'>
-                        <el-input type="textarea" :autosize="{ minRows: 4}" v-model="receivablesForm.remarks" placeholder='收款备注' ></el-input>
+                        <el-input type="textarea" :autosize="{ minRows: 4}" v-model="receivablesForm.remarks" placeholder='收款备注'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-form-item prop='imageLists'>
+            <el-form-item prop='imageLists' label='发票图片'>
                 <el-upload
                     ref='upload'
                     action="/crm-upload_image.html"
@@ -107,8 +127,57 @@
                     <img width="100%" :src="dialogImageUrl" alt="">
                 </el-dialog>
             </el-form-item>
-            
         </el-form>
+        <div class="activity-infos" v-show='activityVisible'>
+            <el-table
+            :data="activityItems"
+            stripe
+            border
+            style="width: 100%;text-align: center;flex:1;overflow: auto;"
+            header-row-class-name='header_row_style'>
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="活动主题">
+                              <span>{{ props.row.title }}</span>
+                            </el-form-item>
+                            <el-form-item label="活动内容">
+                              <span>{{ props.row.content }}</span>
+                            </el-form-item>
+                            <el-form-item label="开始时间">
+                              <span>{{ props.row.start_time }}</span>
+                            </el-form-item>
+                            <el-form-item label="结束时间">
+                              <span>{{ props.row.end_time }}</span>
+                            </el-form-item>
+                            <el-form-item label="是否激活">
+                              <span>{{ props.row.disabled_name }}</span>
+                            </el-form-item>
+                            <el-form-item label="所属门店">
+                              <span>{{ props.row.org_name }}</span>
+                            </el-form-item>
+                        </el-form>
+                      </template>
+                </el-table-column>
+                <el-table-column
+                    prop="title"
+                    label="活动主题"
+                    min-width='130px'
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop='content'
+                    label="活动内容"
+                    min-width='180px'
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="org_name"
+                    label="所属门店"
+                    min-width='150px'>
+                </el-table-column>
+            </el-table>
+        </div>
         <div class="btns">
             <el-button type="primary" @click="onSubmit('receivablesForm')" class='submit_btn'>保存</el-button>
         </div>
@@ -162,18 +231,26 @@
                     is_retainage:'0',//收款类型
                     imageLists:[],//图片列表
                     payment:'',//收款方式
-                    activity_id:''//活动
+                    activity_id:'',//活动
+                    expect_money:'',//预计合同金额
+                    actual_money:'',//实际总额
+                    total_amount:'',//应收尾款
                 },
                 remarksError:'',//备注错误信息提醒
                 submitBtnStatus:false,//保存按钮是否可点击
                 dialogImageUrl:'',
                 dialogVisible:false,
+                activityVisible:false,
+                activityItems:[],//活动列表信息
                 receivablesFormRules:{//规则校验
                     name: [
                         {  required: true, message: '请填写收款人名称', trigger: 'blur' }
                     ],
                     times: [
                         {  required: true, message: '请选择收款时间', trigger: 'change' }
+                    ],
+                    payment:[
+                        {  required: true, message: '请选择付款方式', trigger: 'change' }
                     ],
                     money: [
                         { validator: checkMoneyAndDiscount}
@@ -203,6 +280,7 @@
                 this.resetFormData();
                 this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
             }
+            
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
@@ -217,6 +295,7 @@
                     this.receivablesForm.imageLists = [];
                     this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
                 }
+                this.activityHandle(this.receivablesForm.activity_id);
             }
         },
         methods:{
@@ -240,12 +319,7 @@
                 this.receivablesForm.imageLists = fileList;
             },
             beforeAvatarUpload(file) {
-                // const isJPG = file.type === 'image/jpeg';
                 const isLt2M = file.size / 1024 / 1024 < 2;
-
-                // if (!isJPG) {
-                //   this.$message.error('上传头像图片只能是 JPG 格式!');
-                // }
                 if (!isLt2M) {
                     this.$message({
                         message:'上传头像图片大小不能超过 2MB!',
@@ -254,6 +328,22 @@
                     return false;
                 }
                 return isLt2M;
+            },
+            activityHandle(item){//选择活动时显示具体的活动信息
+                if(item){
+                    const index = this.activitys.findIndex(function(el, index, arr) {
+                        return el.id === item;
+                    });
+                    this.activityItems = [];
+                    this.activityItems.push(this.activitys[index]);
+                    this.activityVisible = true;
+                }else{
+                    this.activityVisible = false;
+                }
+            },
+            isActualMoneyHandle(val){//实际总额改变维护应收金额
+                let temp = Number(val)-Number(this.receivablesForm.sum_price);
+                this.receivablesForm.total_amount = temp>0?temp:0;
             },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){
@@ -324,7 +414,15 @@
         margin-right: 0;
     }
     .image_item_upload{
-        width: 148px;
-        height: 148px;
+        width: 128px;
+        height: 128px;
+    }
+    .demo-table-expand{
+        text-align: left;
+    }
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 49%;
     }
 </style>

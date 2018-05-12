@@ -445,3 +445,8 @@ body{
     right: 0;
     margin: 0 auto;
 }*/
+
+.demo-table-expand label {
+    width: 60px;
+    color: #99a9bf;
+}

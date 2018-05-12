@@ -3,7 +3,7 @@
         <el-form-item label='名称：'>
             <el-row :gutter="10">
                 <el-col :span="13">
-                    <el-input  v-model="dataForm.name" placeholder='模块名称' v-if='type !== "2"'></el-input>
+                    <el-input  v-model="dataForm.name" placeholder='模块名称' v-if='type !== "2"' clearable></el-input>
                     <el-input  v-model="dataForm.name" readonly='true' placeholder='模块名称' v-else></el-input>
                 </el-col>
                 <el-col :span="9">

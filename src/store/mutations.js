@@ -20,5 +20,9 @@ export default {
     //设置设计师
     [types.SETDESIGNERS](state,data){
         state.designers = data;
+    },
+    //设置微信二维码
+    [types.SETQRCODE](state,data){
+        state.qrcode = data;
     }
 }

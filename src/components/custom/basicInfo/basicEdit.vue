@@ -4,14 +4,15 @@
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="姓名" prop='name'>
-                        <el-input v-model="basicForm.name" placeholder='请输入姓名'></el-input>
+                        <el-input v-model="basicForm.name" placeholder='请输入姓名' clearable></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="地区" prop='area'>
                         <el-cascader
                             :options="areaOptions"
-                            v-model="basicForm.area">
+                            v-model="basicForm.area"
+                            clearable>
                         </el-cascader>
                     </el-form-item>
                 </el-col>
@@ -27,31 +28,31 @@
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="地址" prop='addr'>
-                        <el-input v-model="basicForm.addr" placeholder='请输入详细地址'></el-input>
+                        <el-input v-model="basicForm.addr" placeholder='请输入详细地址' clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="电话" prop='tel' ref='telItem'>
-                        <el-input v-model="basicForm.tel" placeholder='请输入电话'></el-input>
+                        <el-input v-model="basicForm.tel" placeholder='请输入电话' clearable></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="手机" prop='mobile' ref='mobileItem' >
-                        <el-input v-model.number="basicForm.mobile" maxlength='11' placeholder='请输入手机'></el-input>
+                        <el-input v-model.number="basicForm.mobile" maxlength='11' placeholder='请输入手机' clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="qq" prop='qq' ref='qqItem'>
-                        <el-input v-model="basicForm.qq" placeholder='请输入qq'></el-input>
+                        <el-input v-model="basicForm.qq" placeholder='请输入qq' clearable></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="微信" prop='weixin' ref='weixinItem'>
-                        <el-input v-model="basicForm.weixin" placeholder='请输入微信'></el-input>
+                        <el-input v-model="basicForm.weixin" placeholder='请输入微信' clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -61,27 +62,28 @@
                         <el-cascader
                             v-model="basicForm.houseTypeOptions"
                             :options="houseOptions"
-                            @change="houseHandleChange">
+                            @change="houseHandleChange"
+                            clearable>
                         </el-cascader>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="户型"  prop='house_layout'>
-                        <el-input  v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁'></el-input>
+                        <el-input  v-model="basicForm.house_layout" placeholder='例：别墅 4房3厅 儿童房，女孩 8岁' clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="装修预算"  prop='budget' class='budget_item'>
-                        <el-input type='number' v-model="basicForm.budget" placeholder='装修预算'>
+                        <el-input type='number' v-model="basicForm.budget" placeholder='装修预算' clearable>
                             <i slot="suffix">W</i>
                         </el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="装修需求" prop='demand'>
-                        <el-select v-model="basicForm.demand" placeholder="装修需求">
+                        <el-select v-model="basicForm.demand" placeholder="装修需求" clearable>
                             <el-option label="标准件" value="标准件"></el-option>
                             <el-option label="全屋设计" value="全屋设计"></el-option>
                         </el-select>
@@ -98,27 +100,28 @@
                                     type="date"
                                     placeholder="推广时间"
                                     value-format='yyyy-MM-dd'
-                                    class='tuiguang_item1'>
+                                    class='tuiguang_item1'
+                                    clearable>
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
                         <el-col :span="6">
                             <el-form-item  prop='cost'>
-                                <el-input  v-model="basicForm.cost" placeholder='成本' class='tuiguang_item2'></el-input>
+                                <el-input  v-model="basicForm.cost" placeholder='成本' class='tuiguang_item2' clearable></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="邮箱" prop='email' ref='emailItem'>
-                        <el-input type='email' v-model="basicForm.email" placeholder='请输入邮箱'></el-input>
+                        <el-input type='email' v-model="basicForm.email" placeholder='请输入邮箱' clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="100">
                 <el-col :span="12">
                     <el-form-item label="客户类型" prop='client_type'>
-                        <el-select v-model="basicForm.client_type" placeholder="请选择客户类型">
+                        <el-select v-model="basicForm.client_type" placeholder="请选择客户类型" clearable>
                             <el-option label="装修用户" value="1"></el-option>
                             <el-option label="合作商" value="2"></el-option>
                             <el-option label="其他" value="3"></el-option>
@@ -128,7 +131,7 @@
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="客户来源" prop='source'>
-                        <el-select v-model="basicForm.source" placeholder="请选择客户来源">
+                        <el-select v-model="basicForm.source" placeholder="请选择客户来源" clearable>
                             <el-option
                                 v-for="item in customSource"
                                 :key="item.id"
@@ -143,7 +146,7 @@
             <el-row :gutter="100">
                 <el-col :span="12" v-if='hideType != "1"'>
                     <el-form-item label="状态" prop='status'>
-                        <el-select v-model="basicForm.status" placeholder="状态">
+                        <el-select v-model="basicForm.status" placeholder="状态" clearable>
                             <el-option
                                 v-for="item in customStatus"
                                 :key="item.val"
@@ -155,7 +158,7 @@
                 </el-col>
             </el-row>
             <el-form-item label="客户备注" class='remarks_item' prop='remarks'>
-                <el-input type="textarea" :autosize="{ minRows: 4}" v-model="basicForm.remarks" placeholder='客户备注'></el-input>
+                <el-input type="textarea" :autosize="{ minRows: 4}" v-model="basicForm.remarks" placeholder='客户备注' clearable></el-input>
             </el-form-item>
         </el-form>
         <div class="btns" v-if='hideType != "1"'>

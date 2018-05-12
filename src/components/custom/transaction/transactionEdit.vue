@@ -4,7 +4,7 @@
             <el-row :gutter="10">
                 <el-col :span="6">
                     <el-form-item prop='name'>
-                        <el-input  v-model="transactionForm.name" placeholder='接待人名称'></el-input>
+                        <el-input  v-model="transactionForm.name" placeholder='接待人名称' clearable></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -19,17 +19,17 @@
                 </el-col>
                 <el-col :span="6">
                     <el-form-item prop='money'>
-                        <el-input type='number' v-model="transactionForm.money" placeholder='交易金额'></el-input>
+                        <el-input type='number' v-model="transactionForm.money" placeholder='交易金额' clearable></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item prop='order_id'>
-                        <el-input  v-model="transactionForm.order_id" placeholder='交易订单号'></el-input>
+                        <el-input  v-model="transactionForm.order_id" placeholder='交易订单号' clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row :gutter="10">
-                <el-col :span="16">
+                <el-col :span="24">
                     <el-form-item prop='detail'>
                         <el-input type="textarea" :autosize="{ minRows: 4}" v-model="transactionForm.detail" placeholder='交易备注' ></el-input>
                     </el-form-item>

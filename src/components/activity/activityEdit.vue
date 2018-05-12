@@ -40,6 +40,28 @@
                     inactive-value="false">
                 </el-switch>
             </el-form-item>
+            <el-form-item prop='imageLists' label='海报图片'>
+                <el-upload
+                    ref='upload'
+                    action="/crm-upload_image.html"
+                    list-type="picture-card"
+                    name='mypic[]'
+                    :multiple='true'
+                    :file-list="activityForm.imageLists"
+                    :on-preview="handlePictureCardPreview"
+                    :before-upload="beforeAvatarUpload"
+                    :on-remove="handleRemove"
+                    :on-success='handleSuccess'>
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
+                    <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
+                        <el-carousel-item v-for="(item,index) in activityForm.imageLists" :key="index" :name='item.url'>
+                            <img :src="item.url" class="image_carousel_item">
+                        </el-carousel-item>
+                    </el-carousel>
+                </el-dialog>
+            </el-form-item>
         </el-form>
         <div class="btns">
             <el-button type="primary" @click="onSubmit('activityForm')" class='submit_btn'>保存</el-button>
@@ -63,6 +85,8 @@
                     end_time:'',//结束时间
                     disabled:'true',//是否启用
                     org_id:'5',//所属门店
+                    image_id:[],//图片列表
+                    imageLists:[],//图片列表
                 },
                 orgs:[
                     {
@@ -86,6 +110,8 @@
                         label: '松霖南京体验店'
                     }
                 ],
+                dialogVisible:false,
+                initialIndex:0,
                 submitBtnStatus:false,//保存按钮是否可点击
                 activityFormRules:{//规则校验
                     title: [
@@ -109,6 +135,10 @@
         mounted(){
             if(this.editInfos && this.editInfos.id){
                 this.activityForm = Object.assign({},this.editInfos);
+                if(this.editInfos.imageLists && this.editInfos.imageLists.length>0){
+                    this.activityForm.image_id = this.editInfos.image_id.slice();
+                    this.activityForm.imageLists = this.editInfos.imageLists.slice();
+                }
             }else{
                 this.resetFormData();
             }
@@ -117,8 +147,14 @@
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
                 if(newVal.id){
                     this.activityForm = Object.assign({},newVal);
+                    if(newVal.imageLists && newVal.imageLists.length>0){
+                        this.activityForm.image_id = newVal.image_id.slice();
+                        this.activityForm.imageLists = newVal.imageLists.slice();
+                    }
                 }else{
                     this.resetFormData();
+                    this.activityForm.image_id = [];
+                    this.activityForm.imageLists = [];
                 }
             }
         },
@@ -135,6 +171,54 @@
                 delete this.activityForm['id'];
                 delete this.activityForm['createtime'];
             },
+            handleRemove(file, fileList) {
+                if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                    var tempImageIds = [];
+                    fileList.forEach( function(item, index) {
+                        if(item.response && item.response.success && item.response.success.length>0){
+                            tempImageIds.push(item.response.success[0].image_id);
+                        }else if(item.status === 'success'){
+                            tempImageIds.push(item.url);
+                        }
+                    });
+                    this.activityForm.imageLists = fileList;
+                    this.activityForm.image_id = tempImageIds.slice();
+                }
+            },
+            handlePictureCardPreview(file) {
+                try {
+                    let tempLists = this.activityForm.imageLists;
+                    const index = tempLists.findIndex(function(item, index, arr) {
+                        return item.url === file.url
+                    });
+                    this.initialIndex = index;
+                    this.dialogVisible = true;
+                    this.$refs['carouselItems'].setActiveItem(file.url);
+                } catch(e) {
+                }
+            },
+            handleSuccess(response, file, fileList){//上传成功
+                if(response.success && response.success.length>0){
+                    this.activityForm.image_id.push(response.success[0].image_id);
+                }
+                this.activityForm.imageLists = fileList;
+            },
+            beforeAvatarUpload(file) {
+                // const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                // if (!isJPG) {
+                //   this.$message.error('上传头像图片只能是 JPG 格式!');
+                // }
+                if (!isLt2M) {
+                    this.$message({
+                        message:'上传头像图片大小不能超过 2MB!',
+                        type:'error'
+                    });
+                    return false;
+                }
+                return isLt2M;
+            },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){
                     return false;
@@ -144,6 +228,7 @@
                     this.$refs[formName].validate((valid,obj) => {
                         if (valid) {
                             this.submitBtnStatus = true;
+                            delete this.activityForm['imageLists'];
                             let tempDuration = getDuration(this.activityForm.start_time,this.activityForm.end_time);
                             if(tempDuration < 0){
                                 this.$message({
@@ -172,7 +257,7 @@
                                     type:'success'
                                 });
                                 this.closeActivityEditInfoDialog("activityForm",res.data);
-                                if(res.data && this.memberRoleId.org_id === res.data.org_id){
+                                if(res.data && this.memberRoleId.org_id === res.data.org_id && res.data.disabled === 'true'){
                                     this.updateActivitys(res.data);
                                 }
                             }).catch(error=>{

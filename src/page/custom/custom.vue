@@ -125,6 +125,18 @@
                 label="客户状态"
                 min-width='120px'>
             </el-table-column>
+            <template v-if='id === 2'>
+                <el-table-column
+                    prop='apart_day'
+                    label="留资天数"
+                    min-width='120px'>
+                </el-table-column>
+                <el-table-column
+                    prop='frequency'
+                    label="沟通次数"
+                    min-width='120px'>
+                </el-table-column>
+            </template>
             <el-table-column
                 prop='member_name'
                 label="归属设计师"
@@ -171,10 +183,14 @@
         <el-dialog title="基本信息" :visible.sync="basicInfoDialogVisible" class='basicInfoDialog' @close='resetCustomBasicInfoEdit' style='margin-top: -60px;'>
             <basicEdit v-on:closeCustomBasicInfoDialog='updateCustomBasicInfo' :editInfos='activeRow' ref='basicEdit'></basicEdit>
         </el-dialog>
+        <!-- 二维码弹框 -->
+        <el-dialog title="微信绑定" :visible.sync="qrcodeDialogVisible" style='text-align:center;'  @close='resetQrcodeDialog'>
+            <img :src='qrcode_url' style="width: 235px;height:235px;" />
+        </el-dialog>
     </div>
 </template>
 <script>
-    import {mapState} from 'vuex';
+    import {mapState,mapMutations} from 'vuex';
     import basicInfo from '@/components/custom/basicInfo/basicInfo';
     import basicEdit from '@/components/custom/basicInfo/basicEdit';
     import communicationRecord from '@/components/custom/communicationRecord/communicationRecord';
@@ -207,6 +223,8 @@
                 customInfoArray:new Array({},[],[],[],[],[],[]),//存储客户相关信息
                 isGetDataArray:new Array(7).fill(""),//存储客户相关信息
                 basicInfoDialogVisible:false,//客户基本信息弹框是否可见
+                qrcodeDialogVisible:false,//微信绑定二维码弹框
+                qrcode_url:'',
                 user_intention: [
                     {
                         value: '有意',
@@ -245,7 +263,8 @@
             ...mapState([
                 'designers',
                 'customStatus',
-                'memberRoleId'
+                'memberRoleId',
+                'qrcode'
             ])
         },
         mounted(){
@@ -258,6 +277,9 @@
             next();
         },
         methods:{
+            ...mapMutations([
+                'SETQRCODE'
+            ]),
             async init(){//获取客户信息列表
                 const that = this;
                 try {
@@ -284,6 +306,14 @@
                     this.activeName = '';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
                     this.isGetDataArray = new Array(7).fill("");//重置
+                    if(this.qrcode && this.qrcode.url){
+                        this.$nextTick(function(){
+                            if(this.qrcode && this.qrcode.tmpl_user === 'false'){//需要弹框
+                                this.qrcode_url = "/qrcode/index.html?text="+this.qrcode.url;
+                                this.qrcodeDialogVisible = true;
+                            }
+                        });
+                    }
                 } catch(e) {
                     this.$message({
                         showClose: true,
@@ -291,6 +321,9 @@
                         type: 'error'
                     });
                 }
+            },
+            resetQrcodeDialog(){
+                this.SETQRCODE({});
             },
             searchFormDatas(){//搜索表单数据
                 if(this.searchForm.content !== '' && this.searchForm.searchName === ''){
@@ -472,6 +505,12 @@
                 this.activeRow = {};
                 this.$refs['basicEdit'].$refs['basicForms'].resetFields();
             },
+            updateReceivablesSumPrice(data){//更新收款记录的已收总价
+                let that = this;
+                this.customInfoArray[3].forEach( function(elm, il) {
+                    that.$set(that.customInfoArray[3][il],'sum_price',data.sum_price);
+                });
+            },
             updateCustomRelationRecordItem(callbackData){//新增或更新沟通、测量、方案、收款等记录
                 let that = this;
                 if(callbackData.data){
@@ -497,6 +536,9 @@
                         this.$set(this.customInfoArray[callbackData.num],index,tempCallbackData);
                         
                     }
+                    if(callbackData.num === 3){//收款
+                        this.updateReceivablesSumPrice(callbackData.data);
+                    }                    
                     const index2 = this.customLists.findIndex(function(item, index, arr) {
                         return item.id === that.currentRow.id;
                     });

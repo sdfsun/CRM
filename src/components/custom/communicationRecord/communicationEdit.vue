@@ -4,7 +4,7 @@
             <el-row :gutter="8">
                 <el-col :span="7">
                     <el-form-item prop='mode'>
-                        <el-select v-model="communicateForm.mode" placeholder="沟通方式">
+                        <el-select v-model="communicateForm.mode" placeholder="沟通方式" clearable>
                             <el-option label="店里沟通" value="店里沟通"></el-option>
                             <el-option label="电话沟通" value="电话沟通"></el-option>
                             <el-option label="微信沟通" value="微信沟通"></el-option>
@@ -18,7 +18,8 @@
                             v-model="communicateForm.contact_time"
                             type="datetime"
                             placeholder="沟通起始时间"
-                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            clearable>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -33,7 +34,8 @@
                             v-model="communicateForm.end_time"
                             type="datetime"
                             placeholder="沟通结束时间"
-                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            clearable>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -45,7 +47,8 @@
                             v-model="communicateForm.bespeak_time"
                             type="datetime"
                             placeholder="预约到店时间"
-                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            clearable>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -56,7 +59,8 @@
                             type="datetime"
                             placeholder="预约量尺时间"
                             value-format='yyyy-MM-dd HH:mm:ss'
-                            @change='scaleTimeHandleChange'>
+                            @change='scaleTimeHandleChange'
+                            clearable>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -93,6 +97,9 @@
                 <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="communicateForm.outline" placeholder='沟通概要'></el-input>
             </el-form-item>
         </el-form>
+        <div class="outline-tags">
+            <el-tag v-for='item in outlineTags' :key='item' @click.native='tagHandle(item)'>{{item}}</el-tag>
+        </div>
         <div class="btns">
             <el-button type="primary" @click="onSubmit('communicateForm','1')" class='submit_btn'>保存记录</el-button>
             <el-button type="primary" @click="onSubmit('communicateForm','2')" class='submit_btn'>客户拒绝</el-button>
@@ -136,6 +143,7 @@
                     member_id:'',//指派的设计师
                     outline:''//沟通概要
                 },
+                outlineTags:['打了无人接听','打通了客户没空','有接电话无需测量'],
                 assignDesignerLists:[],//可指派设计师
                 submitBtnStatus:false,//保存按钮是否可点击
                 communicateFormRules:{//规则校验
@@ -185,6 +193,15 @@
                 this.assignDesignerLists = [];
                 if(val && val !== ''){
                     this.getAssignDesignerLists();
+                }
+            },
+            tagHandle(val){
+                if(this.communicateForm.outline.indexOf(val) === -1){
+                    if(!this.communicateForm.outline){
+                        this.communicateForm.outline = val+' ';
+                    }else{
+                        this.communicateForm.outline = this.communicateForm.outline+' '+val;
+                    }
                 }
             },
             async getAssignDesignerLists(){//获取可分配设计师列表
@@ -315,5 +332,11 @@
     }
     .form_item_style_width{
         width: 100%;
+    }
+    .outline-tags .el-tag{
+        cursor: pointer;
+    }
+    .outline-tags .el-tag+.el-tag {
+        margin-left: 10px;
     }
 </style>

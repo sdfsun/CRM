@@ -81,8 +81,9 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {mapActions} from 'vuex';
+    import {mapActions,mapMutations} from 'vuex';
     import {member_role,add_role} from '@/service/getData';
+    import { setStore } from '@/utils/';
 
     export default{
         name:'role',
@@ -96,6 +97,9 @@
             this.init();
         },
         methods:{
+            ...mapMutations([
+                'SETMEMBERROLES'
+            ]),
             ...mapActions([
                 'updateMemberRoles'
             ]),
@@ -124,6 +128,14 @@
                     }else{
                         this.roleLists = [];
                     }
+                    let tempLists = [];
+                    this.roleLists.forEach( function(el2, index) {
+                        if(el2.disabled){
+                            tempLists.push(el2);
+                        }
+                    });
+                    setStore("memberRoles",tempLists);
+                    this.SETMEMBERROLES(tempLists);
                 } catch(e) {
                     this.$message({
                         message: e.message,
@@ -178,10 +190,12 @@
                             type:'success'
                         });
                         let resData = res.data;
-                        this.updateMemberRoles(resData);
                         resData.editFlag = false;
                         resData.disabled = res.data.disabled === 'true'?true:false;
                         this.$set(this.roleLists,index,resData);
+                        if(resData && resData.disabled === 'true'){
+                            this.updateMemberRoles(resData);
+                        }
                     }
                 } catch(e) {
                     this.submitBtnStatus = false;

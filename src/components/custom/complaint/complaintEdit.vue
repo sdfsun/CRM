@@ -4,7 +4,7 @@
             <el-row :gutter="10">
                 <el-col :span="8">
                     <el-form-item prop='type'>
-                        <el-select v-model="complaintForm.type" placeholder="类型">
+                        <el-select v-model="complaintForm.type" placeholder="类型" clearable>
                             <el-option label="售后" value="0"></el-option>
                             <el-option label="投诉" value="1"></el-option>
                             <el-option label="建议" value="2"></el-option>

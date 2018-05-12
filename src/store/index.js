@@ -11,7 +11,7 @@ const state = {
     customStatus:[
         {val:'0',label:'未联系'},
         {val:'1',label:'需再联系'},
-        // {val:'2',label:'已联系'},
+        {val:'2',label:'待分配设计师'},
         {val:'3',label:'已拒绝'},
         {val:'4',label:'等待量尺'},
         {val:'5',label:'制作方案'},
@@ -34,6 +34,7 @@ const state = {
     memberRoles:[],//角色等级
     activitys:[],//活动列表
     designers:[],//设计师列表
+    qrcode:{}//微信绑定二维码弹框
 };
 
 export default new Vuex.Store({

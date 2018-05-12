@@ -14,7 +14,8 @@
                             type="datetime"
                             placeholder="测量起始时间"
                             value-format='yyyy-MM-dd HH:mm:ss'
-                            :readonly='measurementForm.id?true:false'>
+                            :readonly='measurementForm.id?true:false'
+                            @change='measureTimeHandle'>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -69,7 +70,6 @@
                     </el-carousel>
                 </el-dialog>
             </el-form-item>
-            
         </el-form>
         <div class="btns">
             <el-button type="primary" @click="onSubmit('measurementForm')" class='submit_btn'>保存</el-button>
@@ -99,7 +99,6 @@
                 },
                 initialIndex:0,
                 submitBtnStatus:false,//保存按钮是否可点击
-                dialogImageUrl:'',
                 dialogVisible:false,
                 measurementFormRules:{//规则校验
                     measure_name: [
@@ -182,12 +181,7 @@
                 this.measurementForm.imageLists = fileList;
             },
             beforeAvatarUpload(file) {
-                // const isJPG = file.type === 'image/jpeg';
                 const isLt2M = file.size / 1024 / 1024 < 2;
-
-                // if (!isJPG) {
-                //   this.$message.error('上传头像图片只能是 JPG 格式!');
-                // }
                 if (!isLt2M) {
                     this.$message({
                         message:'上传头像图片大小不能超过 2MB!',
@@ -196,6 +190,9 @@
                     return false;
                 }
                 return isLt2M;
+            },
+            measureTimeHandle(val){//选择开始量尺时间后 自动赋值给结束时间
+                this.measurementForm.end_time = val;
             },
             onSubmit(formName){
                 if(this.submitBtnStatus === true){

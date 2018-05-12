@@ -279,8 +279,8 @@
             }else{
                 this.resetFormData();
                 this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
+                this.receivablesForm.sum_price = this.editInfos.sum_price;
             }
-            
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
@@ -294,6 +294,7 @@
                     this.resetFormData();
                     this.receivablesForm.imageLists = [];
                     this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
+                    this.receivablesForm.sum_price = newVal.sum_price;
                 }
                 this.activityHandle(this.receivablesForm.activity_id);
             }
@@ -303,6 +304,9 @@
                 delete this.receivablesForm['receivables_id'];
                 delete this.receivablesForm['createtime'];
                 delete this.receivablesForm['update_time'];
+                this.receivablesForm.expect_money = '';//预计合同金额
+                this.receivablesForm.actual_money = '';//实际总额
+                this.receivablesForm.total_amount = '';//应收尾款
             },
             handleRemove(file, fileList) {
                 this.receivablesForm.image_id = '';

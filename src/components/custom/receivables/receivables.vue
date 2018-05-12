@@ -105,6 +105,7 @@
             },
             addreceivablesRecord(){//新增收款记录
                 this.editActiveRow = {};
+                this.editActiveRow.sum_price = this.receivablesRecords[0].sum_price;
                 this.receivablesDialogVisible = true;
             },
             editreceivablesRecord(){//编辑收款记录

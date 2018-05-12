@@ -138,7 +138,6 @@
                     duration:'',//沟通时长
                     bespeak_time:'',//预约到店时间
                     is_arrival:'',//是否到店
-                    is_bespeak:'',//是否预约成功
                     scale_time:'',//预约量尺时间
                     member_id:'',//指派的设计师
                     outline:''//沟通概要

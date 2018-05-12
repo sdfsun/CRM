@@ -64,7 +64,8 @@ export default {
             startTime:'',
             endTime:'',
             sendDate:[],
-            tableData:[]
+            tableData:[],
+            singleDate:[]
         }
     },
     created(){
@@ -120,14 +121,14 @@ export default {
         },
         endTimeFun(){
             var timestamp = new Date(this.startTime).getTime();
-            var endTamp = new Date(timestamp + 3600*24*3*1000);
+            var endTamp = new Date(timestamp + 3600*24*6*1000);
             var y = endTamp.getFullYear();
             var m = endTamp.getMonth() + 1;
             var d = endTamp.getDate();
             this.endTime = y + '-' + m + '-' + d
         },
         async postPaidan(){
-            let result = await postVisitSave({'visit':this.sendDate});
+            let result = await postVisitSave({'visit':this.singleDate});
             if(result.success){
                 this.$message({
                     message: '恭喜你，' + result.success,
@@ -174,6 +175,7 @@ export default {
 
             document.body.onclick = function(event){
                 let isPush3 = true,isPush4 = true;
+                that.singleDate = [];
                 if (that.hasClass(event.target.parentNode, 'd_msg')) {
                     if (that.hasClass(event.target, 'active')) {
                         event.target.className = '';
@@ -186,7 +188,11 @@ export default {
                                             that.sendDate.splice(i, 1);
                                             event.target.parentNode.parentNode.className = '';
                                             isPush3 = true;
+                                            that.singleDate.push({'type_am':'','type_pm':'','work_date':event.target.getAttribute('data')});
+                                        }else{
+                                            that.singleDate.push({'type_am':'','type_pm':'2','work_date':event.target.getAttribute('data')});
                                         }
+                                        that.postPaidan();
                                     });
                                 }
                             }
@@ -195,16 +201,23 @@ export default {
                             for(let j=0;j<that.sendDate.length;j++){
                                 if(that.sendDate[j].work_date == event.target.getAttribute('data')){
                                     that.$set(that.sendDate[j],'type_pm','');
+
                                     that.$nextTick(function(){
                                         if(!that.sendDate[j].type_am){
                                             that.sendDate.splice(j, 1);
                                             event.target.parentNode.parentNode.className = '';
                                             isPush4 = true;
+                                            that.singleDate.push({'type_am':'','type_pm':'','work_date':event.target.getAttribute('data')});
+                                        }else{
+                                            that.singleDate.push({'type_am':'1','type_pm':'','work_date':event.target.getAttribute('data')});
                                         }
+                                        that.postPaidan();
                                     });
                                 }
                             }
-                        }
+                        };
+
+                        
                     }else{
                         event.target.className = 'active';
                         if(event.target.innerHTML=='AM'){
@@ -212,12 +225,17 @@ export default {
                                 if(that.sendDate[n].work_date == event.target.getAttribute('data')){
                                     that.sendDate[n].type_am = '1';
                                     isPush3 = false;
+                                    that.singleDate.push(that.sendDate[n]);
                                 }
                             }
                             if(isPush3){
                                 that.sendDate.push({'type_am':'1','type_pm':'','work_date':event.target.getAttribute('data')});
                                 event.target.parentNode.parentNode.className = 'is-active';
+
+                                that.singleDate.push({'type_am':'1','type_pm':'','work_date':event.target.getAttribute('data')});
                             }
+
+                            that.postPaidan();
                         }
 
                         if(event.target.innerHTML=='PM'){
@@ -225,12 +243,17 @@ export default {
                                 if(that.sendDate[m].work_date == event.target.getAttribute('data')){
                                     that.sendDate[m].type_pm = '2';
                                     isPush4 = false;
+                                    that.singleDate.push(that.sendDate[m]);
                                 }
                             }
                             if(isPush4){
                                 that.sendDate.push({'type_am':'','type_pm':'2','work_date':event.target.getAttribute('data')});
                                 event.target.parentNode.parentNode.className = 'is-active';
+
+                                that.singleDate.push({'type_am':'','type_pm':'2','work_date':event.target.getAttribute('data')});
                             }
+
+                            that.postPaidan();
                         }
                     }
                 }
@@ -257,7 +280,7 @@ export default {
 <style scoped>
 .hours_box{height:100%;min-height:300px;}
 .el-cascader{width:100%;margin-top:40px}
-.h_footer{width:90%;margin:0 auto;text-align:right;}
+.h_footer{width:90%;margin:0 auto;text-align:right;display:none;}
 
 .h_left{background:#fff;min-height:666px;margin-top:40px;}
 .h_hd{height:60px;line-height:60px;background:#5A98E8;font-size:20px;color:#fff;text-align:center;}

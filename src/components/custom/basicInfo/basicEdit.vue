@@ -84,8 +84,11 @@
                 <el-col :span="12">
                     <el-form-item label="装修需求" prop='demand'>
                         <el-select v-model="basicForm.demand" placeholder="装修需求" clearable>
-                            <el-option label="标准件" value="标准件"></el-option>
-                            <el-option label="全屋设计" value="全屋设计"></el-option>
+                            <el-option label="整屋服务" value="整屋服务"></el-option>
+                            <el-option label="卫浴" value="卫浴"></el-option>
+                            <el-option label="橱柜" value="橱柜"></el-option>
+                            <el-option label="家具" value="家具"></el-option>
+                            <el-option label="全屋定制" value="全屋定制"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -140,6 +143,20 @@
                                 v-if='item.disabled'>
                             </el-option>
                         </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="80">
+                <el-col :span="12">
+                    <el-form-item label="来源说明" prop='source_explain'>
+                        <el-input  v-model="basicForm.source_explain" placeholder='请输入来源说明' clearable></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="房屋面积" prop='acreage' class='acreage_item'>
+                        <el-input type='number' v-model="basicForm.acreage" placeholder='请输入房屋面积' clearable>
+                            <i slot="suffix">㎡</i>
+                        </el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -236,7 +253,9 @@
                     houseTypeOptions:[],//房屋类型
                     client_type:'',
                     cost:'',
-                    cost_times:''
+                    cost_times:'',
+                    acreage:'',//房屋面积
+                    source_explain:''//来源说明
                 },
                 areaOptions:region,
                 submitBtnStatus:false,//是否可点击保存按钮

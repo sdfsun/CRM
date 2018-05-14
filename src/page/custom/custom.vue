@@ -241,6 +241,10 @@
                 ],
                 time: [
                     {
+                        value: 'day',
+                        label: '当天'
+                    },
+                    {
                         value: '3',
                         label: '近三天'
                     },

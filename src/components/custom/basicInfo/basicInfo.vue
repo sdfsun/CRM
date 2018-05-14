@@ -31,7 +31,7 @@
             <li class="title">客户装修信息</li>
             <li>
                 <span class="txt_1">房屋类型：</span>
-                <span class="txt_2">{{basicInfoRecord.house_type}}/{{basicInfoRecord.house_status}}</span>
+                <span class="txt_2" v-if='basicInfoRecord.house_type'>{{basicInfoRecord.house_type}}/{{basicInfoRecord.house_status}}</span>
             </li>
             <li>
                 <span class="txt_1">户型：</span>
@@ -46,6 +46,10 @@
             <li>
                 <span class="txt_1">装修需求：</span>
                 <span class="txt_2">{{basicInfoRecord.demand}}</span>
+            </li>
+            <li>
+                <span class="txt_1">房屋面积：</span>
+                <span class="txt_2">{{basicInfoRecord.acreage}}</span>
             </li>
             <li>
                 <span class="txt_1">客户来源：</span>
@@ -96,7 +100,7 @@
 <style scoped>
     .basicInfo_container{
         display: flex;
-        padding-top: 18px;
+        padding-top: 6px;
         overflow: hidden;
     }
     .basicInfo_container ul{

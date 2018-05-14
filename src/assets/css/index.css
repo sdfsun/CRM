@@ -275,7 +275,7 @@ body{
 .custom_container .basicInfoDialog .el-form-item.is-success .el-input__inner{
     border-color: #dcdfe6;
 }
-.custom_container .budget_item .el-input__suffix{
+.custom_container .budget_item .el-input__suffix,.custom_container .acreage_item .el-input__suffix{
     right: 13px;
 }
 /*客户相关记录弹框*/

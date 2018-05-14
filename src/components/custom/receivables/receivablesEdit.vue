@@ -1,7 +1,7 @@
 <template>
     <section class="receivablesEdit_container">
         <el-form ref="receivablesForm" :model="receivablesForm" :rules='receivablesFormRules' label-width="90px" >
-            <el-row :gutter="100">
+            <el-row :gutter="60">
                 <el-col :span="12">
                     <el-form-item prop='name' label='收款人'>
                         <el-input  v-model="receivablesForm.name" placeholder='收款人名称' readonly='true'></el-input>
@@ -18,7 +18,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="60">
                 <el-col :span="12">
                     <el-form-item prop='is_retainage' label='收款类型'>
                         <el-select v-model="receivablesForm.is_retainage" placeholder="请选择收款类型" clearable >
@@ -37,15 +37,15 @@
                 </el-col>
             </el-row>
             <!-- 预存款 -->
-            <el-row :gutter="100">
-                <el-col :span="24" v-if='receivablesForm.is_retainage === "1"'>
+            <el-row :gutter="60">
+                <el-col :span="12" v-if='receivablesForm.is_retainage === "1"'>
                     <el-form-item label='预计合同金额'>
                         <el-input v-model="receivablesForm.expect_money" placeholder='预计合同金额' clearable></el-input>
                     </el-form-item>
                 </el-col>
                 <template v-else-if='receivablesForm.is_retainage === "2"'>
                     <el-col :span="12">
-                        <el-form-item label='实际总额'>
+                        <el-form-item label='实际合同金额'>
                             <el-input type='number' v-model="receivablesForm.actual_money" placeholder='实际总额' clearable @change='isActualMoneyHandle' @keyup.13='isActualMoneyHandle'></el-input>
                         </el-form-item>
                     </el-col>
@@ -56,7 +56,7 @@
                     </el-col>
                 </template>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="60">
                 <el-col :span="12">
                     <el-row :gutter="0">
                         <el-col :span="16">
@@ -83,7 +83,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="60">
                 <el-col :span="12">
                     <el-form-item prop='voucher' label='收款凭证号'>
                         <el-input  v-model="receivablesForm.voucher" placeholder='收款凭证号' clearable></el-input>

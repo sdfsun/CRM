@@ -1,7 +1,7 @@
 <template>
     <section class="basicForm_container">
         <el-form ref="basicForms" :model="basicForm" :rules="basicFormRules" label-width="80px" >
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12">
                     <el-form-item label="姓名" prop='name'>
                         <el-input v-model="basicForm.name" placeholder='请输入姓名' clearable></el-input>
@@ -17,7 +17,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12">
                     <el-form-item label='性别' prop='sex'>
                         <el-radio-group v-model="basicForm.sex">
@@ -32,7 +32,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12">
                     <el-form-item label="电话" prop='tel' ref='telItem'>
                         <el-input v-model="basicForm.tel" placeholder='请输入电话' clearable></el-input>
@@ -44,7 +44,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12">
                     <el-form-item label="qq" prop='qq' ref='qqItem'>
                         <el-input v-model="basicForm.qq" placeholder='请输入qq' clearable></el-input>
@@ -56,7 +56,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100" type='flex' align='middle'>
+            <el-row :gutter="80" type='flex' align='middle'>
                 <el-col :span="12">
                     <el-form-item label="房屋类型" prop='houseTypeOptions'>
                         <el-cascader
@@ -73,7 +73,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12">
                     <el-form-item label="装修预算"  prop='budget' class='budget_item'>
                         <el-input type='number' v-model="basicForm.budget" placeholder='装修预算' clearable>
@@ -90,10 +90,10 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12">
                     <el-row :gutter="0">
-                        <el-col :span="18">
+                        <el-col :span="17">
                             <el-form-item label="推广成本" prop='cost_times'>
                                 <el-date-picker
                                     v-model="basicForm.cost_times"
@@ -105,7 +105,7 @@
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6">
+                        <el-col :span="7">
                             <el-form-item  prop='cost'>
                                 <el-input  v-model="basicForm.cost" placeholder='成本' class='tuiguang_item2' clearable></el-input>
                             </el-form-item>
@@ -118,7 +118,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12">
                     <el-form-item label="客户类型" prop='client_type'>
                         <el-select v-model="basicForm.client_type" placeholder="请选择客户类型" clearable>
@@ -143,7 +143,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="100">
+            <el-row :gutter="80">
                 <el-col :span="12" v-if='hideType != "1"'>
                     <el-form-item label="状态" prop='status'>
                         <el-select v-model="basicForm.status" placeholder="状态" clearable>

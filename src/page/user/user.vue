@@ -61,7 +61,7 @@
         <el-dialog title="添加用户" :visible.sync="userDialogVisible" @close='resetUserEdit'>
             <userEdit  v-on:closeUserInfoDialog='updateUserRecord' :editInfos='currentrow' ref='userEdit'></userEdit>
         </el-dialog>
-        <el-dialog title="修改密码" :visible.sync="userUpdatePasdDialogVisible" @close='resetUserUpdatePasdEdit'>
+        <el-dialog title="修改密码" :visible.sync="userUpdatePasdDialogVisible" @close='resetUserUpdatePasdEdit' class='updatePasd_dialog'>
             <el-form ref="updatePasdForm" :model="updatePasdForm" :rules='updatePasdFormRules' label-width="80px">
                 <el-form-item prop='member_id' class='hide-form-item'></el-form-item>
                 <el-form-item prop='login_password' label='密码'>

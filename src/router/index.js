@@ -7,6 +7,7 @@ const source = r => require.ensure([], () => r(require('@/page/customerSource/cu
 const role = r => require.ensure([], () => r(require('@/page/role/role.vue')), '角色管理');
 const user = r => require.ensure([], () => r(require('@/page/user/user.vue')), '用户管理');
 const activity = r => require.ensure([], () => r(require('@/page/activity/activity.vue')), '活动管理');
+const updatePasd = r => require.ensure([], () => r(require('@/page/updatePasd/updatePasd.vue')), '修改密码');
 
 
 export default [
@@ -45,8 +46,11 @@ export default [
             {
                 path: '/hours',
                 component: hours
+            },
+            {
+                path: '/updatePasd',
+                component: updatePasd
             }
-
         ]
     }
 ]

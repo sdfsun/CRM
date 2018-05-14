@@ -45,6 +45,12 @@
                     <el-menu-item index="/role">角色管理</el-menu-item>
                     <el-menu-item index="/user">用户列表</el-menu-item>
                 </el-submenu>
+                <el-submenu index="5">
+                    <template slot="title">
+                        <span>操作员管理</span>
+                    </template>
+                    <el-menu-item index="/updatePasd">修改密码</el-menu-item>
+                </el-submenu>
           </el-menu>
         </div>
         <div class="footer-btns">

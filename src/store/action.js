@@ -1,4 +1,4 @@
-import { setStore,getStore,getDuration,formatDate } from '@/utils/'
+import { setStore,getStore} from '@/utils/'
 
 export default{
     setMemberRoleId({commit},name){//设置当前登录的用户id
@@ -54,34 +54,19 @@ export default{
         commit('SETACTIVITYS',lists);
     },
     updateActivitys({state,commit},result){//更新活动列表
-        let activitys=[];
-        let curDate = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
-        let tempDuration = getDuration(curDate,result.end_time);
+        let activitys = [];
         if(state.activitys && state.activitys.length>0){
+            activitys = state.activitys.slice();
             const index = state.activitys.findIndex(function(item, index, arr) {
                 return item.id === result.id;
             });
-            state.activitys.forEach(function(item, index) {
-                let tempDuration2 = getDuration(curDate,item.end_time);
-                if(tempDuration2 !== -1){
-                    activitys.push(item);
-                }
-            });
             if(index !== -1){//编辑
-                if(tempDuration !== -1){
-                    activitys.push(result);
-                }else{
-                    activitys.splice(index,1);
-                }
-            }else{
-                if(tempDuration !== -1){
-                    activitys.push(result);
-                }
-            }
-        }else{
-            if(tempDuration !== -1){
+                activitys[index] = result;
+            }else{//新增
                 activitys.push(result);
             }
+        }else{
+            activitys.push(result);
         }
         setStore("activitys",activitys);
         commit('SETACTIVITYS',activitys);

@@ -119,7 +119,7 @@ export const stylist = (information_id,assign_times) => axios.post('/crm-stylist
 export const assign = (formData) => axios.post('/crm-assign.html',formData);
 
 //用户退出
-export const unset_member = () => axios.post('/crm-unset_member.html');
+export const unset_member = (showLoad) => axios.post('/crm-unset_member.html',showLoad);
 
 // 获取活动列表
 export const activitys = () => axios.post('/crm-activity.html');

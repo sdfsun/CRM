@@ -450,3 +450,9 @@ body{
     width: 60px;
     color: #99a9bf;
 }
+.updatePasd_dialog .el-dialog{
+    width: 600px;
+}
+.demo-table-expand .el-form-item .el-upload,.common_container_look .el-upload{
+    display: none;
+}

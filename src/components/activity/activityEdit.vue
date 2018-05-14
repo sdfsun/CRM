@@ -71,7 +71,7 @@
 <script>
     import {activity_save} from '@/service/getData';
     import {mapState,mapMutations,mapActions} from 'vuex';
-    import {getDuration,formatDate} from '@/utils/index';
+    import {getDuration} from '@/utils/index';
 
     export default{
         name:'activityEdit',

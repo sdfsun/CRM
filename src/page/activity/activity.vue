@@ -74,7 +74,7 @@
     import {mapMutations,mapState} from 'vuex';
     import {activitys} from '@/service/getData';
     import activityEdit from '@/components/activity/activityEdit';
-    import { setStore ,formatDate ,getDuration} from '@/utils/';
+    import { setStore } from '@/utils/';
 
     export default{
         name:'activity',
@@ -118,13 +118,10 @@
                     }else{
                         this.activityLists = [];
                     }
-                    let tempLists = [],curDate = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
+                    let tempLists = [];
                     this.activityLists.forEach( function(el, index) {
                         if(that.memberRoleId.org_id === el.org_id && el.disabled === 'true'){
-                            let tempDuration = getDuration(curDate,el.end_time);
-                            if(tempDuration !== -1){
-                                tempLists.push(el);
-                            }
+                            tempLists.push(el);
                         }
                     });
                     setStore("activitys",tempLists);

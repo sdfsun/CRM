@@ -139,22 +139,40 @@
                     <template slot-scope="props">
                         <el-form label-position="left" inline class="demo-table-expand">
                             <el-form-item label="活动主题">
-                              <span>{{ props.row.title }}</span>
+                                <span>{{ props.row.title }}</span>
                             </el-form-item>
                             <el-form-item label="活动内容">
-                              <span>{{ props.row.content }}</span>
+                                <span>{{ props.row.content }}</span>
                             </el-form-item>
                             <el-form-item label="开始时间">
-                              <span>{{ props.row.start_time }}</span>
+                                <span>{{ props.row.start_time }}</span>
                             </el-form-item>
                             <el-form-item label="结束时间">
-                              <span>{{ props.row.end_time }}</span>
+                                <span>{{ props.row.end_time }}</span>
                             </el-form-item>
                             <el-form-item label="是否激活">
-                              <span>{{ props.row.disabled_name }}</span>
+                                <span>{{ props.row.disabled_name }}</span>
                             </el-form-item>
                             <el-form-item label="所属门店">
-                              <span>{{ props.row.org_name }}</span>
+                                <span>{{ props.row.org_name }}</span>
+                            </el-form-item>
+                            <el-form-item  label='海报图片' style='width:100%;'>
+                                <el-upload
+                                    ref='upload'
+                                    action="/crm-upload_image.html"
+                                    list-type="picture-card"
+                                    name='mypic[]'
+                                    :disabled='true'
+                                    :file-list="activityItems[0].imageLists"
+                                    :on-preview="handlePictureCardPreview2">
+                                </el-upload>
+                                <el-dialog :visible.sync="dialogVisible2" :append-to-body='true'>
+                                    <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
+                                        <el-carousel-item v-for="(item,index) in activityItems[0].imageLists" :key="index" :name='item.url'>
+                                            <img :src="item.url" class="image_carousel_item">
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                </el-dialog>
                             </el-form-item>
                         </el-form>
                       </template>
@@ -242,6 +260,8 @@
                 dialogVisible:false,
                 activityVisible:false,
                 activityItems:[],//活动列表信息
+                dialogVisible2:false,
+                initialIndex:0,
                 receivablesFormRules:{//规则校验
                     name: [
                         {  required: true, message: '请填写收款人名称', trigger: 'blur' }
@@ -340,9 +360,29 @@
                     });
                     this.activityItems = [];
                     this.activityItems.push(this.activitys[index]);
+                    let imageLists = [];
+                    if(this.activityItems[0].image_id &&  this.activityItems[0].image_id.length>0){
+                        this.activityItems[0].image_id.forEach( function(item, index) {
+                            imageLists.push({url:item});
+                        });
+                        this.activityItems[0].imageLists = imageLists.slice();
+                        // this.$set(this.activityItems[0],'imageLists',imageLists);
+                    }
                     this.activityVisible = true;
                 }else{
                     this.activityVisible = false;
+                }
+            },
+            handlePictureCardPreview2(file) {
+                try {
+                    let tempLists = this.activityItems[0].imageLists;
+                    const index = tempLists.findIndex(function(item, index, arr) {
+                        return item.url === file.url
+                    });
+                    this.initialIndex = index;
+                    this.dialogVisible2 = true;
+                    this.$refs['carouselItems'].setActiveItem(file.url);
+                } catch(e) {
                 }
             },
             isActualMoneyHandle(val){//实际总额改变维护应收金额
@@ -429,4 +469,5 @@
         margin-bottom: 0;
         width: 49%;
     }
+
 </style>

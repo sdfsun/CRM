@@ -1,5 +1,5 @@
 <template>
-    <section class="common_container">
+    <section class="common_container" v-bind:class="{ common_container_look: type === '2' }">
         <el-form-item label='名称：'>
             <el-row :gutter="10">
                 <el-col :span="13">

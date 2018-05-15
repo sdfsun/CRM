@@ -111,14 +111,11 @@
                 min-width='200px'>
             </el-table-column>
             <el-table-column
-                prop="house_type"
                 label="房屋类型"
-                min-width='150px'>
-            </el-table-column>
-            <el-table-column
-                prop="house_status"
-                label="房屋状态"
-                min-width='100px'>
+                min-width='180px'>
+                <template slot-scope='scope'>
+                    <span v-if='scope.row.house_type'>{{scope.row.house_type}}/{{scope.row.house_status}}</span>
+                </template>
             </el-table-column>
             <el-table-column
                 prop='status_name'
@@ -559,10 +556,12 @@
                     }
                     if(callbackData.num !== 4){//非方案
                         //重置基本信息中的status
-                        this.$set(this.currentRow,'status',statusFormData.information_status);
-                        this.$set(this.customInfoArray[0],'status',statusFormData.information_status);
+                        let tempStatus = callbackData.num === 1?callbackData.data.information.status:statusFormData.information_status;
+                        this.$set(this.currentRow,'status',tempStatus);
+                        this.$set(this.customInfoArray[0],'status',tempStatus);
+                        that.$set(that.customLists[index2],'status',tempStatus);
                         this.customStatus.forEach( function(elm, il) {
-                            if(elm.val === statusFormData.information_status){
+                            if(elm.val === tempStatus){
                                 that.$set(that.customInfoArray[0],'status_name',elm.label);
                                 that.$set(that.customLists[index2],'status_name',elm.label);
                             }
@@ -600,6 +599,7 @@
                 //重置基本信息中的status
                 this.$set(this.currentRow,'status',callbackData.data.information_status);
                 this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
+                that.$set(that.customLists[index2],'status',callbackData.data.information_status);
                 this.customStatus.forEach( function(elm, il) {
                     if(elm.val === callbackData.data.information_status){
                         that.$set(that.customInfoArray[0],'status_name',elm.label);

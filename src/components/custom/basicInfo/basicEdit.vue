@@ -171,6 +171,7 @@
                                 :value="item.val">
                             </el-option>
                         </el-select>
+                        <div class="tips">非特殊情况请勿更改客户状态</div>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -416,8 +417,13 @@
                 delete this.basicForm['org_id'];
             },
             houseHandleChange(house){//房屋类型回调
-                this.basicForm.house_type = house[0];
-                this.basicForm.house_status = house[1];
+                if(house && house.length>0){
+                    this.basicForm.house_type = house[0];
+                    this.basicForm.house_status = house[1];
+                }else {
+                    this.basicForm.house_type = "";
+                    this.basicForm.house_status = "";
+                }
             },
             onSubmit(formName){//保存
                 if(this.submitBtnStatus === true){
@@ -490,5 +496,15 @@
     }
     .btns .submit_btn{
         width: 120px;
+    }
+    .tips{
+        color: #f56c6c;
+        font-size: 12px;
+        line-height: 1;
+        padding-top: 4px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding-top: 2px;
     }
 </style>

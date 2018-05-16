@@ -349,9 +349,6 @@
                     if(this.status === 'down'){
                         this.status = 'up';
                         this.activeName = '1';
-                        this.$nextTick(function(){
-                            this.customTableScroll();
-                        });
                     }else {
                         this.activeName = '';
                         this.status = 'down';
@@ -359,9 +356,6 @@
                 }else{
                     if(this.status === 'down'){
                         this.status = 'up';
-                        this.$nextTick(function(){
-                            this.customTableScroll();
-                        });
                     }
                     let result = null;
                     const customer_id = this.currentRow.id;
@@ -393,14 +387,6 @@
                     }
                 }
             },
-            customTableScroll(){
-                let that = this;
-                let tableWrapper = document.querySelector(".customListsTableInfo .el-table__body-wrapper");
-                const index = this.customLists.findIndex(function(item, index, arr) {
-                    return item.id === that.currentRow.id;
-                });
-               this.$refs['customListsTable'].bodyWrapper.scrollTop =index*36;
-            },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
                     this.currentRow = currentrow;
@@ -408,9 +394,6 @@
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
                     this.isGetDataArray = new Array(7).fill("");//重置
                     this.up_down_tabs();
-                    this.$nextTick(function(){
-                        this.customTableScroll();
-                    });
                 }
             },
             async initElPaneData(num,customer_id){//初始化信息栏数据

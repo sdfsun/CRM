@@ -456,3 +456,10 @@ body{
 .demo-table-expand .el-form-item .el-upload,.common_container_look .el-upload{
     display: none;
 }
+.el-date-editor .el-range-input,.el-date-editor .el-range-separator{
+    font-size: 12px;
+    line-height: 28px;
+}
+.el-range-editor.el-input__inner{
+    width: 100%;
+}

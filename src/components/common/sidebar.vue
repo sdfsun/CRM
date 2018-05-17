@@ -24,7 +24,7 @@
                     <el-menu-item index="/custom/4">待测量列表</el-menu-item>
                     <el-menu-item index="/custom/5">待上传方案列表</el-menu-item>
                 </el-submenu>
-                <el-submenu index="2" v-if='memberRoleId.member_role_id !== "service"'>
+                <el-submenu index="2" v-if='memberRoleId.member_role_id !== "service" && memberRoleId.member_role_id !== "guide"'>
                     <template slot="title">
                         <span>工时管理</span>
                     </template>

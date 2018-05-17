@@ -2,10 +2,10 @@
     <div class="custom_container" :class='status'>
         <section class="custom_header_form">
             <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
-            <el-form ref="form" :model="searchForm" class='search_form'>
+            <el-form ref="search_form" :model="searchForm" class='search_form'>
                 <el-row :gutter="10" style='width:100%;'>
-                    <el-col :span='11'>
-                        <el-form-item>
+                    <el-col :span='9'>
+                        <el-form-item prop='content'>
                             <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
                                 <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">
                                     <el-option label="姓名" value="name"></el-option>
@@ -18,10 +18,10 @@
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span='13'>
+                    <el-col :span='15'>
                         <el-row :gutter="10">
-                            <el-col :span='7'>
-                                <el-form-item class='search_form_item'>
+                            <el-col :span='6' v-if='id === 0'>
+                                <el-form-item class='search_form_item' prop='status'>
                                     <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
                                         <el-option
                                             v-for="item in customStatus"
@@ -32,8 +32,8 @@
                                     </el-select>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span='7' v-if='memberRoleId.member_role_id !== "designer"'>
-                                <el-form-item class='search_form_item'>
+                            <el-col :span='6' v-if='memberRoleId.member_role_id !== "designer"'>
+                                <el-form-item class='search_form_item' prop='member_id'>
                                     <el-select v-model="searchForm.member_id" clearable placeholder="设计师" @change='searchFormDatas'>
                                         <el-option
                                             v-for="item in designers"
@@ -44,21 +44,22 @@
                                     </el-select>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="10">
-                                <el-row :gutter="20" type='flex' align='middle'>
-                                    <el-col :span='16'>
-                                        <el-form-item class='search_form_item'>
-                                            <el-select v-model="searchForm.time" clearable placeholder="时间" @change='searchFormDatas'>
-                                                <el-option
-                                                    v-for="item in time"
-                                                    :key="item.value"
-                                                    :label="item.label"
-                                                    :value="item.value">
-                                                </el-option>
-                                            </el-select>
+                            <el-col :span="12">
+                                <el-row :gutter="10">
+                                    <el-col :span='18'>
+                                        <el-form-item class='search_form_item' prop='time'>
+                                            <el-date-picker
+                                                v-model="searchForm.time"
+                                                type="daterange"
+                                                range-separator="至"
+                                                start-placeholder="开始日期"
+                                                end-placeholder="结束日期"
+                                                value-format='yyyy-MM-dd'
+                                                @change='searchFormDatas'>
+                                            </el-date-picker>
                                         </el-form-item>
                                     </el-col>
-                                    <el-col :span='8'>
+                                    <el-col :span='6'>
                                         <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
                                     </el-col>
                                 </el-row>
@@ -222,6 +223,7 @@
                 basicInfoDialogVisible:false,//客户基本信息弹框是否可见
                 qrcodeDialogVisible:false,//微信绑定二维码弹框
                 qrcode_url:'',
+                loading:false,
                 user_intention: [
                     {
                         value: '有意',
@@ -236,28 +238,12 @@
                         label: '可再联系'
                     }
                 ],
-                time: [
-                    {
-                        value: 'day',
-                        label: '当天'
-                    },
-                    {
-                        value: '3',
-                        label: '近三天'
-                    },
-                    {
-                        value: '7',
-                        label: '近一周'
-                    },
-                    {
-                        value: '14',
-                        label: '近两周'
-                    },
-                    {
-                        value: '30',
-                        label: '近一个月'
-                    }
-                ]
+                pageForm:{
+                    range:80,
+                    HAS_DATA:true,
+                    isOn:true,
+                    elWraper:null
+                }
             }
         },
         computed:{
@@ -271,9 +257,12 @@
         mounted(){
             this.id = Number(this.$route.params.id);
             this.init();
+            this.scrollCustomBasicLists();
         },
         beforeRouteUpdate (to, from, next) {
             this.id = Number(to.params.id);
+            this.$refs['search_form'].resetFields();
+            this.searchForm.searchName = '';
             this.init();
             next();
         },
@@ -281,10 +270,13 @@
             ...mapMutations([
                 'SETQRCODE'
             ]),
-            async init(){//获取客户信息列表
+            async init(type){//获取客户信息列表
                 const that = this;
                 try {
                     let newArr = new Array;
+                    if(type){//分页
+                        this.searchForm.showLoad = type;
+                    }
                     const res = await getCustomLists(this.id,this.page,this.searchForm);
                     if(res.error){
                         this.$message({
@@ -298,15 +290,27 @@
                         }
                         return false;
                     }
-                    if(res.success){
-                        this.customLists = res.success;
+                    if(res.success && res.success.length>0){
+                        if(this.page === 1){
+                            this.customLists = res.success;
+                        }else{
+                            this.customLists =  this.customLists.concat(res.success).slice();
+                        }
                     }else{
-                        this.customLists = [];
+                        if(this.page === 1){
+                            this.customLists = [];
+                        }else{//最后一页了
+                            this.page--;
+                        }
+                        this.pageForm.HAS_DATA = false;
                     }
-                    this.currentRow = {};
-                    this.activeName = '';
-                    this.customInfoArray = [{},[],[],[],[],[],[]];//重置
-                    this.isGetDataArray = new Array(7).fill("");//重置
+                    that.pageForm.isOn = true;
+                    if(!type){//非分页
+                        this.currentRow = {};
+                        this.activeName = '';
+                        this.customInfoArray = [{},[],[],[],[],[],[]];//重置
+                        this.isGetDataArray = new Array(7).fill("");//重置
+                    }
                     if(this.qrcode && this.qrcode.url){
                         this.$nextTick(function(){
                             if(this.qrcode && this.qrcode.tmpl_user === 'false'){//需要弹框
@@ -322,6 +326,21 @@
                         type: 'error'
                     });
                 }
+            },
+            scrollCustomBasicLists(){//客户列表滚动加载
+                let that = this;
+                that.pageForm.elWraper = document.querySelector(".customListsTableInfo .el-table__body-wrapper");
+                that.pageForm.elWraper.addEventListener('scroll',function(){
+                    let srollPos = that.pageForm.elWraper.scrollTop;    //滚动条距顶部距离(页面超出窗口的高度)
+                    let totalheight = parseFloat(that.pageForm.elWraper.clientHeight) + parseFloat(srollPos);
+                    if((that.pageForm.elWraper.scrollHeight-that.pageForm.range) <= totalheight && that.pageForm.HAS_DATA == true && srollPos>0) {
+                        if(that.pageForm.isOn){
+                            that.pageForm.isOn = false;
+                            that.page++;
+                            that.init('page');
+                        }
+                    }
+                });
             },
             resetQrcodeDialog(){
                 this.SETQRCODE({});
@@ -386,6 +405,14 @@
                             break;
                     }
                 }
+            },
+            customTableScroll(){//添加基本信息后滚动到指定位置
+                let that = this;
+                let tableWrapper = document.querySelector(".customListsTableInfo .el-table__body-wrapper");
+                const index = this.customLists.findIndex(function(item, index, arr) {
+                    return item.id === that.currentRow.id;
+                });
+               this.$refs['customListsTable'].bodyWrapper.scrollTop =index*36;
             },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
@@ -470,6 +497,7 @@
                         this.$refs['customListsTable'].setCurrentRow(this.currentRow);
                         if(callbackData.type === 'add'){
                             this.up_down_tabs();
+                            this.customTableScroll();
                         }
                     });
                 }

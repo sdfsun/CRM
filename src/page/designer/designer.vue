@@ -20,6 +20,11 @@
                 label="手机号"
                 >
             </el-table-column>
+            <el-table-column
+                prop="nums"
+                label="已接尺数"
+                >
+            </el-table-column>
         </el-table>
         <div class="page_fenye" v-if="page">
             <el-pagination

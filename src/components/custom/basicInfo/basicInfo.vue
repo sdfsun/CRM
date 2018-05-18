@@ -71,7 +71,10 @@
                 <span class="txt_1">客户类型：</span>
                 <span class="txt_2">{{basicInfoRecord.client_type_name}}</span>
             </li>
-            
+            <li>
+                <span class="txt_1">客户星级：</span>
+                <span class="txt_2">{{basicInfoRecord.star_level}}</span>
+            </li>
             <li>
                 <span class="txt_1">归属设计师：</span>
                 <span class="txt_2">{{basicInfoRecord.member_name}}</span>

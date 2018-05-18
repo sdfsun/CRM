@@ -203,7 +203,7 @@
         name:'custom',
         data(){
             return{
-                id:0,//0对应客户列表，1对应待联系列表，2对应已联系列表，3对应待分配列表，4对应待测量列表，5对应待上传列表
+                id:'0',//0对应客户列表，1对应待联系列表，2对应已联系列表，3对应待分配列表，4对应待测量列表，5对应待上传列表
                 page:1,//列表分页
                 activeName:'',
                 status:'down',
@@ -255,12 +255,12 @@
             ])
         },
         mounted(){
-            this.id = Number(this.$route.params.id);
+            this.id = this.$route.params.id;
             this.init();
             this.scrollCustomBasicLists();
         },
         beforeRouteUpdate (to, from, next) {
-            this.id = Number(to.params.id);
+            this.id = to.params.id;
             this.$refs['search_form'].resetFields();
             this.searchForm.searchName = '';
             this.page = 1;

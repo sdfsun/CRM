@@ -174,6 +174,11 @@
                         <div class="tips">非特殊情况请勿更改客户状态</div>
                     </el-form-item>
                 </el-col>
+                <el-col :span="12">
+                    <el-form-item label="星级" prop='star_level'>
+                        <el-rate v-model="basicForm.star_level"></el-rate>
+                    </el-form-item>
+                </el-col>
             </el-row>
             <el-form-item label="客户备注" class='remarks_item' prop='remarks'>
                 <el-input type="textarea" :autosize="{ minRows: 4}" v-model="basicForm.remarks" placeholder='客户备注' clearable></el-input>
@@ -256,7 +261,8 @@
                     cost:'',
                     cost_times:'',
                     acreage:'',//房屋面积
-                    source_explain:''//来源说明
+                    source_explain:'',//来源说明
+                    star_level:3//星级
                 },
                 areaOptions:region,
                 submitBtnStatus:false,//是否可点击保存按钮
@@ -506,5 +512,8 @@
         top: 100%;
         left: 0;
         padding-top: 2px;
+    }
+    .el-rate{
+        margin-top: 8px;
     }
 </style>

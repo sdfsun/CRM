@@ -1,7 +1,7 @@
 <template>
     <div class="page_hours" :data='memberRoleId.member_role_id'>
         <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="我的日程" name="first" v-if='memberRoleId.member_role_id !== "shopowner" && memberRoleId.member_role_id !== "director"'>
+            <el-tab-pane label="我的日程" name="first" v-if='memberRoleId.member_role_id !== "shopowner"'>
                 <div class="hours_box">
                     <input type="hidden" id="datepicker"/>
                     <div class="h_footer">
@@ -73,7 +73,7 @@ export default {
     },
     mounted: function () {
         this.$nextTick(function () {
-            if(this.memberRoleId && (this.memberRoleId.member_role_id === "shopowner" || this.memberRoleId.member_role_id === "director")){
+            if(this.memberRoleId && this.memberRoleId.member_role_id === "shopowner"){
                 this.activeName = 'second';
             }
             this.init();
@@ -121,7 +121,7 @@ export default {
         },
         endTimeFun(){
             var timestamp = new Date(this.startTime).getTime();
-            var endTamp = new Date(timestamp + 3600*24*6*1000);
+            var endTamp = new Date(timestamp + 3600*24*2*1000);
             var y = endTamp.getFullYear();
             var m = endTamp.getMonth() + 1;
             var d = endTamp.getDate();
@@ -156,7 +156,7 @@ export default {
         },
         initday(){
             var that = this;
-            if(this.memberRoleId.member_role_id !== "shopowner" && this.memberRoleId.member_role_id !== "director"){
+            if(this.memberRoleId.member_role_id !== "shopowner"){
                 var picker = new Pikaday(
                 {
                     field: document.getElementById('datepicker'),

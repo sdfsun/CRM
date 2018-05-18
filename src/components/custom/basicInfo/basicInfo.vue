@@ -2,9 +2,12 @@
     <div class="basicInfo_container">
         <ul class="col_1">
             <li class="title">客户基本信息</li>
-            <li>
+            <li style="line-height:20px;">
                 <span class="txt_1">姓名：</span>
-                <span class="txt_2">{{basicInfoRecord.name}}</span>
+                <div class="txt_2">
+                    <span style="display:inline-block;">{{basicInfoRecord.name}}</span>
+                    <el-rate v-model="basicInfoRecord.star_level" disabled></el-rate>
+                </div>
             </li>
             <li>
                 <span class="txt_1">电话：</span>
@@ -72,10 +75,6 @@
                 <span class="txt_2">{{basicInfoRecord.client_type_name}}</span>
             </li>
             <li>
-                <span class="txt_1">客户星级：</span>
-                <span class="txt_2">{{basicInfoRecord.star_level}}</span>
-            </li>
-            <li>
                 <span class="txt_1">归属设计师：</span>
                 <span class="txt_2">{{basicInfoRecord.member_name}}</span>
             </li>
@@ -139,5 +138,10 @@
     }
     .col_3 .txt_1{
         width: 106px;
+    }
+    .el-rate{
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 5px;
     }
 </style>

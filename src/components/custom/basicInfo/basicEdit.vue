@@ -262,7 +262,7 @@
                     cost_times:'',
                     acreage:'',//房屋面积
                     source_explain:'',//来源说明
-                    star_level:3//星级
+                    star_level:0//星级
                 },
                 areaOptions:region,
                 submitBtnStatus:false,//是否可点击保存按钮

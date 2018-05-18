@@ -1,10 +1,17 @@
 <template>
     <div class="custom_container" :class='status'>
         <section class="custom_header_form">
-            <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
+            <el-row :gutter="100" style='margin:0;'>
+                <el-col :span='12' style='padding-left: 0;'>
+                    <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
+                </el-col>
+                <el-col :span='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"?12:24' style='text-align: right;padding-right: 0;'>
+                    <el-button type="primary">总数：{{totalNum}}</el-button>
+                </el-col>
+            </el-row>
             <el-form ref="search_form" :model="searchForm" class='search_form'>
-                <el-row :gutter="10" style='width:100%;'>
-                    <el-col :span='9'>
+                <el-row :gutter="20" style='margin:0;'>
+                    <el-col :span='9' style='padding-left:0;'>
                         <el-form-item prop='content'>
                             <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
                                 <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">
@@ -18,9 +25,9 @@
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span='15'>
+                    <el-col :span='15' style='padding-right:0;'>
                         <el-row :gutter="10">
-                            <el-col :span='6' v-if='id === 0'>
+                            <el-col :span='7' v-if='id === "0"'>
                                 <el-form-item class='search_form_item' prop='status'>
                                     <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
                                         <el-option
@@ -44,25 +51,21 @@
                                     </el-select>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="12">
-                                <el-row :gutter="10">
-                                    <el-col :span='18'>
-                                        <el-form-item class='search_form_item' prop='time'>
-                                            <el-date-picker
-                                                v-model="searchForm.time"
-                                                type="daterange"
-                                                range-separator="至"
-                                                start-placeholder="开始日期"
-                                                end-placeholder="结束日期"
-                                                value-format='yyyy-MM-dd'
-                                                @change='searchFormDatas'>
-                                            </el-date-picker>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span='6'>
-                                        <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
-                                    </el-col>
-                                </el-row>
+                            <el-col :span="8">
+                                <el-form-item class='search_form_item' prop='time'>
+                                    <el-date-picker
+                                        v-model="searchForm.time"
+                                        type="daterange"
+                                        range-separator="至"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期"
+                                        value-format='yyyy-MM-dd'
+                                        @change='searchFormDatas'>
+                                    </el-date-picker>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span='3'>
+                                <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
                             </el-col>
                         </el-row>
                     </el-col>
@@ -216,6 +219,7 @@
                     member_id:''
                 },
                 customLists: [],//客户列表
+                totalNum:0,//客户列表总数
                 currentRow:{},//当前选中的行数
                 activeRow:{},//当前选中的行数
                 customInfoArray:new Array({},[],[],[],[],[],[]),//存储客户相关信息
@@ -223,7 +227,6 @@
                 basicInfoDialogVisible:false,//客户基本信息弹框是否可见
                 qrcodeDialogVisible:false,//微信绑定二维码弹框
                 qrcode_url:'',
-                loading:false,
                 user_intention: [
                     {
                         value: '有意',
@@ -295,6 +298,7 @@
                         }
                         return false;
                     }
+                    this.totalNum = res.data ? res.data : 0;
                     if(res.success && res.success.length>0){
                         if(this.page === 1){
                             this.customLists = res.success;

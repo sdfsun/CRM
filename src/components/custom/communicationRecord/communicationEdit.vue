@@ -220,6 +220,11 @@
                         return false;
                     }
                     this.assignDesignerLists = res.success;
+                    if(res.success && res.success.length>0){
+                        this.communicateForm.member_id = res.success[0].member_id;
+                    }else {
+                        this.communicateForm.member_id = '';
+                    }
                 } catch(e) {
                     this.$message({
                         message: e.message,

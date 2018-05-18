@@ -105,6 +105,15 @@
                 >
             </el-table-column>
             <el-table-column
+                prop="star_level"
+                label="星级"
+                width='110px'
+                >
+                <template slot-scope='scope'>
+                    <el-rate v-model="scope.star_level" disabled></el-rate>
+                </template>
+            </el-table-column>
+            <el-table-column
                 prop="area"
                 label="客户地区"
                 min-width='200px'>

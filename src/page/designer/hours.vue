@@ -127,13 +127,21 @@ export default {
             var d = endTamp.getDate();
             this.endTime = y + '-' + m + '-' + d
         },
-        async postPaidan(){
+        async postPaidan(event,num){
             let result = await postVisitSave({'visit':this.singleDate});
             if(result.success){
                 this.$message({
                     message: '恭喜你，' + result.success,
                     type: 'success'
                 });
+                if(num){
+                    event.target.className = 'active';
+                    event.target.parentNode.parentNode.className = 'is-active';
+                }else{
+                    event.target.className = '';
+                    
+                    // event.target.parentNode.parentNode.className = '';
+                }
             }else{
                 this.$message({
                     message: result.error,
@@ -178,7 +186,7 @@ export default {
                 that.singleDate = [];
                 if (that.hasClass(event.target.parentNode, 'd_msg')) {
                     if (that.hasClass(event.target, 'active')) {
-                        event.target.className = '';
+                        // event.target.className = '';
                         if(event.target.innerHTML=='AM'){
                             for(let i=0;i<that.sendDate.length;i++){
                                 if(that.sendDate[i].work_date == event.target.getAttribute('data')){
@@ -186,13 +194,13 @@ export default {
                                     that.$nextTick(function(){
                                         if(!that.sendDate[i].type_pm){
                                             that.sendDate.splice(i, 1);
-                                            event.target.parentNode.parentNode.className = '';
+                                            // event.target.parentNode.parentNode.className = '';
                                             isPush3 = true;
                                             that.singleDate.push({'type_am':'','type_pm':'','work_date':event.target.getAttribute('data')});
                                         }else{
                                             that.singleDate.push({'type_am':'','type_pm':'2','work_date':event.target.getAttribute('data')});
                                         }
-                                        that.postPaidan();
+                                        that.postPaidan(event,0);
                                     });
                                 }
                             }
@@ -205,13 +213,13 @@ export default {
                                     that.$nextTick(function(){
                                         if(!that.sendDate[j].type_am){
                                             that.sendDate.splice(j, 1);
-                                            event.target.parentNode.parentNode.className = '';
+                                            // event.target.parentNode.parentNode.className = '';
                                             isPush4 = true;
                                             that.singleDate.push({'type_am':'','type_pm':'','work_date':event.target.getAttribute('data')});
                                         }else{
                                             that.singleDate.push({'type_am':'1','type_pm':'','work_date':event.target.getAttribute('data')});
                                         }
-                                        that.postPaidan();
+                                        that.postPaidan(event,0);
                                     });
                                 }
                             }
@@ -219,7 +227,7 @@ export default {
 
                         
                     }else{
-                        event.target.className = 'active';
+                        // event.target.className = 'active';
                         if(event.target.innerHTML=='AM'){
                             for(let n=0;n<that.sendDate.length;n++){
                                 if(that.sendDate[n].work_date == event.target.getAttribute('data')){
@@ -230,12 +238,12 @@ export default {
                             }
                             if(isPush3){
                                 that.sendDate.push({'type_am':'1','type_pm':'','work_date':event.target.getAttribute('data')});
-                                event.target.parentNode.parentNode.className = 'is-active';
+                                // event.target.parentNode.parentNode.className = 'is-active';
 
                                 that.singleDate.push({'type_am':'1','type_pm':'','work_date':event.target.getAttribute('data')});
                             }
 
-                            that.postPaidan();
+                            that.postPaidan(event,1);
                         }
 
                         if(event.target.innerHTML=='PM'){
@@ -248,12 +256,12 @@ export default {
                             }
                             if(isPush4){
                                 that.sendDate.push({'type_am':'','type_pm':'2','work_date':event.target.getAttribute('data')});
-                                event.target.parentNode.parentNode.className = 'is-active';
+                                // event.target.parentNode.parentNode.className = 'is-active';
 
                                 that.singleDate.push({'type_am':'','type_pm':'2','work_date':event.target.getAttribute('data')});
                             }
 
-                            that.postPaidan();
+                            that.postPaidan(event,1);
                         }
                     }
                 }

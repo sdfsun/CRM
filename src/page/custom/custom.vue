@@ -198,7 +198,7 @@
     import transaction from '@/components/custom/transaction/transaction';
     import complaint from '@/components/custom/complaint/complaint';
     import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,transactions,complaints} from '@/service/getData';
-
+    
     export default{
         name:'custom',
         data(){
@@ -263,6 +263,9 @@
             this.id = Number(to.params.id);
             this.$refs['search_form'].resetFields();
             this.searchForm.searchName = '';
+            this.page = 1;
+            this.pageForm.HAS_DATA = true;
+            this.pageForm.isOn = true;
             this.init();
             next();
         },
@@ -276,6 +279,8 @@
                     let newArr = new Array;
                     if(type){//分页
                         this.searchForm.showLoad = type;
+                    }else{
+                        delete this.searchForm['showLoad'];
                     }
                     const res = await getCustomLists(this.id,this.page,this.searchForm);
                     if(res.error){
@@ -353,6 +358,9 @@
                     });
                     return false;
                 }
+                this.page = 1;
+                this.pageForm.HAS_DATA = true;
+                this.pageForm.isOn = true;
                 this.init();
             },
             up_down_tabs(){//展开或隐藏信息栏

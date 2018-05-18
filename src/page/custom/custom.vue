@@ -27,7 +27,7 @@
                     </el-col>
                     <el-col :span='15' style='padding-right:0;'>
                         <el-row :gutter="10">
-                            <el-col :span='7' v-if='id === "0"'>
+                            <el-col :span='7' v-if='id === "0" || id === "reception"'>
                                 <el-form-item class='search_form_item' prop='status'>
                                     <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
                                         <el-option

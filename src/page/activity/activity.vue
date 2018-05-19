@@ -65,7 +65,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-dialog title="活动" :visible.sync="activityDialogVisible" @close='resetActivityEdit'>
+        <el-dialog title="活动" :visible.sync="activityDialogVisible" @close='resetActivityEdit' :close-on-click-modal='false'>
             <activityEdit  v-on:closeActivityInfoDialog='updateActivityRecord' :editInfos='currentrow' ref='activityEdit'></activityEdit>
         </el-dialog>
     </section>

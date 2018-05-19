@@ -48,7 +48,7 @@
             <el-button type="primary" icon='el-icon-plus' @click='addComplaintRecord'>新建售后记录</el-button>
             <el-button type="primary"  class='add_custom' @click='editComplaintRecord'>编辑</el-button>
         </div>
-        <el-dialog title="售后记录" :visible.sync="complaintDialogVisible" class='customRelationInfoDialog' @close='resetComplaintEdit'>
+        <el-dialog title="售后记录" :visible.sync="complaintDialogVisible" class='customRelationInfoDialog' @close='resetComplaintEdit' :close-on-click-modal='false'>
             <complaintEdit :informationItem='infomation' :editInfos='editActiveRow' ref='complaintEdit'  v-on:closeCustomComplaintInfoDialog='updateComplaintRecord'></complaintEdit>
         </el-dialog>
     </div>

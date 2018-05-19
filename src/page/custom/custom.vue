@@ -105,12 +105,13 @@
                 >
             </el-table-column>
             <el-table-column
-                prop="star_level"
+                prop='star_level'
                 label="星级"
                 width='110px'
+                sortable
                 >
                 <template slot-scope='scope'>
-                    <el-rate v-model="scope.star_level" disabled></el-rate>
+                    <el-rate v-model="scope.row.star_level" disabled></el-rate>
                 </template>
             </el-table-column>
             <el-table-column
@@ -190,7 +191,7 @@
             </el-tab-pane>
         </el-tabs>
         <!-- 新增或编辑客户基本信息弹框 -->
-        <el-dialog title="基本信息" :visible.sync="basicInfoDialogVisible" class='basicInfoDialog' @close='resetCustomBasicInfoEdit' style='margin-top: -60px;'>
+        <el-dialog title="基本信息" :visible.sync="basicInfoDialogVisible" class='basicInfoDialog' @close='resetCustomBasicInfoEdit' style='margin-top: -60px;' :close-on-click-modal='false'>
             <basicEdit v-on:closeCustomBasicInfoDialog='updateCustomBasicInfo' :editInfos='activeRow' ref='basicEdit'></basicEdit>
         </el-dialog>
         <!-- 二维码弹框 -->

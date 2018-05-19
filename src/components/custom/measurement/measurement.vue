@@ -70,7 +70,7 @@
             <el-button type="primary" disabled icon='el-icon-plus' v-else>我要复尺</el-button>
             <el-button type="primary"  class='add_custom' @click='editMeasurementRecord'>编辑</el-button>
         </div>
-        <el-dialog title="测量记录" :visible.sync="measurementDialogVisible" class='customRelationInfoDialog' @close='resetMeasurementEdit'>
+        <el-dialog title="测量记录" :visible.sync="measurementDialogVisible" class='customRelationInfoDialog' @close='resetMeasurementEdit' :close-on-click-modal='false'>
             <measurementEdit :informationItem='infomation' :editInfos='editActiveRow' ref='measurementEdit'  v-on:closeCustomMeasurementInfoDialog='updateMeasurementRecord'></measurementEdit>
         </el-dialog>
         <el-dialog title="量尺图片" :visible.sync="measurementImageDialogVisible">

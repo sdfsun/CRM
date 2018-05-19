@@ -110,6 +110,7 @@
         font-size: 12px;
         line-height: 18px;
         color: #4D4D4D;
+        margin-bottom: 0;
     }
     ul .title{
         font-size: 13px;

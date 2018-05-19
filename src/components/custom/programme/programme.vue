@@ -62,7 +62,7 @@
             <el-button type="primary"  class='add_custom' @click='editprogrammeRecord("1")'>编辑</el-button>
             <el-button type="primary"  @click='editprogrammeRecord("2")'>查看</el-button>
         </div>
-        <el-dialog title="方案记录" :visible.sync="programmeDialogVisible" class='customRelationInfoDialog programmeEditDialog' @close='resetProgrammeEdit'>
+        <el-dialog title="方案记录" :visible.sync="programmeDialogVisible" class='customRelationInfoDialog programmeEditDialog' @close='resetProgrammeEdit' :close-on-click-modal='false'>
             <programmeEdit :informationItem='infomation' :editInfos='editActiveRow' ref='programmeEdit'  v-on:closeCustomProgrammeInfoDialog='updateProgrammeRecord'></programmeEdit>
         </el-dialog>
     </div>

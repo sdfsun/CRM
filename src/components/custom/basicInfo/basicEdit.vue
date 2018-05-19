@@ -176,7 +176,7 @@
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="星级" prop='star_level'>
-                        <el-rate v-model="basicForm.star_level"></el-rate>
+                        <el-rate v-model="basicForm.star_level" @change='starLevelHandle'></el-rate>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -262,7 +262,8 @@
                     cost_times:'',
                     acreage:'',//房屋面积
                     source_explain:'',//来源说明
-                    star_level:0//星级
+                    star_level:0,//星级
+                    tempStarLevel:0//临时存储星级字段
                 },
                 areaOptions:region,
                 submitBtnStatus:false,//是否可点击保存按钮
@@ -389,8 +390,10 @@
                     newValData.area=[];
                 }
                 this.basicForm = Object.assign({},newValData);
+                this.basicForm.tempStarLevel = newValData.star_level;
             }else{
                 this.resetFormData();
+                this.basicForm.tempStarLevel = 0;
             }
         },
         watch:{
@@ -409,12 +412,22 @@
                         newValData.area=[];
                     }
                     this.basicForm = Object.assign({},newValData);
+                    this.basicForm.tempStarLevel = newValData.star_level;
                 }else{
                     this.resetFormData();
+                    this.basicForm.tempStarLevel = 0;
                 }
             }
         },
         methods:{
+            starLevelHandle(val){
+                if(this.basicForm.tempStarLevel === val){
+                    this.basicForm.star_level = val-1;
+                    this.basicForm.tempStarLevel = val-1;
+                }else{
+                    this.basicForm.tempStarLevel = val;
+                }
+            },
             resetFormData(){//重置表单数据
                 delete this.basicForm['id'];
                 delete this.basicForm['customer_number'];

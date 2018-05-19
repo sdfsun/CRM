@@ -71,7 +71,7 @@
             <el-button type="primary" icon='el-icon-plus' @click='addreceivablesRecord'>新建收款记录</el-button>
             <el-button type="primary"  class='add_custom' @click='editreceivablesRecord'>编辑</el-button>
         </div>
-        <el-dialog title="收款记录" :visible.sync="receivablesDialogVisible" class='customRelationInfoDialog' @close='resetreceivablesEdit'>
+        <el-dialog title="收款记录" :visible.sync="receivablesDialogVisible" class='customRelationInfoDialog' @close='resetreceivablesEdit' :close-on-click-modal='false'>
             <receivablesEdit :informationItem='infomation' :editInfos='editActiveRow' ref='receivablesEdit'  v-on:closeCustomReceivablesInfoDialog='updatereceivablesRecord'></receivablesEdit>
         </el-dialog>
         <el-dialog title="发票图片" :visible.sync="receivablesImageDialogVisible">

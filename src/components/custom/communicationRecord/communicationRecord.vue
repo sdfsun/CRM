@@ -76,7 +76,7 @@
             <el-button type="primary" icon='el-icon-plus' @click='addCommunicationRecord'>新增沟通记录</el-button>
             <el-button type="primary" @click='editCommunicationRecord'>编辑</el-button>
         </div>
-        <el-dialog title="沟通记录" :visible.sync="communicationDialogVisible" class='customRelationInfoDialog communicationAndBasicDialog' @close='resetCommunicationEdit'>
+        <el-dialog title="沟通记录" :visible.sync="communicationDialogVisible" class='customRelationInfoDialog communicationAndBasicDialog' @close='resetCommunicationEdit' :close-on-click-modal='false'>
             <el-tabs type="border-card" class='el_tabs_footer' v-model='activeName' @tab-click='communication_basic_et'>
                 <el-tab-pane label="沟通记录" name='1'>
                     <communicationEdit :informationItem='infomation' v-on:closeCustomCommunicateInfoDialog='updateCommunicationRecord' :editInfos='editActiveRow' :communicateBasicFormDatas='communicateBasicFormData' ref='communicationEdit'></communicationEdit>

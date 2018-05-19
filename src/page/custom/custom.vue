@@ -79,7 +79,8 @@
             highlight-current-row
             class='customListsTableInfo'
             header-row-class-name='header_row_style'
-            @row-click="handleCurrentChange">
+            @row-click="handleCurrentChange"
+            @sort-change='sortChangeHandle'>
             <el-table-column
                 prop="id"
                 label="id"
@@ -237,6 +238,10 @@
                 basicInfoDialogVisible:false,//客户基本信息弹框是否可见
                 qrcodeDialogVisible:false,//微信绑定二维码弹框
                 qrcode_url:'',
+                sortForm:{
+                    prop:'',
+                    order:''
+                },
                 user_intention: [
                     {
                         value: '有意',
@@ -286,6 +291,11 @@
             ...mapMutations([
                 'SETQRCODE'
             ]),
+            //表格排序
+            sortChangeHandle(sort_data){
+                this.sortForm.prop = sort_data.prop;
+                this.sortForm.order = sort_data.order;
+            },
             async init(type){//获取客户信息列表
                 const that = this;
                 try {
@@ -309,20 +319,30 @@
                         return false;
                     }
                     this.totalNum = res.data ? res.data : 0;
+                    let tempCustomLists = this.customLists.slice();
                     if(res.success && res.success.length>0){
                         if(this.page === 1){
-                            this.customLists = res.success;
+                            tempCustomLists = res.success;
                         }else{
-                            this.customLists =  this.customLists.concat(res.success).slice();
+                            tempCustomLists =  tempCustomLists.concat(res.success).slice();
                         }
                     }else{
                         if(this.page === 1){
-                            this.customLists = [];
+                            tempCustomLists = [];
                         }else{//最后一页了
                             this.page--;
                         }
                         this.pageForm.HAS_DATA = false;
                     }
+                    //排序
+                    tempCustomLists.sort(function(x, y){
+                        if(that.sortForm.order === 'descending'){//降序
+                            return x[that.sortForm.prop] > y[that.sortForm.prop] ? 1:-1;
+                        }else{//升序
+                            return x[that.sortForm.prop] < y[that.sortForm.prop] ? 1:-1;
+                        }
+                    });
+                    this.customLists = tempCustomLists.slice();
                     that.pageForm.isOn = true;
                     if(!type){//非分页
                         this.currentRow = {};

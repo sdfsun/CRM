@@ -1,6 +1,6 @@
 <template>
     <div class="custom_container" :class='status'>
-        <section class="custom_header_form">
+        <section class="custom_header_form" v-if='memberRoleId && memberRoleId.member_role_id'>
             <el-row :gutter="100" style='margin:0;'>
                 <el-col :span='12' style='padding-left: 0;'>
                     <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
@@ -14,13 +14,13 @@
                     <el-col :span='9' style='padding-left:0;'>
                         <el-form-item prop='content'>
                             <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
-                                <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">
+                                <!-- <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">
                                     <el-option label="姓名" value="name"></el-option>
                                     <el-option label="客户编号" value="customer_number"></el-option>
                                     <el-option label="电话" value="tel"></el-option>
                                     <el-option label="手机" value="mobile"></el-option>
                                     <el-option label="客户来源" value="source"></el-option>
-                                </el-select>
+                                </el-select> -->
                                 <el-button slot="append" icon="el-icon-search" @click='searchFormDatas'></el-button>
                             </el-input>
                         </el-form-item>
@@ -274,8 +274,7 @@
         },
         mounted(){
             this.id = this.$route.params.id;
-            this.init();
-            this.scrollCustomBasicLists();
+            this.init('mounted');
         },
         beforeRouteUpdate (to, from, next) {
             this.id = to.params.id;
@@ -300,7 +299,7 @@
                 const that = this;
                 try {
                     let newArr = new Array;
-                    if(type){//分页
+                    if(type === 'page'){//分页
                         this.searchForm.showLoad = type;
                     }else{
                         delete this.searchForm['showLoad'];
@@ -317,6 +316,9 @@
                             },3000);
                         }
                         return false;
+                    }
+                    if(type === 'mounted'){
+                        this.scrollCustomBasicLists();
                     }
                     this.totalNum = res.data ? res.data : 0;
                     let tempCustomLists = this.customLists.slice();
@@ -344,7 +346,7 @@
                     });
                     this.customLists = tempCustomLists.slice();
                     that.pageForm.isOn = true;
-                    if(!type){//非分页
+                    if(type && type !== 'page'){//非分页
                         this.currentRow = {};
                         this.activeName = '';
                         this.customInfoArray = [{},[],[],[],[],[],[]];//重置
@@ -385,13 +387,13 @@
                 this.SETQRCODE({});
             },
             searchFormDatas(){//搜索表单数据
-                if(this.searchForm.content !== '' && this.searchForm.searchName === ''){
-                    this.$message({
-                        message: '请选择搜索类型',
-                        type: 'error'
-                    });
-                    return false;
-                }
+                // if(this.searchForm.content !== '' && this.searchForm.searchName === ''){
+                //     this.$message({
+                //         message: '请选择搜索类型',
+                //         type: 'error'
+                //     });
+                //     return false;
+                // }
                 this.page = 1;
                 this.pageForm.HAS_DATA = true;
                 this.pageForm.isOn = true;
@@ -509,6 +511,11 @@
                             return false;
                         }
                         this.$set(this.customInfoArray,num,result.success);
+                        if(num === 0 && this.customInfoArray[0].locking === 'true'){
+                            this.$set(this.currentRow,'locking',this.customInfoArray[0].locking);
+                            this.$set(this.currentRow,'locking_name',this.customInfoArray[0].locking_name);
+                            this.$set(this.currentRow,'locking_usercode',this.customInfoArray[0].locking_usercode);
+                        }
                     }
                 } catch(e) {
                     this.$message({

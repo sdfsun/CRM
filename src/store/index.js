@@ -6,7 +6,7 @@ import actions from './action';
 Vue.use(Vuex);
 
 const state = {
-    memberRoleId:'',//当前登录账户的角色id
+    memberRoleId:{},//当前登录账户的角色id
     customSource:[],//客户来源
     customStatus:[
         {val:'0',label:'未联系'},

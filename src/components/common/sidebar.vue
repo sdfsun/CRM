@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar">
+    <div class="sidebar" v-if='memberRoleId && memberRoleId.member_role_id'>
         <div class="side_header">
             {{memberRoleId.name}}<small class="roleName">{{memberRoleId.role_name}}</small>
         </div>

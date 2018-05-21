@@ -1,7 +1,9 @@
 <template>
     <div class="updatePasd_container">
         <el-form ref="updatePasdForm" :model="updatePasdForm" :rules='updatePasdFormRules' label-width="80px" class='updatePasd_form'>
-            <el-form-item prop='member_id' class='hide-form-item'></el-form-item>
+            <el-form-item prop='member_id' class='hide-form-item'>
+                <el-input  v-model="updatePasdForm.member_id" placeholder='请输入密码'></el-input>
+            </el-form-item>
             <el-form-item prop='login_password' label='密码'>
                 <el-input type='password' v-model="updatePasdForm.login_password" placeholder='请输入密码' @keyup.enter.native="onSubmitForm('updatePasdForm')"></el-input>
             </el-form-item>
@@ -16,10 +18,14 @@
     export default{
         name:'updatePasd',
         data(){
+            let tempMemberId = '';
+            if(this.$store.state.memberRoleId && this.$store.state.memberRoleId.member_id){
+                tempMemberId = this.$store.state.memberRoleId.member_id
+            }
             return{
                 submitPasdBtnStatus:false,
                 updatePasdForm:{
-                    member_id:this.$store.state.memberRoleId.member_id,
+                    member_id:tempMemberId,
                     login_password:''
                 },
                 updatePasdFormRules:{

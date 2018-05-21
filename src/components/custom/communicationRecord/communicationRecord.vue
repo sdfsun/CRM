@@ -122,8 +122,23 @@
                 this.currentrow = currentrow;
             },
             addCommunicationRecord(){//新增沟通记录
-                this.editActiveRow = {};
-                this.communicationDialogVisible = true;
+                let that = this;
+                if(this.infomation && this.infomation.locking === 'true'){
+                    this.$confirm(''+this.infomation.locking_name+'('+this.infomation.locking_usercode+')目前正在与该客户沟通中，您是否继续当前操作？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        setTimeout(function(){
+                            that.editActiveRow = {};
+                            that.communicationDialogVisible = true;
+                        },200);
+                    }).catch(() => {
+                    });
+                }else{
+                    this.editActiveRow = {};
+                    this.communicationDialogVisible = true;
+                }
             },
             updateCommunicationRecord(callbackData){
                 this.communicationDialogVisible = false;
@@ -140,9 +155,23 @@
                     });
                     return false;
                 }
-                this.editActiveRow = Object.assign({},this.currentrow);
-                // this.editActiveRow.status = this.infomation.status;
-                this.communicationDialogVisible = true;
+                let that = this;
+                if(this.infomation && this.infomation.locking === 'true'){
+                    this.$confirm(''+this.infomation.locking_name+'('+this.infomation.locking_usercode+')目前正在与该客户沟通中，您是否继续当前操作？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        setTimeout(function(){
+                            that.editActiveRow = Object.assign({},this.currentrow);
+                            that.communicationDialogVisible = true;
+                        },200);
+                    }).catch(() => {
+                    });
+                }else{
+                    this.editActiveRow = Object.assign({},this.currentrow);
+                    this.communicationDialogVisible = true;
+                }
             },
             resetCommunicationEdit(){//重置表单数据
                 this.activeName = '1';

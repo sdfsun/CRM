@@ -32,7 +32,10 @@
                                     <el-table-column
                                         prop="mobile"
                                         label="电话"
-                                        min-width="106"></el-table-column>
+                                        min-width="98"></el-table-column>
+                                    <el-table-column
+                                        prop="work_date"
+                                        label="日期"></el-table-column>
                                     <el-table-column
                                         prop="visit_type"
                                         label="时间"></el-table-column>
@@ -73,9 +76,6 @@ export default {
     },
     mounted: function () {
         this.$nextTick(function () {
-            if(this.memberRoleId && this.memberRoleId.member_role_id === "shopowner"){
-                this.activeName = 'second';
-            }
             this.init();
         });
     },
@@ -85,10 +85,10 @@ export default {
         ])
     },
     methods: {
-        handleClick(tab, event) {
-            // if(tab.index == 1){
-            //     this.allDatePlane(this.startTime.replace(/\-/g,''));
-            // }
+        handleClick(tab) {
+            if(tab.index == 1){
+                this.allDatePlane([this.startTime.replace(/\-/g,''),this.endTime.replace(/\-/g,'')]);
+            }
         },
         async init(){
             try {
@@ -110,6 +110,13 @@ export default {
                     };
                     this.endTimeFun();
                     this.initday();
+
+                    if(this.memberRoleId && this.memberRoleId.member_role_id === "shopowner"){
+                        this.activeName = 'second';
+                        let tab = {};
+                        tab.index = 1;
+                        this.handleClick(tab);
+                    }
                 }
             } catch(e) {
                 this.$message({
@@ -125,6 +132,7 @@ export default {
             var y = endTamp.getFullYear();
             var m = endTamp.getMonth() + 1;
             var d = endTamp.getDate();
+            m = m < 10 ? '0'+m : m;
             this.endTime = y + '-' + m + '-' + d
         },
         async postPaidan(event,num){
@@ -296,5 +304,6 @@ export default {
 
 @media screen and (max-width: 1500px) {
     .h_left{min-height:466px;margin-top:30px;}
+    .h_ct{padding:30px 10px 10px;}
 }
 </style>

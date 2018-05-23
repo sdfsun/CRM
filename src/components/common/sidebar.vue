@@ -25,12 +25,12 @@
                     <el-menu-item index="/custom/4">待测量列表</el-menu-item>
                     <el-menu-item index="/custom/5">待上传方案列表</el-menu-item>
                 </el-submenu>
-                <el-submenu index="2" v-if='memberRoleId.member_role_id !== "service"'>
+                <el-submenu index="2">
                     <template slot="title">
                         <span>工时管理</span>
                     </template>
-                    <el-menu-item index="/designer">设计师列表</el-menu-item>
-                    <el-menu-item index="/hours">工时上报</el-menu-item>
+                    <el-menu-item index="/designer"  >设计师列表</el-menu-item>
+                    <el-menu-item index="/hours" v-if='memberRoleId.member_role_id !== "service"'>工时上报</el-menu-item>
                 </el-submenu>
                 <el-submenu index="3" v-if='memberRoleId.member_role_id !== "designer"'>
                     <template slot="title">

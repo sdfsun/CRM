@@ -1,0 +1,294 @@
+<template>
+    <section class="report_container">
+        <el-form ref="search_form" :model="searchForm" class='search_form'>
+            <el-row :gutter="10">
+                <el-col :span='5'>
+                    <el-form-item prop='content'>
+                        <el-select v-model="searchForm.type" placeholder="请选择对比字段" @change='contrastHandle'>
+                            <el-option label="所有渠道" value="all"></el-option>
+                            <el-option label="客户来源" value="source"></el-option>
+                            <el-option label="导购" value="service"></el-option>
+                            <el-option label="设计师" value="designer"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span='5'>
+                    <el-form-item class='search_form_item' prop='member_id'>
+                        <el-input placeholder="请输入所属地区" v-model="searchForm.area" class="input-with-select" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item prop='start_time'>
+                        <el-date-picker
+                            v-model="searchForm.start_time"
+                            type="datetime"
+                            placeholder="起始时间"
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            clearable>
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item prop='end_time'>
+                        <el-date-picker
+                            v-model="searchForm.end_time"
+                            type="datetime"
+                            placeholder="结束时间"
+                            value-format='yyyy-MM-dd HH:mm:ss'
+                            clearable>
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
+                <el-col :span='2' style='text-align: right;'>
+                    <el-button type="primary"  @click='searchFormDatas'>查询</el-button>
+                </el-col>
+                <el-col :span='2' style='text-align: right;'>
+                    <el-button type="primary"  @click='incomeExcel'>导出</el-button>
+                </el-col>
+            </el-row>
+        </el-form>
+        <el-table
+            ref='reportListsTable'
+            :data="reportLists"
+            highlight-current-row
+            class='customListsTableInfo'
+            header-row-class-name='header_row_style'>
+            <el-table-column
+                prop="name"
+                :label="cell_0_label"
+                min-width='100px'
+                class-name='name'
+                >
+            </el-table-column>
+            <el-table-column
+                prop="cost"
+                label="花费金额"
+                min-width='120px'
+                class-name='cell_1'
+                >
+            </el-table-column>
+            <el-table-column
+                prop="nums"
+                label="留资数"
+                min-width='120px'
+                class-name='cell_1'
+                >
+            </el-table-column>
+            <el-table-column
+                prop='cost_avg'
+                label="留资成本"
+                width='110px'
+                class-name='cell_1'
+                >
+            </el-table-column>
+            <el-table-column
+                prop="bespeak_num"
+                label="预约到店数"
+                min-width='200px'
+                class-name='cell_2'
+                >
+            </el-table-column>
+            <el-table-column
+                prop="scale_num"
+                label="预约量尺数"
+                min-width='200px'
+                class-name='cell_2'
+                >
+            </el-table-column>
+            <el-table-column
+                prop='make_num'
+                label="预约成功数（包括量尺和到店）"
+                min-width='200px'
+                class-name='cell_2'>
+            </el-table-column>
+            <el-table-column
+                prop='make_change'
+                label="预约转化率"
+                min-width='120px'
+                class-name='cell_2'>
+            </el-table-column>
+            <el-table-column
+                prop='make_cost'
+                label="预约成本"
+                min-width='120px'
+                class-name='cell_2'>
+            </el-table-column>
+            <el-table-column
+                prop="bespeak_succ"
+                label="成功到店数（直接预约到店）"
+                min-width='200px'
+                class-name='cell_3'>
+            </el-table-column>
+            <el-table-column
+                prop="bespeak_change"
+                label="成功到店率（直接预约到店）"
+                min-width='200px'
+                class-name='cell_3'>
+            </el-table-column>
+            <el-table-column
+                prop="scale_succ"
+                label="成功量尺数"
+                min-width='160px'
+                class-name='cell_3'>
+            </el-table-column>
+            <el-table-column
+                prop="scale_change"
+                label="成功量尺率"
+                min-width='160px'
+                class-name='cell_3'>
+            </el-table-column>
+            <el-table-column
+                prop="bespeak_total"
+                label="成功到店数（量尺到店）"
+                min-width='160px'
+                class-name='cell_3'>
+            </el-table-column>
+            <el-table-column
+                prop="total_change"
+                label="成功到店率（量尺后）"
+                min-width='160px'
+                class-name='cell_3'>
+            </el-table-column>
+            <!-- <el-table-column
+                prop="c16"
+                label="下单数"
+                min-width='160px'
+                class-name='cell_4'>
+            </el-table-column>
+            <el-table-column
+                prop="c17"
+                label="下单成本"
+                min-width='160px'
+                class-name='cell_4'>
+            </el-table-column>
+            <el-table-column
+                prop="c18"
+                label="下单总金额"
+                min-width='160px'
+                class-name='cell_4'>
+            </el-table-column>
+            <el-table-column
+                prop="c19"
+                label="客单价"
+                min-width='160px'
+                class-name='cell_4'>
+            </el-table-column> -->
+        </el-table>
+    </section>
+</template>
+<script>
+    import {incomeSearch,income_excel} from '@/service/getData';
+    export default{
+        name:'report',
+        data(){
+            return{
+                cell_0_label:'所有渠道',
+                reportLists:[],
+                searchForm: {
+                    type: 'all',
+                    area:'',
+                    start_time:'',
+                    end_time:''
+                },
+                searchBtnStatus:false
+            }
+        },
+        methods:{
+            async searchFormDatas(){//表单搜索
+                if(this.searchBtnStatus){
+                    return false;
+                }
+                this.searchBtnStatus = true;
+                try {
+                    let that = this;
+                    const res = await incomeSearch(this.searchForm);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin === 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.reportLists = res;
+                    this.searchBtnStatus = false;
+                } catch(e) {
+                    this.searchBtnStatus = false;
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            async incomeExcel(){//导出excel
+                if(this.searchBtnStatus){
+                    return false;
+                }
+                this.searchBtnStatus = true;
+                try {
+                    let that = this;
+                    const res = await income_excel(this.searchForm);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin === 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.$message({
+                        message: '导出成功',
+                        type: 'success'
+                    });
+                    this.searchBtnStatus = false;
+                } catch(e) {
+                    this.searchBtnStatus = false;
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            contrastHandle(val){
+                switch (val) {
+                    case 'all':
+                        this.cell_0_label = '所有渠道';
+                        break;
+                    case 'source':
+                        this.cell_0_label = '客户来源';
+                        break;
+                    case 'service':
+                        this.cell_0_label = '导购';
+                        break;
+                    case 'designer':
+                        this.cell_0_label = '设计师';
+                        break;
+                    default:
+                        // statements_def
+                        break;
+                }
+            }
+        }
+    }
+</script>
+<style scoped>
+    .report_container{
+        padding: 20px 60px;
+    }
+    .report_container .el-table{
+        text-align: center;
+    }
+    .el-button{
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+</style>

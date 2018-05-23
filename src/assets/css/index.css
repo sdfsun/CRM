@@ -281,10 +281,11 @@ body{
 /*客户相关记录弹框*/
 .customRelationInfoDialog .el-dialog,.custom_container .basicInfoDialog .el-dialog{
     width: 763px;
+    min-width: 763px;
 }
 .customRelationInfoDialog .form_item_style_width .el-form-item__content,
     .customRelationInfoDialog .el-date-editor.el-input, .customRelationInfoDialog .el-date-editor.el-input__inner,
-    .customRelationInfoDialog .el-checkbox{
+    .customRelationInfoDialog .el-checkbox,.customRelationInfoDialog .el-select,.report_container .el-select{
     width: 100%;
 }
 /*方案明细弹框*/
@@ -295,9 +296,6 @@ body{
     display: none;
     margin-bottom: 0;
     line-height: 0;
-}
-.customRelationInfoDialog .el-select{
-    width: 100%;
 }
 /*分配设计师*/
 .assignDesignerDialog .el-form-item__label{
@@ -466,4 +464,29 @@ body{
 .customListsTableInfo .el-rate__icon {
     font-size: 14px;
     margin-right: 0px;
+}
+/*报表*/
+.report_container .el-table th.is-leaf, .report_container .el-table td{
+    border-bottom: none;
+}
+.report_container .el-table__body tr.current-row > td {
+    background-color: transparent;
+}
+.report_container .cell_0{
+    background: #EBF1DE !important;
+}
+.report_container .cell_1{
+    background: #92D050 !important;
+}
+.report_container .cell_2{
+    background: #00B0F0 !important;
+}
+.report_container .cell_3{
+    background: #FABF8F !important;
+}
+.report_container .cell_4{
+    background: #FFFF00 !important;
+}
+.report_container .el-date-editor.el-input,.report_container  .el-date-editor.el-input__inner{
+    width: 100%;
 }

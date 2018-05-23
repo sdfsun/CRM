@@ -30,7 +30,7 @@
                         <span>工时管理</span>
                     </template>
                     <el-menu-item index="/designer"  >设计师列表</el-menu-item>
-                    <el-menu-item index="/hours" v-if='memberRoleId.member_role_id !== "service" && memberRoleId.member_role_id !== "guide"'>工时上报</el-menu-item>
+                    <el-menu-item index="/hours" v-if='memberRoleId.member_role_id !== "service"'>工时上报</el-menu-item>
                 </el-submenu>
                 <el-submenu index="3" v-if='memberRoleId.member_role_id !== "designer"'>
                     <template slot="title">
@@ -51,6 +51,12 @@
                         <span>操作员管理</span>
                     </template>
                     <el-menu-item index="/updatePasd">修改密码</el-menu-item>
+                </el-submenu>
+                <el-submenu index="6">
+                    <template slot="title">
+                        <span>报表管理</span>
+                    </template>
+                    <el-menu-item index="/report">报表管理</el-menu-item>
                 </el-submenu>
           </el-menu>
         </div>
@@ -105,7 +111,7 @@
         width: 100%;
         text-align: center;
         position: relative;
-        height: 100%;
+        min-height: 100%;
         display: flex;
         flex-direction: column;
     }

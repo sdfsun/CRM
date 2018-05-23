@@ -12,10 +12,10 @@
             <el-tab-pane label="所有日程" name="second">
 
                 <el-row :gutter="20">
-                    <el-col :span="14">
+                    <el-col :span="10">
                         <input type="hidden" id="datepicker1"/>
                     </el-col>
-                    <el-col :span="10">
+                    <el-col :span="14">
                         <div class="h_left">
                             <div class="h_hd">日程列表</div>
                             <div class="h_ct">

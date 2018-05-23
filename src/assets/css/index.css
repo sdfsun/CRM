@@ -466,13 +466,17 @@ body{
     margin-right: 0px;
 }
 /*报表*/
+.report_container .el-table th{
+    text-align: right;
+}
 .report_container .el-table th.is-leaf, .report_container .el-table td{
     border-bottom: none;
 }
 .report_container .el-table__body tr.current-row > td {
     background-color: transparent;
 }
-.report_container .cell_0{
+.report_container .cell_0_label{
+    text-align: center !important;
     background: #EBF1DE !important;
 }
 .report_container .cell_1{
@@ -489,4 +493,13 @@ body{
 }
 .report_container .el-date-editor.el-input,.report_container  .el-date-editor.el-input__inner{
     width: 100%;
+}
+.report_container th,.report_container td{
+    border-right: 1px solid #606266;
+}
+.report_container .cell_15_label,.report_container tr td:last-child{
+    border-right:none;
+}
+.report_container td{
+    border-top: 1px solid #606266;
 }

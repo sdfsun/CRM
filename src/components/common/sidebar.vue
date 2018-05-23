@@ -32,19 +32,18 @@
                     <el-menu-item index="/designer"  >设计师列表</el-menu-item>
                     <el-menu-item index="/hours" v-if='memberRoleId.member_role_id !== "service"'>工时上报</el-menu-item>
                 </el-submenu>
-                <el-submenu index="3" v-if='memberRoleId.member_role_id !== "designer"'>
+                <el-submenu index="3">
+                    <template slot="title">
+                        <span>报表管理</span>
+                    </template>
+                    <el-menu-item index="/report">报表管理</el-menu-item>
+                </el-submenu>
+                <el-submenu index="4" v-if='memberRoleId.member_role_id !== "designer"'>
                     <template slot="title">
                         <span>基本配置</span>
                     </template>
                     <el-menu-item index="/source">渠道来源管理</el-menu-item>
                     <el-menu-item index="/activity">活动管理</el-menu-item>
-                </el-submenu>
-                <el-submenu index="4" v-if='memberRoleId.member_role_id === "super"'>
-                    <template slot="title">
-                        <span>系统管理</span>
-                    </template>
-                    <el-menu-item index="/role">角色管理</el-menu-item>
-                    <el-menu-item index="/user">用户列表</el-menu-item>
                 </el-submenu>
                 <el-submenu index="5">
                     <template slot="title">
@@ -52,12 +51,14 @@
                     </template>
                     <el-menu-item index="/updatePasd">修改密码</el-menu-item>
                 </el-submenu>
-                <el-submenu index="6">
+                <el-submenu index="6" v-if='memberRoleId.member_role_id === "super"'>
                     <template slot="title">
-                        <span>报表管理</span>
+                        <span>系统管理</span>
                     </template>
-                    <el-menu-item index="/report">报表管理</el-menu-item>
+                    <el-menu-item index="/role">角色管理</el-menu-item>
+                    <el-menu-item index="/user">用户列表</el-menu-item>
                 </el-submenu>
+                
           </el-menu>
         </div>
         <div class="footer-btns">

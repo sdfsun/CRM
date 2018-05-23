@@ -57,7 +57,7 @@
                 prop="name"
                 :label="cell_0_label"
                 min-width='100px'
-                class-name='name'
+                class-name='cell_0_label'
                 >
             </el-table-column>
             <el-table-column
@@ -147,7 +147,7 @@
                 prop="total_change"
                 label="成功到店率（量尺后）"
                 min-width='160px'
-                class-name='cell_3'>
+                class-name='cell_3 cell_15_label'>
             </el-table-column>
             <!-- <el-table-column
                 prop="c16"
@@ -225,7 +225,8 @@
                 }
             },
             async incomeExcel(){//导出excel
-                window.location.href='/crm-income_excel.html?content='+this.searchForm.content+'&status='+this.searchForm.status+'&time='+this.searchForm.time+'&searchName='+this.searchForm.searchName+'&member_id='+this.searchForm.member_id+'&port='+this.searchForm.port;
+                
+                window.location.href='/crm-income_excel.html?type='+this.searchForm.type+'&area='+this.searchForm.area+'&start_time='+this.searchForm.start_time+'&end_time='+this.searchForm.end_time;
             },
             contrastHandle(val){
                 switch (val) {
@@ -254,7 +255,7 @@
         padding: 20px 60px;
     }
     .report_container .el-table{
-        text-align: center;
+        text-align: right;
     }
     .el-button{
         width: 100%;

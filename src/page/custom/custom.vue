@@ -97,19 +97,19 @@
             <el-table-column
                 prop="name"
                 label="客户"
-                min-width='120px'
+                min-width='100px'
                 >
             </el-table-column>
             <el-table-column
                 prop="mobile"
                 label="手机"
-                min-width='120px'
+                min-width='100px'
                 >
             </el-table-column>
             <el-table-column
                 prop='star_level'
                 label="星级"
-                width='110px'
+                min-width='90px'
                 sortable
                 >
                 <template slot-scope='scope'>
@@ -142,12 +142,12 @@
                 <el-table-column
                     prop='apart_day'
                     label="留资天数"
-                    min-width='120px'>
+                    min-width='70px'>
                 </el-table-column>
                 <el-table-column
                     prop='frequency'
                     label="沟通次数"
-                    min-width='120px'>
+                    min-width='70px'>
                 </el-table-column>
             </template>
             <el-table-column
@@ -158,7 +158,7 @@
             <el-table-column
                 prop='source_name'
                 label="客户来源"
-                min-width='120px'>
+                min-width='110px'>
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
@@ -655,7 +655,7 @@
                 });
             },
             async logExportExcel(){//导出excel
-                window.location.href='/crm-logExport-'+this.id+'.html?type='+this.searchForm.type+'&area='+this.searchForm.area+'&start_time='+this.searchForm.start_time+'&end_time='+this.searchForm.end_time;
+                window.location.href='/crm-logExport-'+this.id+'.html?content='+this.searchForm.content+'&status='+this.searchForm.status+'&time='+this.searchForm.time+'&searchName='+this.searchForm.searchName+'&member_id='+this.searchForm.member_id+'&port='+this.searchForm.port;
             }
         },
         components:{

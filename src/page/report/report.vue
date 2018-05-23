@@ -177,7 +177,7 @@
     </section>
 </template>
 <script>
-    import {incomeSearch,income_excel} from '@/service/getData';
+    import {incomeSearch} from '@/service/getData';
     export default{
         name:'report',
         data(){
@@ -225,37 +225,7 @@
                 }
             },
             async incomeExcel(){//导出excel
-                if(this.searchBtnStatus){
-                    return false;
-                }
-                this.searchBtnStatus = true;
-                try {
-                    let that = this;
-                    const res = await income_excel(this.searchForm);
-                    if(res.error){
-                        this.$message({
-                            message: res.error,
-                            type: 'error'
-                        });
-                        if(res.nologin === 1){//未登录
-                            setTimeout(()=>{
-                                that.$router.push('/');
-                            },3000);
-                        }
-                        return false;
-                    }
-                    this.$message({
-                        message: '导出成功',
-                        type: 'success'
-                    });
-                    this.searchBtnStatus = false;
-                } catch(e) {
-                    this.searchBtnStatus = false;
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
+                window.location.href='/crm-income_excel.html?content='+this.searchForm.content+'&status='+this.searchForm.status+'&time='+this.searchForm.time+'&searchName='+this.searchForm.searchName+'&member_id='+this.searchForm.member_id+'&port='+this.searchForm.port;
             },
             contrastHandle(val){
                 switch (val) {

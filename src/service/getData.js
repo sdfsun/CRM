@@ -134,9 +134,3 @@ export const store_vain = () => axios.post('/crm-store_vain.html', {
 
 //报表
 export const incomeSearch = (formData) => axios.post('/crm-incomeSearch.html',formData);
-
-//导出
-export const income_excel = (formData) => axios.post('/crm-income_excel.html',formData);
-
-//客户列表导出
-export const logExport = (key,formData) => axios.post('/crm-logExport-'+key+'.html',formData);

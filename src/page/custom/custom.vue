@@ -88,12 +88,12 @@
                 v-if='idStatus'
                 >
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
                 prop="customer_number"
                 label="客户编号"
-                min-width='100px'
+                min-width='70px'
                 >
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
                 prop="name"
                 label="客户"
@@ -126,13 +126,13 @@
                 label="客户地址"
                 min-width='200px'>
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
                 label="房屋类型"
                 min-width='180px'>
                 <template slot-scope='scope'>
                     <span v-if='scope.row.house_type'>{{scope.row.house_type}}/{{scope.row.house_status}}</span>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
                 prop='status_name'
                 label="客户状态"
@@ -159,11 +159,6 @@
                 prop='source_name'
                 label="客户来源"
                 min-width='120px'>
-            </el-table-column>
-            <el-table-column
-                prop="createtime"
-                label="创建时间"
-                min-width='160px'>
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
@@ -212,7 +207,7 @@
     import programme from '@/components/custom/programme/programme';
     import transaction from '@/components/custom/transaction/transaction';
     import complaint from '@/components/custom/complaint/complaint';
-    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,transactions,complaints,logExport} from '@/service/getData';
+    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,transactions,complaints} from '@/service/getData';
     
     export default{
         name:'custom',
@@ -228,7 +223,8 @@
                     status:'',
                     time:'',
                     searchName:'',
-                    member_id:''
+                    member_id:'',
+                    port:''
                 },
                 customLists: [],//客户列表
                 totalNum:0,//客户列表总数
@@ -294,8 +290,12 @@
             ]),
             //表格排序
             sortChangeHandle(sort_data){
-                this.sortForm.prop = sort_data.prop;
-                this.sortForm.order = sort_data.order;
+                this.searchForm.port = sort_data.order;
+                this.page = 1;
+                this.pageForm.HAS_DATA = true;
+                this.pageForm.isOn = true;
+                this.pageForm.elWraper.scrollTop = 0;
+                this.init();
             },
             async init(type){//获取客户信息列表
                 const that = this;
@@ -323,32 +323,22 @@
                         this.scrollCustomBasicLists();
                     }
                     this.totalNum = res.data ? res.data : 0;
-                    let tempCustomLists = this.customLists.slice();
                     if(res.success && res.success.length>0){
                         if(this.page === 1){
-                            tempCustomLists = res.success;
+                            this.customLists = res.success;
                         }else{
-                            tempCustomLists =  tempCustomLists.concat(res.success).slice();
+                            this.customLists =  this.customLists.concat(res.success).slice();
                         }
                     }else{
                         if(this.page === 1){
-                            tempCustomLists = [];
+                            this.customLists = [];
                         }else{//最后一页了
                             this.page--;
                         }
                         this.pageForm.HAS_DATA = false;
                     }
-                    //排序
-                    tempCustomLists.sort(function(x, y){
-                        if(that.sortForm.order === 'descending'){//降序
-                            return x[that.sortForm.prop] > y[that.sortForm.prop] ? 1:-1;
-                        }else{//升序
-                            return x[that.sortForm.prop] < y[that.sortForm.prop] ? 1:-1;
-                        }
-                    });
-                    this.customLists = tempCustomLists.slice();
                     that.pageForm.isOn = true;
-                    if(type && type !== 'page'){//非分页
+                    if(type !== 'page'){//非分页
                         this.currentRow = {};
                         this.activeName = '';
                         this.customInfoArray = [{},[],[],[],[],[],[]];//重置
@@ -389,13 +379,6 @@
                 this.SETQRCODE({});
             },
             searchFormDatas(){//搜索表单数据
-                // if(this.searchForm.content !== '' && this.searchForm.searchName === ''){
-                //     this.$message({
-                //         message: '请选择搜索类型',
-                //         type: 'error'
-                //     });
-                //     return false;
-                // }
                 this.page = 1;
                 this.pageForm.HAS_DATA = true;
                 this.pageForm.isOn = true;
@@ -458,10 +441,12 @@
                 const index = this.customLists.findIndex(function(item, index, arr) {
                     return item.id === that.currentRow.id;
                 });
-               this.$refs['customListsTable'].bodyWrapper.scrollTop =index*36;
+                this.$refs['customListsTable'].bodyWrapper.scrollTop =index*36;
             },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
+                this.$refs['customListsTable'].setCurrentRow();
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
+                    this.$refs['customListsTable'].setCurrentRow(currentrow);
                     this.currentRow = Object.assign({},currentrow);
                     this.activeName = '1';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
@@ -670,31 +655,7 @@
                 });
             },
             async logExportExcel(){//导出excel
-                try {
-                    let that = this;
-                    const res = await logExport(this.id,this.searchForm);
-                    if(res.error){
-                        this.$message({
-                            message: res.error,
-                            type: 'error'
-                        });
-                        if(res.nologin === 1){//未登录
-                            setTimeout(()=>{
-                                that.$router.push('/');
-                            },3000);
-                        }
-                        return false;
-                    }
-                    this.$message({
-                        message: '导出成功',
-                        type: 'success'
-                    });
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
+                window.location.href='/crm-logExport-'+this.id+'.html?type='+this.searchForm.type+'&area='+this.searchForm.area+'&start_time='+this.searchForm.start_time+'&end_time='+this.searchForm.end_time;
             }
         },
         components:{

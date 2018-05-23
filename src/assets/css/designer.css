@@ -38,6 +38,7 @@
 .is-disabled .d_msg{display:none;}
 
 @media screen and (max-width: 1500px) {
+    .page_hours .el-tab-pane{padding:0 30px;}
     .page_hours .el-tabs__header{height:50px;line-height:50px;}
     .pika-single{margin:30px auto;}
     .pika-button{height:60px;font-size:18px;padding:10px 10px 0;line-height:24px;}

@@ -131,3 +131,12 @@ export const activity_save = (formData) => axios.post('/crm-activity_save.html',
 export const store_vain = () => axios.post('/crm-store_vain.html', {
     showLoad: '3'
 });
+
+//报表
+export const incomeSearch = (formData) => axios.post('/crm-incomeSearch.html',formData);
+
+//导出
+export const income_excel = (formData) => axios.post('/crm-income_excel.html',formData);
+
+//客户列表导出
+export const logExport = (key,formData) => axios.post('/crm-logExport-'+key+'.html',formData);

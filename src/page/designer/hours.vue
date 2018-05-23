@@ -1,7 +1,7 @@
 <template>
     <div class="page_hours" :data='memberRoleId.member_role_id' v-if='memberRoleId && memberRoleId.member_role_id'>
         <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="我的日程" name="first" v-if='memberRoleId.member_role_id !== "shopowner"'>
+            <el-tab-pane label="我的日程" name="first" v-if='memberRoleId.member_role_id !== "shopowner" && memberRoleId.member_role_id !== "guide"'>
                 <div class="hours_box">
                     <input type="hidden" id="datepicker"/>
                     <div class="h_footer">
@@ -73,7 +73,7 @@ export default {
     },
     mounted: function () {
         this.$nextTick(function () {
-            if(this.memberRoleId && this.memberRoleId.member_role_id === "shopowner"){
+            if(this.memberRoleId && (this.memberRoleId.member_role_id === "shopowner" || this.memberRoleId.member_role_id === "guide")){
                 this.activeName = 'second';
             }
             this.init();
@@ -164,7 +164,7 @@ export default {
         },
         initday(){
             var that = this;
-            if(this.memberRoleId.member_role_id !== "shopowner"){
+            if(this.memberRoleId.member_role_id !== "shopowner" && this.memberRoleId.member_role_id !== "guide"){
                 var picker = new Pikaday(
                 {
                     field: document.getElementById('datepicker'),

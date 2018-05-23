@@ -4,6 +4,7 @@
             <el-row :gutter="100" style='margin:0;'>
                 <el-col :span='12' style='padding-left: 0;'>
                     <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
+                    <el-button type="primary" @click='logExportExcel'>导出</el-button>
                 </el-col>
                 <el-col :span='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"?12:24' style='text-align: right;padding-right: 0;'>
                     <el-button type="primary">总数：{{totalNum}}</el-button>
@@ -137,7 +138,7 @@
                 label="客户状态"
                 min-width='120px'>
             </el-table-column>
-            <template v-if='id === 2'>
+            <template v-if='id === "2"'>
                 <el-table-column
                     prop='apart_day'
                     label="留资天数"
@@ -211,7 +212,7 @@
     import programme from '@/components/custom/programme/programme';
     import transaction from '@/components/custom/transaction/transaction';
     import complaint from '@/components/custom/complaint/complaint';
-    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,transactions,complaints} from '@/service/getData';
+    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,transactions,complaints,logExport} from '@/service/getData';
     
     export default{
         name:'custom',
@@ -283,6 +284,7 @@
             this.page = 1;
             this.pageForm.HAS_DATA = true;
             this.pageForm.isOn = true;
+            this.pageForm.elWraper.scrollTop = 0;
             this.init();
             next();
         },
@@ -460,7 +462,7 @@
             },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
-                    this.currentRow = currentrow;
+                    this.currentRow = Object.assign({},currentrow);
                     this.activeName = '1';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
                     this.isGetDataArray = new Array(7).fill("");//重置
@@ -666,6 +668,33 @@
                         that.$set(that.customLists[index2],'status_name',elm.label);
                     }
                 });
+            },
+            async logExportExcel(){//导出excel
+                try {
+                    let that = this;
+                    const res = await logExport(this.id,this.searchForm);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin === 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.$message({
+                        message: '导出成功',
+                        type: 'success'
+                    });
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             }
         },
         components:{
@@ -697,7 +726,7 @@
         flex-direction: column;
     }
     .add_custom{
-        width: 120px;
+        min-width: 120px;
         padding: 10px 14px;
     }
     .search_form{

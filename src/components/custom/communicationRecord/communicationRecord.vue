@@ -106,11 +106,6 @@
                 communicateBasicFormData:null//基本信息数据
             }
         },
-        watch:{
-            infomation:function(newVal,oldVal){
-                this.communicateBasicFormData = Object.assign({},newVal);
-            }
-        },
         methods:{
             communication_basic_et(){
                 if(this.activeName === '1'){
@@ -123,6 +118,7 @@
             },
             addCommunicationRecord(){//新增沟通记录
                 let that = this;
+                this.communicateBasicFormData = Object.assign({},this.infomation);
                 if(this.infomation && this.infomation.locking === 'true'){
                     this.$confirm(''+this.infomation.locking_name+'('+this.infomation.locking_usercode+')目前正在与该客户沟通中，您是否继续当前操作？', '提示', {
                         confirmButtonText: '确定',
@@ -156,6 +152,7 @@
                     return false;
                 }
                 let that = this;
+                this.communicateBasicFormData = Object.assign({},this.infomation);
                 if(this.infomation && this.infomation.locking === 'true'){
                     this.$confirm(''+this.infomation.locking_name+'('+this.infomation.locking_usercode+')目前正在与该客户沟通中，您是否继续当前操作？', '提示', {
                         confirmButtonText: '确定',

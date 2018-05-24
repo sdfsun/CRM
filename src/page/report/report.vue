@@ -58,6 +58,7 @@
                 :label="cell_0_label"
                 min-width='100px'
                 class-name='cell_0_label'
+                fixed='left'
                 >
             </el-table-column>
             <el-table-column

@@ -97,7 +97,7 @@
             <el-table-column
                 prop="name"
                 label="客户"
-                min-width='100px'
+                min-width='80px'
                 >
             </el-table-column>
             <el-table-column
@@ -119,12 +119,12 @@
             <el-table-column
                 prop="area"
                 label="客户地区"
-                min-width='200px'>
+                min-width='150px'>
             </el-table-column>
             <el-table-column
                 prop="addr"
                 label="客户地址"
-                min-width='200px'>
+                min-width='180px'>
             </el-table-column>
             <!-- <el-table-column
                 label="房屋类型"
@@ -142,23 +142,28 @@
                 <el-table-column
                     prop='apart_day'
                     label="留资天数"
-                    min-width='70px'>
+                    min-width='68px'>
                 </el-table-column>
                 <el-table-column
                     prop='frequency'
                     label="沟通次数"
-                    min-width='70px'>
+                    min-width='68px'>
                 </el-table-column>
             </template>
             <el-table-column
                 prop='member_name'
                 label="归属设计师"
-                min-width='120px'>
+                min-width='90px'>
             </el-table-column>
             <el-table-column
                 prop='source_name'
                 label="客户来源"
-                min-width='110px'>
+                min-width='80px'>
+            </el-table-column>
+            <el-table-column
+                prop='createtime'
+                label="创建日期"
+                min-width='150px'>
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>

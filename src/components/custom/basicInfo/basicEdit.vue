@@ -125,7 +125,8 @@
                 <el-col :span="12">
                     <el-form-item label="客户类型" prop='client_type'>
                         <el-select v-model="basicForm.client_type" placeholder="请选择客户类型" clearable>
-                            <el-option label="装修用户" value="1"></el-option>
+                            <el-option label="装修用户(内地)" value="1"></el-option>
+                            <el-option label="装修用户(外地)" value="4"></el-option>
                             <el-option label="合作商" value="2"></el-option>
                             <el-option label="其他" value="3"></el-option>
                             <el-option label="未知" value="0"></el-option>

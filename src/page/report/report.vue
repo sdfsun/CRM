@@ -56,7 +56,7 @@
             <el-table-column
                 prop="name"
                 :label="cell_0_label"
-                min-width='100px'
+                min-width='56px'
                 class-name='cell_0_label'
                 fixed='left'
                 >
@@ -64,116 +64,96 @@
             <el-table-column
                 prop="cost"
                 label="花费金额"
-                min-width='120px'
+                min-width='76px'
                 class-name='cell_1'
                 >
             </el-table-column>
             <el-table-column
                 prop="nums"
                 label="留资数"
-                min-width='120px'
+                min-width='54px'
                 class-name='cell_1'
                 >
             </el-table-column>
             <el-table-column
                 prop='cost_avg'
                 label="留资成本"
-                width='110px'
+                min-width='76px'
                 class-name='cell_1'
                 >
             </el-table-column>
-            <el-table-column
-                prop="bespeak_num"
-                label="预约到店数"
-                min-width='200px'
-                class-name='cell_2'
-                >
+            <el-table-column label='预约' class-name='cell_2 cell_all'>
+                <el-table-column
+                    prop="bespeak_num"
+                    label="到店数"
+                    min-width='54px'
+                    class-name='cell_2'
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="scale_num"
+                    label="量尺数"
+                    min-width='54px'
+                    class-name='cell_2'
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop='make_num'
+                    label="成功数(包括量尺和到店)"
+                    min-width='78px'
+                    class-name='cell_2'>
+                </el-table-column>
+                <el-table-column
+                    prop='make_change'
+                    label="转化率"
+                    min-width='50px'
+                    class-name='cell_2'>
+                </el-table-column>
+                <el-table-column
+                    prop='make_cost'
+                    label="成本"
+                    min-width='76px'
+                    class-name='cell_2'>
+                </el-table-column>
             </el-table-column>
-            <el-table-column
-                prop="scale_num"
-                label="预约量尺数"
-                min-width='200px'
-                class-name='cell_2'
-                >
+            <el-table-column label='成功' class-name='cell_3 cell_all'>
+                <el-table-column
+                    prop="bespeak_succ"
+                    label="到店数(直接预约到店)"
+                    min-width='72px'
+                    class-name='cell_3'>
+                </el-table-column>
+                <el-table-column
+                    prop="bespeak_change"
+                    label="到店率(直接预约到店)"
+                    min-width='72px'
+                    class-name='cell_3'>
+                </el-table-column>
+                <el-table-column
+                    prop="scale_succ"
+                    label="量尺数"
+                    min-width='54px'
+                    class-name='cell_3'>
+                </el-table-column>
+                <el-table-column
+                    prop="scale_change"
+                    label="量尺率"
+                    min-width='50px'
+                    class-name='cell_3'>
+                </el-table-column>
+                <el-table-column
+                    prop="bespeak_total"
+                    label="到店数(量尺到店)"
+                    min-width='62px'
+                    class-name='cell_3'>
+                </el-table-column>
+                <el-table-column
+                    prop="total_change"
+                    label="到店率(量尺后)"
+                    min-width='62px'
+                    class-name='cell_3 cell_15_label'>
+                </el-table-column>
             </el-table-column>
-            <el-table-column
-                prop='make_num'
-                label="预约成功数（包括量尺和到店）"
-                min-width='200px'
-                class-name='cell_2'>
-            </el-table-column>
-            <el-table-column
-                prop='make_change'
-                label="预约转化率"
-                min-width='120px'
-                class-name='cell_2'>
-            </el-table-column>
-            <el-table-column
-                prop='make_cost'
-                label="预约成本"
-                min-width='120px'
-                class-name='cell_2'>
-            </el-table-column>
-            <el-table-column
-                prop="bespeak_succ"
-                label="成功到店数（直接预约到店）"
-                min-width='200px'
-                class-name='cell_3'>
-            </el-table-column>
-            <el-table-column
-                prop="bespeak_change"
-                label="成功到店率（直接预约到店）"
-                min-width='200px'
-                class-name='cell_3'>
-            </el-table-column>
-            <el-table-column
-                prop="scale_succ"
-                label="成功量尺数"
-                min-width='160px'
-                class-name='cell_3'>
-            </el-table-column>
-            <el-table-column
-                prop="scale_change"
-                label="成功量尺率"
-                min-width='160px'
-                class-name='cell_3'>
-            </el-table-column>
-            <el-table-column
-                prop="bespeak_total"
-                label="成功到店数（量尺到店）"
-                min-width='160px'
-                class-name='cell_3'>
-            </el-table-column>
-            <el-table-column
-                prop="total_change"
-                label="成功到店率（量尺后）"
-                min-width='160px'
-                class-name='cell_3 cell_15_label'>
-            </el-table-column>
-            <!-- <el-table-column
-                prop="c16"
-                label="下单数"
-                min-width='160px'
-                class-name='cell_4'>
-            </el-table-column>
-            <el-table-column
-                prop="c17"
-                label="下单成本"
-                min-width='160px'
-                class-name='cell_4'>
-            </el-table-column>
-            <el-table-column
-                prop="c18"
-                label="下单总金额"
-                min-width='160px'
-                class-name='cell_4'>
-            </el-table-column>
-            <el-table-column
-                prop="c19"
-                label="客单价"
-                min-width='160px'
-                class-name='cell_4'>
-            </el-table-column> -->
         </el-table>
     </section>
 </template>
@@ -252,8 +232,8 @@
     }
 </script>
 <style scoped>
-    .report_container{
-        padding: 20px 60px;
+    .report_container .search_form{
+        padding: 20px 60px 0;
     }
     .report_container .el-table{
         text-align: right;

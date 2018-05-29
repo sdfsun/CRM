@@ -110,7 +110,7 @@
                 prop='star_level'
                 label="星级"
                 min-width='90px'
-                sortable
+                sortable='custom'
                 >
                 <template slot-scope='scope'>
                     <el-rate v-model="scope.row.star_level" disabled></el-rate>
@@ -332,7 +332,7 @@
                         if(this.page === 1){
                             this.customLists = res.success;
                         }else{
-                            this.customLists =  this.customLists.concat(res.success).slice();
+                            this.customLists =  this.customLists.concat(res.success);
                         }
                     }else{
                         if(this.page === 1){
@@ -449,9 +449,7 @@
                 this.$refs['customListsTable'].bodyWrapper.scrollTop =index*36;
             },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
-                this.$refs['customListsTable'].setCurrentRow();
                 if(currentrow){//编辑基本信息回调的时候会触发这个函数，但是此时setCurrentRow为对象
-                    this.$refs['customListsTable'].setCurrentRow(currentrow);
                     this.currentRow = Object.assign({},currentrow);
                     this.activeName = '1';
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
@@ -503,10 +501,15 @@
                             return false;
                         }
                         this.$set(this.customInfoArray,num,result.success);
-                        if(num === 0 && this.customInfoArray[0].locking === 'true'){
-                            this.$set(this.currentRow,'locking',this.customInfoArray[0].locking);
-                            this.$set(this.currentRow,'locking_name',this.customInfoArray[0].locking_name);
-                            this.$set(this.currentRow,'locking_usercode',this.customInfoArray[0].locking_usercode);
+                        if(num === 0){
+                            this.currentRow = Object.assign({},result.success);
+                            const index = this.customLists.findIndex(function(item, index, arr) {
+                                return item.id === result.success.id;
+                            });
+                            this.$set(this.customLists,index,result.success);
+                            this.$nextTick(function(){
+                                this.$refs['customListsTable'].setCurrentRow(result.success);
+                            });
                         }
                     }
                 } catch(e) {

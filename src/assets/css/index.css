@@ -469,6 +469,18 @@ body{
 .report_container .el-table th{
     text-align: right;
 }
+.report_container .el-table .cell{
+    padding: 0 5px;
+    white-space: normal;
+}
+.report_container .el-table th.cell_all{
+    text-align: center;
+    border-bottom-color: #000;
+}
+.report_container .el-table__fixed::before, .report_container .el-table__fixed-right::before{
+    background: transparent;
+    height: 0;
+}
 .report_container .el-table th.is-leaf, .report_container .el-table td{
     border-bottom: none;
 }

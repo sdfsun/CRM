@@ -66,7 +66,8 @@
                 </el-col>
                 <el-col :span="8">
                     <el-form-item prop='member_id'>
-                        <el-select  v-model="communicateForm.member_id" placeholder="请选择设计师" clearable>
+                        <el-select  v-model="communicateForm.member_id" placeholder="请选择设计师" clearable
+                            @change='memberIdHandle'>
                             <el-option
                                 v-for="item in assignDesignerLists"
                                 :key="item.member_id"
@@ -221,7 +222,17 @@
                     }
                     this.assignDesignerLists = res.success;
                     if(res.success && res.success.length>0){
-                        this.communicateForm.member_id = res.success[0].member_id;
+                        if(res.success[0].scale === 'true'){
+                            this.$confirm(res.success[0].name+'设计师在当前时间段内有其他客户的量尺任务，是否继续指派？', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                that.communicateForm.member_id = res.success[0].member_id;
+                            }).catch(() => {
+                                that.communicateForm.member_id = '';
+                            });
+                        }
                     }else {
                         this.communicateForm.member_id = '';
                     }
@@ -229,6 +240,22 @@
                     this.$message({
                         message: e.message,
                         type: 'error'
+                    });
+                }
+            },
+            memberIdHandle(val){//选择设计师的时候提示同一时间段是否有其他量尺任务
+                const that = this;
+                const index = this.assignDesignerLists.findIndex(function(item, index, arr) {
+                    return item.member_id === val;
+                });
+                if(this.assignDesignerLists[index].scale === 'true'){
+                    this.$confirm('该设计师在当前时间段内有其他客户的量尺任务，是否继续指派？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                    }).catch(() => {
+                        that.communicateForm.member_id = '';
                     });
                 }
             },

@@ -24,5 +24,9 @@ export default {
     //设置微信二维码
     [types.SETQRCODE](state,data){
         state.qrcode = data;
+    },
+    //设置菜单权限
+    [types.SETMENUS](state,data){
+        state.menus = data;
     }
 }

@@ -458,6 +458,9 @@ body{
     font-size: 12px;
     line-height: 28px;
 }
+.el-date-editor .el-range__icon,.el-date-editor .el-range__close-icon{
+    line-height: 28px;
+}
 .el-range-editor.el-input__inner{
     width: 100%;
 }
@@ -514,4 +517,21 @@ body{
 }
 .report_container td{
     border-top: 1px solid #606266;
+}
+
+/*菜单管理*/
+.updateMenu_dialog .el-dialog{
+    width: 600px;
+}
+.authority_container .el-table::before{
+    height: 1px;
+}
+.role_container .el-dialog{
+    width: 620px;
+}
+.role_container .el-tree-node__content .el-checkbox{
+    display: none;
+}
+.role_container .el-tree-node__children .el-tree-node__content .el-checkbox{
+    display: block;
 }

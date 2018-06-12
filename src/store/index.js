@@ -34,7 +34,8 @@ const state = {
     memberRoles:[],//角色等级
     activitys:[],//活动列表
     designers:[],//设计师列表
-    qrcode:{}//微信绑定二维码弹框
+    qrcode:{},//微信绑定二维码弹框
+    menus:[]//权限列表
 };
 
 export default new Vuex.Store({

@@ -4,3 +4,4 @@ export const SETMEMBERROLEID = 'SETMEMBERROLEID';
 export const SETACTIVITYS = 'SETACTIVITYS';
 export const SETDESIGNERS = 'SETDESIGNERS';
 export const SETQRCODE = 'SETQRCODE';
+export const SETMENUS = 'SETMENUS';

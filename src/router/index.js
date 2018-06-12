@@ -9,6 +9,8 @@ const user = r => require.ensure([], () => r(require('@/page/user/user.vue')), '
 const activity = r => require.ensure([], () => r(require('@/page/activity/activity.vue')), '活动管理');
 const updatePasd = r => require.ensure([], () => r(require('@/page/updatePasd/updatePasd.vue')), '修改密码');
 const report = r => require.ensure([], () => r(require('@/page/report/report.vue')), '报表管理');
+const notFound = r => require.ensure([], () => r(require('@/page/notFound/notFound.vue')), '404页面');
+const authority = r => require.ensure([], () => r(require('@/page/authority/authority.vue')), '菜单管理');
 
 
 export default [
@@ -55,7 +57,15 @@ export default [
             {
                 path: '/report',
                 component: report
+            },
+            {
+                path: '/authority',
+                component: authority
             }
         ]
+    },
+    { 
+        path: '*', 
+        component: notFound
     }
 ]

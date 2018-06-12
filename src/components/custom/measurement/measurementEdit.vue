@@ -149,17 +149,24 @@
                 delete this.measurementForm['update_time'];
             },
             handleRemove(file, fileList) {
-                if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
-                    var tempImageIds = [];
-                    fileList.forEach( function(item, index) {
-                        if(item.response && item.response.success && item.response.success.length>0){
-                            tempImageIds.push(item.response.success[0].image_id);
-                        }else if(item.status === 'success'){
-                            tempImageIds.push(item.url);
-                        }
+                try {
+                    if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                        var tempImageIds = [];
+                        fileList.forEach( function(item, index) {
+                            if(item.response && item.response.success && item.response.success.length>0){
+                                tempImageIds.push(item.response.success[0].image_id);
+                            }else if(item.status === 'success'){
+                                tempImageIds.push(item.url);
+                            }
+                        });
+                        this.measurementForm.imageLists = fileList;
+                        this.measurementForm.image_id = tempImageIds.slice();
+                    }
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
                     });
-                    this.measurementForm.imageLists = fileList;
-                    this.measurementForm.image_id = tempImageIds.slice();
                 }
             },
             handlePictureCardPreview(file) {
@@ -172,6 +179,10 @@
                     this.dialogVisible = true;
                     this.$refs['carouselItems'].setActiveItem(file.url);
                 } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
             },
             handleSuccess(response, file, fileList){//上传成功
@@ -235,10 +246,10 @@
                                 });
                                 that.closeMeasurementInfoDialog("measurementForm",res.data);
                             }).catch(error=>{
-                                // this.$message({
-                                //     message: error,
-                                //     type: 'error'
-                                // });
+                                this.$message({
+                                    message: error.message,
+                                    type: 'error'
+                                });
                                 this.submitBtnStatus = false;
                             });
                         }

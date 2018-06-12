@@ -45,76 +45,81 @@
                 'SETMEMBERROLEID',
                 'SETACTIVITYS',
                 'SETDESIGNERS',
-                'SETQRCODE'
+                'SETQRCODE',
+                'SETMENUS'
             ]),
             async login(formName){
                 if(this.loginBtnStatus){
                     return false;
                 }
-                try {
-                    let that = this;
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
-                            this.loginBtnStatus = true;
-                            ajax_login(this.loginForm.login_account,this.loginForm.login_password).then(res=>{
-                                this.loginBtnStatus = false;
-                                if(res.error){
-                                    this.$message({
-                                        message: res.error,
-                                        type: 'error'
-                                    });
-                                    return false;
-                                }
+                let that = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.loginBtnStatus = true;
+                        ajax_login(this.loginForm.login_account,this.loginForm.login_password).then(res=>{
+                            this.loginBtnStatus = false;
+                            if(res.error){
                                 this.$message({
-                                    message:res.success,
-                                    type:'success'
+                                    message: res.error,
+                                    type: 'error'
                                 });
-                                setTimeout(function(){
-                                    that.$router.push('/custom/0');
-                                },3000);
-                                //设置当前登录账户相关信息
-                                if(res.data){
-                                    setStore("memberRoleId",res.data);
-                                    this.SETMEMBERROLEID(res.data);
+                                return false;
+                            }
+                            this.$message({
+                                message:res.success,
+                                type:'success'
+                            });
+                            if(res.data){
+                                if(res.data.member){
+                                    //设置当前登录账户相关信息
+                                    setStore("memberRoleId",res.data.member);
+                                    this.SETMEMBERROLEID(res.data.member);
                                 }
                                 //设置客户来源
-                                if(res.source){
-                                    setStore("customSource",res.source);
-                                    this.SETCUSTOMSOURCE(res.source);
+                                if(res.data.source){
+                                    setStore("customSource",res.data.source);
+                                    this.SETCUSTOMSOURCE(res.data.source);
                                 }
                                 //设置用户等级
-                                if(res.member_role){
-                                    setStore("memberRoles",res.member_role);
-                                    this.SETMEMBERROLES(res.member_role);
+                                if(res.data.member_role){
+                                    setStore("memberRoles",res.data.member_role);
+                                    this.SETMEMBERROLES(res.data.member_role);
                                 }
                                 //设置活动列表
-                                if(res.activity){
-                                    setStore("activitys",res.activity);
-                                    this.SETACTIVITYS(res.activity);
+                                if(res.data.activity){
+                                    setStore("activitys",res.data.activity);
+                                    this.SETACTIVITYS(res.data.activity);
                                 }
                                 //设置设计师列表
-                                if(res.designer){
-                                    setStore("designers",res.designer);
-                                    this.SETDESIGNERS(res.designer);
+                                if(res.data.designer){
+                                    setStore("designers",res.data.designer);
+                                    this.SETDESIGNERS(res.data.designer);
                                 }
                                 //是否需要微信绑定
-                                if(res.weixin){
-                                    this.SETQRCODE(res.weixin);
+                                if(res.data.weixin){
+                                    this.SETQRCODE(res.data.weixin);
                                 }
-                            }).catch(error=>{
-                                this.loginBtnStatus = false;
+                                //设置权限列表
+                                if(res.data.menus){
+                                    setStore("menus",res.data.menus);
+                                    this.SETMENUS(res.data.menus);
+
+                                    //设置跳转路径
+                                    let goPath = res.data.menus[0].menus[0].path;
+                                    setTimeout(function(){
+                                        that.$router.push(goPath);
+                                    },3000);
+                                }
+                            }
+                        }).catch(error=>{
+                            this.loginBtnStatus = false;
+                            this.$message({
+                                message: error.message,
+                                type: 'error'
                             });
-                        } else {
-                            return false;
-                        }
-                    });
-                } catch(e) {
-                    this.loginBtnStatus = false;
-                    this.$message({
-                        message: res.message,
-                        type: 'error'
-                    });
-                }
+                        });
+                    }
+                });
             }
         }
     }

@@ -134,3 +134,12 @@ export const store_vain = () => axios.post('/crm-store_vain.html', {
 
 //报表
 export const incomeSearch = (formData) => axios.post('/crm-incomeSearch.html',formData);
+
+//获取菜单列表
+export const menus = () => axios.post('/crm-menus.html');
+
+//新增菜单或编辑菜单
+export const add_menus = (formData) => axios.post('/crm-add_menus.html',formData);
+
+//为角色配置权限
+export const role_access = (formData) => axios.post('/crm-role_access.html',formData);

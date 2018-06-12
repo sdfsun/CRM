@@ -24,7 +24,7 @@
     .el-main{
         text-align: left;
         padding: 0;
-        min-width: 800px;
+        min-width: 1090px;
     }
     .el-aside{
         background-color: #2C3031;

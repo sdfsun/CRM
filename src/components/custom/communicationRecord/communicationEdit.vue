@@ -295,16 +295,20 @@
                     that.closeCommunicateInfoDialog("communicateForm",res.data);
                 }).catch(error=>{
                     this.submitBtnStatus = false;
+                    this.$message({
+                        message: error.message,
+                        type: 'error'
+                    });
                 });
             },
             onSubmit(formName,type){
                 if(this.submitBtnStatus === true){
                     return false;
                 }
-                try {
-                    let that = this;
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
+                let that = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        try {
                             this.submitBtnStatus = true;
                             let tempDuration = getDuration(this.communicateForm.contact_time,this.communicateForm.end_time);
                             if(tempDuration < 0){
@@ -332,15 +336,15 @@
                             }else{
                                 that.submitFormHandle(type);
                             }
+                        } catch(e) {
+                            this.submitBtnStatus = false;
+                            this.$message({
+                                message: e.message,
+                                type: 'error'
+                            });
                         }
-                    })
-                } catch(e) {
-                    this.submitBtnStatus = false;
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
+                    }
+                });
             },
             closeCommunicateInfoDialog(formName,result){//关闭弹框
                 this.$refs[formName].resetFields();//重置表单数据

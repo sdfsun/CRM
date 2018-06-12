@@ -30,10 +30,14 @@ axios.interceptors.request.use(function (config) {
 );
 // 添加响应拦截器
 axios.interceptors.response.use(res => {
-    loaddingIndex.close();
+    if(loaddingIndex){
+        loaddingIndex.close();
+    }
     return Promise.resolve(res);
 },err=>{
-    loaddingIndex.close();
+    if(loaddingIndex){
+        loaddingIndex.close();
+    }
     if (err && err.response) {
         switch (err.response.status) {
             case 400: err.message = '请求错误(400)' ; break;

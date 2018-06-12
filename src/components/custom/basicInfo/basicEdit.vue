@@ -377,30 +377,9 @@
             ])
         },
         mounted(){
-            if(this.editInfos && this.editInfos.id){
-                let newValData = Object.assign({},this.editInfos);
-                if(newValData.house_type !== '' && newValData.house_status !== ''){//装修类型
-                    newValData.houseTypeOptions = [newValData.house_type,newValData.house_status];
-                }
-                if(newValData.area){
-                    if(typeof newValData.area === 'string' && newValData.area !== ''){//地区
-                        let areaTempArr = newValData.area.split(" ");
-                        newValData.area = areaTempArr.slice();
-                    }
-                }else{
-                    newValData.area=[];
-                }
-                this.basicForm = Object.assign({},newValData);
-                this.basicForm.tempStarLevel = newValData.star_level;
-            }else{
-                this.resetFormData();
-                this.basicForm.tempStarLevel = 0;
-            }
-        },
-        watch:{
-            editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
-                if(newVal.id){
-                    let newValData = Object.assign({},newVal);
+            try {
+                if(this.editInfos && this.editInfos.id){
+                    let newValData = Object.assign({},this.editInfos);
                     if(newValData.house_type !== '' && newValData.house_status !== ''){//装修类型
                         newValData.houseTypeOptions = [newValData.house_type,newValData.house_status];
                     }
@@ -417,6 +396,41 @@
                 }else{
                     this.resetFormData();
                     this.basicForm.tempStarLevel = 0;
+                }
+            } catch(e) {
+                this.$message({
+                    message: e.message,
+                    type: 'error'
+                });
+            }
+        },
+        watch:{
+            editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
+                try {
+                    if(newVal.id){
+                        let newValData = Object.assign({},newVal);
+                        if(newValData.house_type !== '' && newValData.house_status !== ''){//装修类型
+                            newValData.houseTypeOptions = [newValData.house_type,newValData.house_status];
+                        }
+                        if(newValData.area){
+                            if(typeof newValData.area === 'string' && newValData.area !== ''){//地区
+                                let areaTempArr = newValData.area.split(" ");
+                                newValData.area = areaTempArr.slice();
+                            }
+                        }else{
+                            newValData.area=[];
+                        }
+                        this.basicForm = Object.assign({},newValData);
+                        this.basicForm.tempStarLevel = newValData.star_level;
+                    }else{
+                        this.resetFormData();
+                        this.basicForm.tempStarLevel = 0;
+                    }
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
             }
         },
@@ -449,46 +463,38 @@
                 if(this.submitBtnStatus === true){
                     return false;
                 }
-                try {
-                    let that = this;
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
-                            this.submitBtnStatus = true;
-                            customer_save(this.basicForm).then(res=>{
-                                this.submitBtnStatus = false;
-                                if(res.error){
-                                    this.$message({
-                                        message: res.error,
-                                        type: 'error'
-                                    });
-                                    if(res.nologin === 1){//未登录
-                                        setTimeout(()=>{
-                                            that.$router.push('/');
-                                        },3000);
-                                    }
-                                    return false;
-                                }
+                let that = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.submitBtnStatus = true;
+                        customer_save(this.basicForm).then(res=>{
+                            this.submitBtnStatus = false;
+                            if(res.error){
                                 this.$message({
-                                    message:res.success,
-                                    type:'success'
+                                    message: res.error,
+                                    type: 'error'
                                 });
-                                that.closeBasicInfoDialog("basicForms",res.data);
-                            }).catch(error=>{
-                                this.submitBtnStatus = false;
-                                // this.$message({
-                                //     message: error,
-                                //     type: 'error'
-                                // });
+                                if(res.nologin === 1){//未登录
+                                    setTimeout(()=>{
+                                        that.$router.push('/');
+                                    },3000);
+                                }
+                                return false;
+                            }
+                            this.$message({
+                                message:res.success,
+                                type:'success'
                             });
-                        }
-                    })
-                } catch(e) {
-                    this.submitBtnStatus = false;
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
+                            that.closeBasicInfoDialog("basicForms",res.data);
+                        }).catch(error=>{
+                            this.submitBtnStatus = false;
+                            this.$message({
+                                message: error.message,
+                                type: 'error'
+                            });
+                        });
+                    }
+                });
             },
             closeBasicInfoDialog(formName,result){//关闭弹框
                 this.$refs[formName].resetFields();//重置表单数据

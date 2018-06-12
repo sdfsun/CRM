@@ -133,6 +133,7 @@ export default {
             var m = endTamp.getMonth() + 1;
             var d = endTamp.getDate();
             m = m < 10 ? '0'+m : m;
+            d = d < 10 ? '0'+d : d;
             this.endTime = y + '-' + m + '-' + d
         },
         async postPaidan(event,num){

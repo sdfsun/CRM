@@ -144,46 +144,42 @@
                 if(this.submitBtnStatus === true){
                     return false;
                 }
-                try {
-                    let that = this;
-                    this.$refs[formName].validate((valid,obj) => {
-                        if (valid) {
-                            this.submitBtnStatus = true;
-                            this.userForm.password_account = this.userForm.login_account;
-                            member_save(this.userForm).then(res=>{
-                                this.submitBtnStatus = false;
-                                if(res.error){
-                                    this.$message({
-                                        message: res.error,
-                                        type: 'error'
-                                    });
-                                    if(res.nologin === 1){//未登录
-                                        setTimeout(()=>{
-                                            that.$router.push('/');
-                                        },3000);
-                                    }
-                                    return false;
-                                }
+                let that = this;
+                this.$refs[formName].validate((valid,obj) => {
+                    if (valid) {
+                        this.submitBtnStatus = true;
+                        this.userForm.password_account = this.userForm.login_account;
+                        member_save(this.userForm).then(res=>{
+                            this.submitBtnStatus = false;
+                            if(res.error){
                                 this.$message({
-                                    message:res.success,
-                                    type:'success'
+                                    message: res.error,
+                                    type: 'error'
                                 });
-                                that.closeUserEditInfoDialog("userForm",res.data);
-                                if(res.data && res.data.org_id === '5' && res.data.lv_code === 'designer'){//厦门店设计师
-                                    this.updateDesigners(res.data);
+                                if(res.nologin === 1){//未登录
+                                    setTimeout(()=>{
+                                        that.$router.push('/');
+                                    },3000);
                                 }
-                            }).catch(error=>{
-                                this.submitBtnStatus = false;
+                                return false;
+                            }
+                            this.$message({
+                                message:res.success,
+                                type:'success'
                             });
-                        }
-                    });
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                    this.submitBtnStatus = false;
-                }
+                            that.closeUserEditInfoDialog("userForm",res.data);
+                            if(res.data && res.data.org_id === '5' && res.data.lv_code === 'designer'){//厦门店设计师
+                                this.updateDesigners(res.data);
+                            }
+                        }).catch(error=>{
+                            this.$message({
+                                message: error.message,
+                                type: 'error'
+                            });
+                            this.submitBtnStatus = false;
+                        });
+                    }
+                });
             },
             closeUserEditInfoDialog(formName,result){//关闭弹框
                 this.$refs[formName].resetFields();//重置表单数据

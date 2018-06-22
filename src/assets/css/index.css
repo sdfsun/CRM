@@ -1,3 +1,7 @@
+*{
+    margin: 0;
+    padding: 0;
+}
 html{
     height: 100%;
 }
@@ -7,8 +11,34 @@ body{
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-    overflow: hidden;
+    font-size: 12px;
 }
+/*字体文件*/
+@font-face {font-family: "crmiconfont";
+    src: url('font/iconfont.eot?t=1529570292154'); /* IE9*/
+    src: url('font/iconfont.eot?t=1529570292154#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff'),
+    url('font/iconfont.ttf?t=1529570292154') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+    url('font/iconfont.svg?t=1529570292154#iconfont') format('svg'); /* iOS 4.1- */
+}
+.crmiconfont {
+    font-family:"crmiconfont" !important;
+    font-size:16px;
+    font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.icon-ic_folder_close:before { content: "\e60a"; }
+.icon-zengpin:before { content: "\e663"; }
+.icon-shanchu:before { content: "\e664"; }
+.icon-shangla_:before { content: "\e63c"; }
+.icon-xiala:before { content: "\e63d"; }
+.icon-qiehuanzuhu:before { content: "\e652"; }
+.icon--xuankuang:before { content: "\e667"; }
+.icon-xuanzedingdan:before { content: "\e669"; }
+.icon-shouqi:before { content: "\e63a"; }
+.icon-zhankai:before { content: "\e63b"; }
+
 #app{
     height: 100%;
 }
@@ -117,6 +147,7 @@ body{
 .el-dialog{
     left: 90px;
     max-height: 100%;
+    border-radius: 10px;
 }
 /*去除输入框校验成功的border样式*/
 .el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
@@ -198,12 +229,8 @@ body{
     height: auto !important;
 }
 /*此时处于上拉状态*/
-.custom_container.up .el-tabs__item#tab-8:last-child i{
-    transform: rotate(90deg);
-}
-/*此时处于下拉状态*/
-.custom_container.down .el-tabs__item#tab-8:last-child i{
-    transform: rotate(270deg);
+.custom_container.up .el-tabs__item#tab-8:last-child i:before{
+    content: "\e63d";
 }
 .custom_container .el-tabs__item::before{
     content: '';
@@ -338,10 +365,12 @@ body{
     background: #fff;
     flex:1;
     overflow: auto;
+    border-radius: 10px;
 }
 .el-upload-list--picture-card .el-upload-list__item,.el-upload--picture-card{
     width: 128px;
     height: 128px;
+    line-height: 128px;
     position: relative;
     overflow: hidden;
 }
@@ -458,6 +487,9 @@ body{
     font-size: 12px;
     line-height: 28px;
 }
+.el-date-editor .el-range__icon,.el-date-editor .el-range__close-icon{
+    line-height: 28px;
+}
 .el-range-editor.el-input__inner{
     width: 100%;
 }
@@ -514,4 +546,223 @@ body{
 }
 .report_container td{
     border-top: 1px solid #606266;
+}
+
+/*菜单管理*/
+.updateMenu_dialog .el-dialog{
+    width: 600px;
+}
+.authority_container .el-table::before{
+    height: 1px;
+}
+.role_container .el-dialog{
+    width: 620px;
+}
+.role_container .el-tree-node__content .el-checkbox{
+    display: none;
+}
+.role_container .el-tree-node__children .el-tree-node__content .el-checkbox{
+    display: block;
+}
+
+/*产品下单*/
+.el-input__suffix{
+    height: 36px;
+    line-height: 36px;
+}
+.orderSearch-container .el-input-group__append,.orderCheckout-container .el-input-group__append{
+    background: #1876EF;
+    color: #fff;
+    border: none;
+}
+/*数量选择器*/
+.orderRelation-container .el-input-number{
+    width: 80px;
+    line-height: 24px;
+    height: 24px;
+    border: 1px solid #e0e0e0;
+    border-radius: 13px;
+}
+.orderRelation-container .el-input-number__increase,.orderRelation-container .el-input-number__decrease{
+    width: 25px;
+    border-radius: 13px 0 0 13px;
+    background: #fff;
+    box-sizing: border-box;
+    top:0;
+    color: #1876EF;
+}
+.orderRelation-container .el-input-number i{
+    font-weight: bold;
+}
+.orderRelation-container  .el-input-number__increase.is-disabled,.orderRelation-container .el-input-number__decrease.is-disabled{
+    color: #cfcfcf;
+}
+.orderRelation-container .el-input-number__increase{
+    border-radius: 0 13px 13px 0;
+}
+.orderRelation-container .el-input-number .el-input{
+    line-height: 24px;
+    position: absolute;
+    left: 25px;
+    right: 25px;
+    width: 30px;
+}
+.orderRelation-container .el-input-number .el-input__inner{
+    padding: 0;
+    line-height: 24px;
+    height: 24px;
+    border: none;
+    color: #1a1a1a;
+}
+/*多规格*/
+.proSpecdialog .el-dialog{
+    width: 500px;
+    border-radius: 10px;
+}
+.proSpecdialog .el-dialog__body{
+    border-radius: 10px;
+}
+.proSpecdialog .el-dialog .el-dialog__body{
+    padding: 20px 45px 20px 26px;
+}
+.el-cascader{
+    width: 100%;
+}
+/*结算页*/
+.orderCheckout-container .el-table__body-wrapper{
+    flex: 1;
+    overflow: auto;
+}
+.orderCheckout-container .el-form-item__label{
+    padding: 0;
+}
+.orderCheckout-container .formItem .el-input__inner{
+    font-size: 14px;
+    color: #4D4D4D;
+}
+.orderCheckout-container .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner{
+    background-color: #1876EF;
+    border-color: #1876EF;
+}
+.orderCheckout-container .el-date-editor.el-input,.orderCheckout-container  .el-date-editor.el-input__inner{
+    width: 100%;
+}
+.orderCheckout-container .el-input-number{
+    border-radius: 0;
+    box-sizing: content-box;
+}
+.orderCheckout-container .el-input-number__increase, .orderCheckout-container .el-input-number__decrease,
+.orderCheckout-container .el-input-number .el-input__inner{
+    background: transparent;
+}
+.orderCheckout-container .el-table .inputNumColumn .cell{
+    height: 36px;
+    padding-top: 5px;
+}
+.orderCheckout-container .checkoutTableInfo .alignCenterColumn .el-input__inner{
+    text-align: center;
+}
+.orderCheckout-container .checkoutTableInfo .el-input__inner{
+    border-radius: 0;
+}
+.orderCheckout-container .checkoutTableInfo .operation-btn{
+    color: #F25406;
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+    line-height: 28px;
+    text-decoration: none;
+    vertical-align: middle;
+}
+.orderCheckout-container .checkoutTableInfo .operation-btn.disabled{
+    color: #cfcfcf;
+}
+.orderCheckout-container .checkoutTableInfo .operation-btn span{
+    display: block;
+    width: 18px;
+    height: 18px;
+    border:1px solid #F25406;
+    line-height: 18px;
+    font-size: 13px;
+    border-radius: 3px;
+    margin-top: 4px;
+}
+.orderCheckout-container .checkoutTableInfo .operation-btn.disabled span{
+    border-color: #cfcfcf;
+}
+.orderCheckout-container .el-upload-list--picture-card .el-upload-list__item, .orderCheckout-container  .el-upload--picture-card{
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    margin-right: 20px;
+}
+.el-upload-list__item.is-success .el-upload-list__item-status-label{
+    line-height: 24px;
+}
+.el-upload-list--picture-card .el-progress{
+    width: 100%;
+}
+.el-upload-list--picture-card .el-progress-circle{
+    width: 94% !important;
+    height: 94% !important;
+    margin: 3% auto;
+}
+.orderCheckout-container .footer-info .formItem .el-input__inner{
+    border: none;
+    background: transparent;
+    padding-left: 0;
+    color: #F25406;
+    font-size: 18px;
+}
+/*结算页上传图片弹框*/
+.checkoutUploadDialog .el-dialog{
+    width: 808px;
+    min-height: 500px;
+}
+/*结算页获取历史订单弹框*/
+.historyOrdersDialog .el-dialog{
+    width: 80%;
+    min-width: 1100px;
+}
+.historyOrdersDialog .el-dialog__header{
+    padding-left: 30px;
+}
+.historyOrdersDialog .el-dialog__body{
+    padding: 20px 0;
+}
+.historyOrdersDialog .el-collapse{
+    border-color: #D6D7DC;
+}
+.historyOrdersDialog .el-collapse-item__header{
+    background: #E4F1FB;
+    border-color: #D6D7DC;
+    padding: 0 30px;
+    display: flex;
+    font-size: 14px;
+    color: #1A1A1A;
+}
+.historyOrdersDialog .el-collapse-item__header .header-left{
+    flex: 1;
+}
+.historyOrdersDialog .el-collapse-item__arrow{
+    display: none;
+}
+.historyOrdersDialog .el-collapse-item__header .choose-color{
+    color: #1876EF;
+}
+.historyOrdersDialog .el-collapse-item__header .txt{
+    margin-right: 20px;
+}
+.historyOrdersDialog .el-collapse-item__header .money-item{
+    color: #919191;
+}
+.historyOrdersDialog .el-collapse-item__header strong{
+    color: #F25406;
+}
+.historyOrdersDialog .el-collapse-item__header.is-active .icon--xuankuang:before{
+    content: "\e669";
+}
+.historyOrdersDialog .el-collapse-item__header.is-active .icon-zhankai:before {
+    content: "\e63a";
 }

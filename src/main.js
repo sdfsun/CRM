@@ -7,7 +7,6 @@ import ElementUI from 'element-ui'
 import routes from './router'
 import store from './store/'
 import 'normalize.css/normalize.css'
-// import 'element-ui/lib/theme-chalk/index.css'
 import '../theme/index.css'
 import './assets/css/index.css'
 import './assets/css/designer.css'
@@ -20,6 +19,20 @@ Vue.use(ElementUI)
 
 const router = new VueRouter({
     routes
+});
+
+// 路由权限验证
+router.beforeEach((to, from, next) => {
+    if (to.path === '/'){
+        next();
+    }else{
+        let memberRoleId = JSON.parse(localStorage.getItem('memberRoleId'));
+        if(memberRoleId && memberRoleId.member_role_id){//已登录
+            next();
+        }else{//未登录
+            next({ path: '/' });
+        }
+    }
 });
 
 /* eslint-disable no-new */
@@ -41,8 +54,11 @@ store.dispatch('setMemberRoles','memberRoles');
 store.dispatch('setActivitys','activitys');
 //设置设计师列表
 store.dispatch('setDesigners','designers');
+//设置菜单权限列表
+store.dispatch('setMenus','menus');
 
 // 隔5分钟调用一次 保持session
 setInterval(function(){
     store_vain();
 },300000);
+

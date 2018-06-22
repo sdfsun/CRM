@@ -290,33 +290,47 @@
             ])
         },
         mounted(){
-            if(this.editInfos && this.editInfos.receivables_id){
-                // this.receivablesForm = this.editInfos;
-                this.receivablesForm = Object.assign({},this.editInfos);
-                if(this.editInfos.imageLists && this.editInfos.imageLists.length>0){
-                    this.receivablesForm.imageLists = this.editInfos.imageLists.slice();
+            try {
+                if(this.editInfos && this.editInfos.receivables_id){
+                    // this.receivablesForm = this.editInfos;
+                    this.receivablesForm = Object.assign({},this.editInfos);
+                    if(this.editInfos.imageLists && this.editInfos.imageLists.length>0){
+                        this.receivablesForm.imageLists = this.editInfos.imageLists.slice();
+                    }
+                }else{
+                    this.resetFormData();
+                    this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
+                    this.receivablesForm.sum_price = this.editInfos.sum_price;
                 }
-            }else{
-                this.resetFormData();
-                this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
-                this.receivablesForm.sum_price = this.editInfos.sum_price;
+            } catch(e) {
+                this.$message({
+                    message: e.message,
+                    type: 'error'
+                });
             }
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
-                this.receivablesForm.information_id = this.informationItem.id;
-                if(newVal.receivables_id){
-                    this.receivablesForm = Object.assign({},newVal);
-                    if(newVal.imageLists && newVal.imageLists.length>0){
-                        this.receivablesForm.imageLists = newVal.imageLists.slice();
+                try {
+                    this.receivablesForm.information_id = this.informationItem.id;
+                    if(newVal.receivables_id){
+                        this.receivablesForm = Object.assign({},newVal);
+                        if(newVal.imageLists && newVal.imageLists.length>0){
+                            this.receivablesForm.imageLists = newVal.imageLists.slice();
+                        }
+                    }else{//新增
+                        this.resetFormData();
+                        this.receivablesForm.imageLists = [];
+                        this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
+                        this.receivablesForm.sum_price = newVal.sum_price;
                     }
-                }else{//新增
-                    this.resetFormData();
-                    this.receivablesForm.imageLists = [];
-                    this.receivablesForm.times = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
-                    this.receivablesForm.sum_price = newVal.sum_price;
+                    this.activityHandle(this.receivablesForm.activity_id);
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
-                this.activityHandle(this.receivablesForm.activity_id);
             }
         },
         methods:{
@@ -354,23 +368,30 @@
                 return isLt2M;
             },
             activityHandle(item){//选择活动时显示具体的活动信息
-                if(item){
-                    const index = this.activitys.findIndex(function(el, index, arr) {
-                        return el.id === item;
-                    });
-                    this.activityItems = [];
-                    this.activityItems.push(this.activitys[index]);
-                    let imageLists = [];
-                    if(this.activityItems[0].image_id &&  this.activityItems[0].image_id.length>0){
-                        this.activityItems[0].image_id.forEach( function(item, index) {
-                            imageLists.push({url:item});
+                try {
+                    if(item){
+                        const index = this.activitys.findIndex(function(el, index, arr) {
+                            return el.id === item;
                         });
-                        this.activityItems[0].imageLists = imageLists.slice();
-                        // this.$set(this.activityItems[0],'imageLists',imageLists);
+                        this.activityItems = [];
+                        this.activityItems.push(this.activitys[index]);
+                        let imageLists = [];
+                        if(this.activityItems[0].image_id &&  this.activityItems[0].image_id.length>0){
+                            this.activityItems[0].image_id.forEach( function(item, index) {
+                                imageLists.push({url:item});
+                            });
+                            this.activityItems[0].imageLists = imageLists.slice();
+                            // this.$set(this.activityItems[0],'imageLists',imageLists);
+                        }
+                        this.activityVisible = true;
+                    }else{
+                        this.activityVisible = false;
                     }
-                    this.activityVisible = true;
-                }else{
-                    this.activityVisible = false;
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
             },
             handlePictureCardPreview2(file) {
@@ -383,6 +404,10 @@
                     this.dialogVisible2 = true;
                     this.$refs['carouselItems'].setActiveItem(file.url);
                 } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
             },
             isActualMoneyHandle(val){//实际总额改变维护应收金额
@@ -393,46 +418,38 @@
                 if(this.submitBtnStatus === true){
                     return false;
                 }
-                try {
-                    let that = this;
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
-                            this.submitBtnStatus = true;
-                            receivables_save(this.receivablesForm).then(res=>{
-                                this.submitBtnStatus = false;
-                                if(res.error){
-                                    this.$message({
-                                        message: res.error,
-                                        type: 'error'
-                                    });
-                                    if(res.nologin === 1){//未登录
-                                        setTimeout(()=>{
-                                            that.$router.push('/');
-                                        },3000);
-                                    }
-                                    return false;
-                                }
+                let that = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.submitBtnStatus = true;
+                        receivables_save(this.receivablesForm).then(res=>{
+                            this.submitBtnStatus = false;
+                            if(res.error){
                                 this.$message({
-                                    message:res.success,
-                                    type:'success'
+                                    message: res.error,
+                                    type: 'error'
                                 });
-                                that.closeReceivablesInfoDialog("receivablesForm",res.data);
-                            }).catch(error=>{
-                                // this.$message({
-                                //     message: error,
-                                //     type: 'error'
-                                // });
-                                this.submitBtnStatus = false;
+                                if(res.nologin === 1){//未登录
+                                    setTimeout(()=>{
+                                        that.$router.push('/');
+                                    },3000);
+                                }
+                                return false;
+                            }
+                            this.$message({
+                                message:res.success,
+                                type:'success'
                             });
-                        }
-                    })
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                    this.submitBtnStatus = false;
-                }
+                            that.closeReceivablesInfoDialog("receivablesForm",res.data);
+                        }).catch(error=>{
+                            this.$message({
+                                message: error.message,
+                                type: 'error'
+                            });
+                            this.submitBtnStatus = false;
+                        });
+                    }
+                });
             },
             closeReceivablesInfoDialog(formName,result){//关闭弹框
                 this.$refs[formName].resetFields();//重置表单数据

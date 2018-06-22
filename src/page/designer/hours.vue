@@ -1,5 +1,5 @@
 <template>
-    <div class="page_hours" :data='memberRoleId.member_role_id' v-if='memberRoleId && memberRoleId.member_role_id'>
+    <div class="page_hours" :data='memberRoleId.member_role_id' >
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="我的日程" name="first" v-if='memberRoleId.member_role_id !== "shopowner" && memberRoleId.member_role_id !== "guide"'>
                 <div class="hours_box">

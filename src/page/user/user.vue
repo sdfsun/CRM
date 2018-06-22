@@ -184,42 +184,38 @@
                 if(this.submitPasdBtnStatus === true){
                     return false;
                 }
-                try {
-                    let that = this;
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
-                            this.submitPasdBtnStatus = true;
-                            password(this.updatePasdForm).then(res=>{
-                                this.submitPasdBtnStatus = false;
-                                if(res.error){
-                                    this.$message({
-                                        message: res.error,
-                                        type: 'error'
-                                    });
-                                    if(res.nologin === 1){//未登录
-                                        setTimeout(()=>{
-                                            that.$router.push('/');
-                                        },3000);
-                                    }
-                                    return false;
-                                }
+                let that = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.submitPasdBtnStatus = true;
+                        password(this.updatePasdForm).then(res=>{
+                            this.submitPasdBtnStatus = false;
+                            if(res.error){
                                 this.$message({
-                                    message:res.success,
-                                    type:'success'
+                                    message: res.error,
+                                    type: 'error'
                                 });
-                                that.resetUserUpdatePasdEdit();
-                            }).catch(error=>{
-                                this.submitPasdBtnStatus = false;
+                                if(res.nologin === 1){//未登录
+                                    setTimeout(()=>{
+                                        that.$router.push('/');
+                                    },3000);
+                                }
+                                return false;
+                            }
+                            this.$message({
+                                message:res.success,
+                                type:'success'
                             });
-                        }
-                    });
-                }catch(e){
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                    this.submitPasdBtnStatus = false;
-                }
+                            that.resetUserUpdatePasdEdit();
+                        }).catch(error=>{
+                            this.submitPasdBtnStatus = false;
+                            this.$message({
+                                message: error.message,
+                                type: 'error'
+                            });
+                        });
+                    }
+                });
             }
         },
         components:{

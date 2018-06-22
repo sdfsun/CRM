@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import mutations from './mutations';
 import actions from './action';
+import order from './order/order';
 
 Vue.use(Vuex);
 
@@ -10,7 +11,7 @@ const state = {
     customSource:[],//客户来源
     customStatus:[
         {val:'0',label:'未联系'},
-        {val:'1',label:'需再联系'},
+        {val:'modules1',label:'需再联系'},
         {val:'2',label:'待分配设计师'},
         {val:'3',label:'已拒绝'},
         {val:'4',label:'等待量尺'},
@@ -39,6 +40,9 @@ const state = {
 };
 
 export default new Vuex.Store({
+    modules:{
+        order:order
+    },
     state,
     actions,
     mutations

@@ -102,7 +102,7 @@
 <style scoped>
     .basicInfo_container{
         display: flex;
-        padding-top: 6px;
+        padding: 20px 24px 0;
         overflow: hidden;
     }
     .basicInfo_container ul{
@@ -118,6 +118,10 @@
         margin-bottom: 14px;
         height: 20px;
         font-weight: bold;
+        margin-left: 21px;
+    }
+    ul.col_2 .title{
+        margin-left: 30px;
     }
     ul li{
         list-style: none;

@@ -178,7 +178,7 @@
                 <complaint :complaintRecords='customInfoArray[6]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></complaint>
             </el-tab-pane>
             <el-tab-pane name='8'>
-                <span slot="label"><i class="el-icon-d-arrow-right"></i></span>
+                <span slot="label"><i class="crmiconfont icon-shangla_"></i></span>
             </el-tab-pane>
         </el-tabs>
         <!-- 新增或编辑客户基本信息弹框 -->

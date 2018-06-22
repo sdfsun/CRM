@@ -21,10 +21,17 @@
                         </template>
                     </el-submenu>
                 </template>
+                <el-submenu index="9">
+                    <template slot="title">
+                        <span>订单管理</span>
+                    </template>
+                    <el-menu-item index="/search">产品下单</el-menu-item>
+                    <el-menu-item index="/checkout">结算页</el-menu-item>
+                </el-submenu>
           </el-menu>
         </div>
         <div class="footer-btns">
-            <a href="javascript:void(0);" @click='logout'>退出</a>
+            <a href="javascript:void(0);" @click='logout'><i class="crmiconfont icon-qiehuanzuhu"></i>退出</a>
         </div>
     </div>
 </template>
@@ -94,13 +101,14 @@
         display: block;
         width: 60px;
         height: 20px;
-        background: url('../../assets/img/logout.png') 0 center no-repeat;
-        background-size: 20px 20px;
-        padding-left: 20px;
         box-sizing: border-box;
         position: absolute;
         right: 30px;
         bottom: 30px;
+    }
+    .footer-btns a i{
+        margin-right: 5px;
+        font-size: 20px;
     }
     .side_header{
         height: 80px;

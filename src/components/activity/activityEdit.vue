@@ -172,26 +172,18 @@
                 delete this.activityForm['createtime'];
             },
             handleRemove(file, fileList) {
-                try {
-                    if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
-                        var tempImageIds = [];
-                        fileList.forEach( function(item, index) {
-                            if(item.response && item.response.success && item.response.success.length>0){
-                                tempImageIds.push(item.response.success[0].image_id);
-                            }else if(item.status === 'success'){
-                                tempImageIds.push(item.url);
-                            }
-                        });
-                        this.activityForm.imageLists = fileList;
-                        this.activityForm.image_id = tempImageIds.slice();
-                    }
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
+                if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                    var tempImageIds = [];
+                    fileList.forEach( function(item, index) {
+                        if(item.response && item.response.success && item.response.success.length>0){
+                            tempImageIds.push(item.response.success[0].image_id);
+                        }else if(item.status === 'success'){
+                            tempImageIds.push(item.url);
+                        }
                     });
+                    this.activityForm.imageLists = fileList;
+                    this.activityForm.image_id = tempImageIds.slice();
                 }
-                
             },
             handlePictureCardPreview(file) {
                 try {
@@ -203,10 +195,6 @@
                     this.dialogVisible = true;
                     this.$refs['carouselItems'].setActiveItem(file.url);
                 } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
                 }
             },
             handleSuccess(response, file, fileList){//上传成功
@@ -235,9 +223,9 @@
                 if(this.submitBtnStatus === true){
                     return false;
                 }
-                let that = this;
-                this.$refs[formName].validate((valid,obj) => {
-                    try {
+                try {
+                    let that = this;
+                    this.$refs[formName].validate((valid,obj) => {
                         if (valid) {
                             this.submitBtnStatus = true;
                             delete this.activityForm['imageLists'];
@@ -274,19 +262,16 @@
                                 }
                             }).catch(error=>{
                                 this.submitBtnStatus = false;
-                                this.$message({
-                                    message: error.message,
-                                    type: 'error'
-                                });
                             });
                         }
-                    } catch(e) {
-                        this.$message({
-                            message: e.message,
-                            type: 'error'
-                        });
-                    }
-                });
+                    });
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                    this.submitBtnStatus = false;
+                }
             },
             closeActivityEditInfoDialog(formName,result){//关闭弹框
                 this.$refs[formName].resetFields();//重置表单数据

@@ -1,63 +1,74 @@
 <template>
     <div class="custom_container" :class='status'>
-        <section class="custom_header_form">
+        <section class="custom_header_form" v-if='memberRoleId && memberRoleId.member_role_id'>
             <el-row :gutter="100" style='margin:0;'>
                 <el-col :span='12' style='padding-left: 0;'>
                     <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
                     <el-button type="primary" @click='logExportExcel'>导出</el-button>
                 </el-col>
-                <el-col :span='12' style='text-align: right;padding-right: 0;'>
+                <el-col :span='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"?12:24' style='text-align: right;padding-right: 0;'>
                     <el-button type="primary">总数：{{totalNum}}</el-button>
                 </el-col>
             </el-row>
             <el-form ref="search_form" :model="searchForm" class='search_form'>
-                <el-row :gutter="10">
-                    <el-col :span='7'>
+                <el-row :gutter="20" style='margin:0;'>
+                    <el-col :span='9' style='padding-left:0;'>
                         <el-form-item prop='content'>
                             <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
+                                <!-- <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">
+                                    <el-option label="姓名" value="name"></el-option>
+                                    <el-option label="客户编号" value="customer_number"></el-option>
+                                    <el-option label="电话" value="tel"></el-option>
+                                    <el-option label="手机" value="mobile"></el-option>
+                                    <el-option label="客户来源" value="source"></el-option>
+                                </el-select> -->
                                 <el-button slot="append" icon="el-icon-search" @click='searchFormDatas'></el-button>
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span='5' v-if='id === "0" || id === "reception"'>
-                        <el-form-item class='search_form_item' prop='status'>
-                            <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
-                                <el-option
-                                    v-for="item in customStatus"
-                                    :key="item.val"
-                                    :label="item.label"
-                                    :value="item.val">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span='4' v-if='memberRoleId.member_role_id !== "designer"'>
-                        <el-form-item class='search_form_item' prop='member_id'>
-                            <el-select v-model="searchForm.member_id" clearable placeholder="设计师" @change='searchFormDatas'>
-                                <el-option
-                                    v-for="item in designers"
-                                    :key="item.member_id"
-                                    :label="item.name"
-                                    :value="item.member_id">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="5" style='min-width:212px;'>
-                        <el-form-item class='search_form_item' prop='time'>
-                            <el-date-picker
-                                v-model="searchForm.time"
-                                type="daterange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                value-format='yyyy-MM-dd'
-                                @change='searchFormDatas'>
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span='3'>
-                        <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
+                    <el-col :span='15' style='padding-right:0;'>
+                        <el-row :gutter="10">
+                            <el-col :span='7' v-if='id === "0" || id === "reception"'>
+                                <el-form-item class='search_form_item' prop='status'>
+                                    <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
+                                        <el-option
+                                            v-for="item in customStatus"
+                                            :key="item.val"
+                                            :label="item.label"
+                                            :value="item.val">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span='6' v-if='memberRoleId.member_role_id !== "designer"'>
+                                <el-form-item class='search_form_item' prop='member_id'>
+                                    <el-select v-model="searchForm.member_id" clearable placeholder="设计师" @change='searchFormDatas'>
+                                        <el-option
+                                            v-for="item in designers"
+                                            :key="item.member_id"
+                                            :label="item.name"
+                                            :value="item.member_id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item class='search_form_item' prop='time'>
+                                    <el-date-picker
+                                        v-model="searchForm.time"
+                                        type="daterange"
+                                        range-separator="至"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期"
+                                        value-format='yyyy-MM-dd'
+                                        @change='searchFormDatas'>
+                                    </el-date-picker>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span='3'>
+                                <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
+                            </el-col>
+                        </el-row>
                     </el-col>
                 </el-row>
             </el-form>
@@ -178,7 +189,7 @@
                 <complaint :complaintRecords='customInfoArray[6]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></complaint>
             </el-tab-pane>
             <el-tab-pane name='8'>
-                <span slot="label"><i class="crmiconfont icon-shangla_"></i></span>
+                <span slot="label"><i class="el-icon-d-arrow-right"></i></span>
             </el-tab-pane>
         </el-tabs>
         <!-- 新增或编辑客户基本信息弹框 -->
@@ -355,26 +366,19 @@
                 }
             },
             scrollCustomBasicLists(){//客户列表滚动加载
-                try {
-                    let that = this;
-                    that.pageForm.elWraper = document.querySelector(".customListsTableInfo .el-table__body-wrapper");
-                    that.pageForm.elWraper.addEventListener('scroll',function(){
-                        let srollPos = that.pageForm.elWraper.scrollTop;    //滚动条距顶部距离(页面超出窗口的高度)
-                        let totalheight = parseFloat(that.pageForm.elWraper.clientHeight) + parseFloat(srollPos);
-                        if((that.pageForm.elWraper.scrollHeight-that.pageForm.range) <= totalheight && that.pageForm.HAS_DATA == true && srollPos>0) {
-                            if(that.pageForm.isOn){
-                                that.pageForm.isOn = false;
-                                that.page++;
-                                that.init('page');
-                            }
+                let that = this;
+                that.pageForm.elWraper = document.querySelector(".customListsTableInfo .el-table__body-wrapper");
+                that.pageForm.elWraper.addEventListener('scroll',function(){
+                    let srollPos = that.pageForm.elWraper.scrollTop;    //滚动条距顶部距离(页面超出窗口的高度)
+                    let totalheight = parseFloat(that.pageForm.elWraper.clientHeight) + parseFloat(srollPos);
+                    if((that.pageForm.elWraper.scrollHeight-that.pageForm.range) <= totalheight && that.pageForm.HAS_DATA == true && srollPos>0) {
+                        if(that.pageForm.isOn){
+                            that.pageForm.isOn = false;
+                            that.page++;
+                            that.init('page');
                         }
-                    });
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
+                    }
+                });
             },
             resetQrcodeDialog(){
                 this.SETQRCODE({});
@@ -386,61 +390,54 @@
                 this.init();
             },
             up_down_tabs(){//展开或隐藏信息栏
-                try {
-                    if(Object.keys(this.currentRow).length === 0){
-                        this.$message({
-                            message:'请先选中一行客户信息！',
-                            type:'error'
-                        });
-                        this.activeName = '';
-                        return false;
-                    }
-                    if(this.activeName === '8'){
-                        if(this.status === 'down'){
-                            this.status = 'up';
-                            this.activeName = '1';
-                        }else {
-                            this.activeName = '';
-                            this.status = 'down';
-                        }
-                    }else{
-                        if(this.status === 'down'){
-                            this.status = 'up';
-                        }
-                        let result = null;
-                        const customer_id = this.currentRow.id;
-                        switch (this.activeName) {
-                            case '1':
-                                this.initElPaneData(0,customer_id);
-                                break;
-                            case '2':
-                                this.initElPaneData(1,customer_id);
-                                break;
-                            case '3':
-                                this.initElPaneData(2,customer_id);
-                                break;
-                            case '4':
-                                this.initElPaneData(3,customer_id);
-                                break;
-                            case '5':
-                                this.initElPaneData(4,customer_id);
-                                break;
-                            case '6':
-                                this.initElPaneData(5,customer_id);
-                                break;
-                            case '7':
-                                this.initElPaneData(6,customer_id);
-                                break;
-                            default:
-                                // statements_def
-                                break;
-                        }
-                    }
-                } catch(e) {
+                if(Object.keys(this.currentRow).length === 0){
                     this.$message({
-                        message: e.message,
-                        type: 'error'
+                        message:'请先选中一行客户信息！',
+                        type:'error'
                     });
+                    this.activeName = '';
+                    return false;
+                }
+                if(this.activeName === '8'){
+                    if(this.status === 'down'){
+                        this.status = 'up';
+                        this.activeName = '1';
+                    }else {
+                        this.activeName = '';
+                        this.status = 'down';
+                    }
+                }else{
+                    if(this.status === 'down'){
+                        this.status = 'up';
+                    }
+                    let result = null;
+                    const customer_id = this.currentRow.id;
+                    switch (this.activeName) {
+                        case '1':
+                            this.initElPaneData(0,customer_id);
+                            break;
+                        case '2':
+                            this.initElPaneData(1,customer_id);
+                            break;
+                        case '3':
+                            this.initElPaneData(2,customer_id);
+                            break;
+                        case '4':
+                            this.initElPaneData(3,customer_id);
+                            break;
+                        case '5':
+                            this.initElPaneData(4,customer_id);
+                            break;
+                        case '6':
+                            this.initElPaneData(5,customer_id);
+                            break;
+                        case '7':
+                            this.initElPaneData(6,customer_id);
+                            break;
+                        default:
+                            // statements_def
+                            break;
+                    }
                 }
             },
             customTableScroll(){//添加基本信息后滚动到指定位置
@@ -571,113 +568,99 @@
                 });
             },
             updateCustomRelationRecordItem(callbackData){//新增或更新沟通、测量、方案、收款等记录
-                try {
-                    let that = this;
-                    if(callbackData.data){
-                        if(callbackData.type === 'add'){
-                            if(callbackData.num === 1){//沟通记录
-                                if(callbackData.data.communicate){//保存沟通记录
-                                    this.customInfoArray[callbackData.num].push(callbackData.data.communicate);
-                                }
-                            }else {
-                                this.customInfoArray[callbackData.num].push(callbackData.data);
-                            }
-                        }else{//编辑
-                            let key_name = 'id',tempCallbackData = callbackData.data;
-                            if(callbackData.num === 3){
-                                key_name = 'receivables_id';
-                            }
-                            if(callbackData.num === 1){//沟通记录
-                                tempCallbackData = callbackData.data.communicate;
-                            }
-                            const index = this.customInfoArray[callbackData.num].findIndex(function(item, index, arr) {
-                                return item[key_name] === tempCallbackData[key_name];
-                            });
-                            this.$set(this.customInfoArray[callbackData.num],index,tempCallbackData);
-                            
-                        }
-                        if(callbackData.num === 3){//收款
-                            this.updateReceivablesSumPrice(callbackData.data);
-                        }                    
-                        const index2 = this.customLists.findIndex(function(item, index, arr) {
-                            return item.id === that.currentRow.id;
-                        });
-                        let statusFormData = callbackData.data;
+                let that = this;
+                if(callbackData.data){
+                    if(callbackData.type === 'add'){
                         if(callbackData.num === 1){//沟通记录
-                            statusFormData = callbackData.data.communicate;
-                            if(callbackData.data.information){//保存基本信息
-                                let tempCallbackFormData = Object.assign({},callbackData.data.information);
-                                this.$set(this.customInfoArray,0,tempCallbackFormData);
-                                this.$set(this.customLists,index2,tempCallbackFormData);
-                                this.currentRow = tempCallbackFormData;
-                                this.$refs['customListsTable'].setCurrentRow(tempCallbackFormData);
+                            if(callbackData.data.communicate){//保存沟通记录
+                                this.customInfoArray[callbackData.num].push(callbackData.data.communicate);
                             }
+                        }else {
+                            this.customInfoArray[callbackData.num].push(callbackData.data);
                         }
-                        if(callbackData.num !== 4){//非方案
-                            //重置基本信息中的status
-                            let tempStatus = callbackData.num === 1?callbackData.data.information.status:statusFormData.information_status;
-                            this.$set(this.currentRow,'status',tempStatus);
-                            this.$set(this.customInfoArray[0],'status',tempStatus);
-                            that.$set(that.customLists[index2],'status',tempStatus);
-                            this.customStatus.forEach( function(elm, il) {
-                                if(elm.val === tempStatus){
-                                    that.$set(that.customInfoArray[0],'status_name',elm.label);
-                                    that.$set(that.customLists[index2],'status_name',elm.label);
-                                }
-                            });
+                    }else{//编辑
+                        let key_name = 'id',tempCallbackData = callbackData.data;
+                        if(callbackData.num === 3){
+                            key_name = 'receivables_id';
                         }
+                        if(callbackData.num === 1){//沟通记录
+                            tempCallbackData = callbackData.data.communicate;
+                        }
+                        const index = this.customInfoArray[callbackData.num].findIndex(function(item, index, arr) {
+                            return item[key_name] === tempCallbackData[key_name];
+                        });
+                        this.$set(this.customInfoArray[callbackData.num],index,tempCallbackData);
+                        
                     }
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
-            },
-            updateCustomProgrammeRecordItem(callbackData){//处理定案数据
-                try {
-                    let that = this;
-                    const index = that.customInfoArray[4].findIndex(function(item, index, arr) {
-                        return item.id === callbackData.id;
-                    });
+                    if(callbackData.num === 3){//收款
+                        this.updateReceivablesSumPrice(callbackData.data);
+                    }                    
                     const index2 = this.customLists.findIndex(function(item, index, arr) {
                         return item.id === that.currentRow.id;
                     });
-                    that.customInfoArray[4].forEach( function(item, il) {
-                        if(callbackData.final === 'true'){//最终定案
-                            if(il === index){
-                                that.$set(item,'final_disabled','true');
-                                that.$set(item,'final_disabled_name','是');
-                            }else{
-                                that.$set(item,'final_disabled','false');
-                                that.$set(item,'final_disabled_name','否');
-                            } 
-                        }else{
-                            if(il === index){
-                                that.$set(item,'disabled','true');
-                                that.$set(item,'disabled_name','是');
-                            }else{
-                                that.$set(item,'disabled','false');
-                                that.$set(item,'disabled_name','否');
+                    let statusFormData = callbackData.data;
+                    if(callbackData.num === 1){//沟通记录
+                        statusFormData = callbackData.data.communicate;
+                        if(callbackData.data.information){//保存基本信息
+                            let tempCallbackFormData = Object.assign({},callbackData.data.information);
+                            this.$set(this.customInfoArray,0,tempCallbackFormData);
+                            this.$set(this.customLists,index2,tempCallbackFormData);
+                            this.currentRow = tempCallbackFormData;
+                            this.$refs['customListsTable'].setCurrentRow(tempCallbackFormData);
+                        }
+                    }
+                    if(callbackData.num !== 4){//非方案
+                        //重置基本信息中的status
+                        let tempStatus = callbackData.num === 1?callbackData.data.information.status:statusFormData.information_status;
+                        this.$set(this.currentRow,'status',tempStatus);
+                        this.$set(this.customInfoArray[0],'status',tempStatus);
+                        that.$set(that.customLists[index2],'status',tempStatus);
+                        this.customStatus.forEach( function(elm, il) {
+                            if(elm.val === tempStatus){
+                                that.$set(that.customInfoArray[0],'status_name',elm.label);
+                                that.$set(that.customLists[index2],'status_name',elm.label);
                             }
-                        }
-                    });
-                    //重置基本信息中的status
-                    this.$set(this.currentRow,'status',callbackData.data.information_status);
-                    this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
-                    that.$set(that.customLists[index2],'status',callbackData.data.information_status);
-                    this.customStatus.forEach( function(elm, il) {
-                        if(elm.val === callbackData.data.information_status){
-                            that.$set(that.customInfoArray[0],'status_name',elm.label);
-                            that.$set(that.customLists[index2],'status_name',elm.label);
-                        }
-                    });
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
+                        });
+                    }
                 }
+            },
+            updateCustomProgrammeRecordItem(callbackData){//处理定案数据
+                let that = this;
+                const index = that.customInfoArray[4].findIndex(function(item, index, arr) {
+                    return item.id === callbackData.id;
+                });
+                const index2 = this.customLists.findIndex(function(item, index, arr) {
+                    return item.id === that.currentRow.id;
+                });
+                that.customInfoArray[4].forEach( function(item, il) {
+                    if(callbackData.final === 'true'){//最终定案
+                        if(il === index){
+                            that.$set(item,'final_disabled','true');
+                            that.$set(item,'final_disabled_name','是');
+                        }else{
+                            that.$set(item,'final_disabled','false');
+                            that.$set(item,'final_disabled_name','否');
+                        } 
+                    }else{
+                        if(il === index){
+                            that.$set(item,'disabled','true');
+                            that.$set(item,'disabled_name','是');
+                        }else{
+                            that.$set(item,'disabled','false');
+                            that.$set(item,'disabled_name','否');
+                        }
+                    }
+                });
+                //重置基本信息中的status
+                this.$set(this.currentRow,'status',callbackData.data.information_status);
+                this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
+                that.$set(that.customLists[index2],'status',callbackData.data.information_status);
+                this.customStatus.forEach( function(elm, il) {
+                    if(elm.val === callbackData.data.information_status){
+                        that.$set(that.customInfoArray[0],'status_name',elm.label);
+                        that.$set(that.customLists[index2],'status_name',elm.label);
+                    }
+                });
             },
             async logExportExcel(){//导出excel
                 window.location.href='/crm-logExport-'+this.id+'.html?content='+this.searchForm.content+'&status='+this.searchForm.status+'&time='+this.searchForm.time+'&searchName='+this.searchForm.searchName+'&member_id='+this.searchForm.member_id+'&port='+this.searchForm.port;
@@ -703,7 +686,7 @@
         flex-direction: column;
     }
     .custom_header_form{
-        padding: 20px 40px 0;
+        padding: 18px 22px 0 41px;
     }
     .customListsTableInfo{
         width: 100%;
@@ -725,10 +708,12 @@
         width: 100%;
     }
     .edit_btn{
-        width: 100%;
+        width: 90px;
+    }
+    .edit_btn{
+        width: 80px;
         height: 36px;
         padding: 9px 0;
-        min-width: 80px;
     }
     .el-select{
         width: 160px;

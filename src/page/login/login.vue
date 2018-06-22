@@ -45,81 +45,76 @@
                 'SETMEMBERROLEID',
                 'SETACTIVITYS',
                 'SETDESIGNERS',
-                'SETQRCODE',
-                'SETMENUS'
+                'SETQRCODE'
             ]),
             async login(formName){
                 if(this.loginBtnStatus){
                     return false;
                 }
-                let that = this;
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.loginBtnStatus = true;
-                        ajax_login(this.loginForm.login_account,this.loginForm.login_password).then(res=>{
-                            this.loginBtnStatus = false;
-                            if(res.error){
+                try {
+                    let that = this;
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.loginBtnStatus = true;
+                            ajax_login(this.loginForm.login_account,this.loginForm.login_password).then(res=>{
+                                this.loginBtnStatus = false;
+                                if(res.error){
+                                    this.$message({
+                                        message: res.error,
+                                        type: 'error'
+                                    });
+                                    return false;
+                                }
                                 this.$message({
-                                    message: res.error,
-                                    type: 'error'
+                                    message:res.success,
+                                    type:'success'
                                 });
-                                return false;
-                            }
-                            this.$message({
-                                message:res.success,
-                                type:'success'
-                            });
-                            if(res.data){
-                                if(res.data.member){
-                                    //设置当前登录账户相关信息
-                                    setStore("memberRoleId",res.data.member);
-                                    this.SETMEMBERROLEID(res.data.member);
+                                setTimeout(function(){
+                                    that.$router.push('/custom/0');
+                                },3000);
+                                //设置当前登录账户相关信息
+                                if(res.data){
+                                    setStore("memberRoleId",res.data);
+                                    this.SETMEMBERROLEID(res.data);
                                 }
                                 //设置客户来源
-                                if(res.data.source){
-                                    setStore("customSource",res.data.source);
-                                    this.SETCUSTOMSOURCE(res.data.source);
+                                if(res.source){
+                                    setStore("customSource",res.source);
+                                    this.SETCUSTOMSOURCE(res.source);
                                 }
                                 //设置用户等级
-                                if(res.data.member_role){
-                                    setStore("memberRoles",res.data.member_role);
-                                    this.SETMEMBERROLES(res.data.member_role);
+                                if(res.member_role){
+                                    setStore("memberRoles",res.member_role);
+                                    this.SETMEMBERROLES(res.member_role);
                                 }
                                 //设置活动列表
-                                if(res.data.activity){
-                                    setStore("activitys",res.data.activity);
-                                    this.SETACTIVITYS(res.data.activity);
+                                if(res.activity){
+                                    setStore("activitys",res.activity);
+                                    this.SETACTIVITYS(res.activity);
                                 }
                                 //设置设计师列表
-                                if(res.data.designer){
-                                    setStore("designers",res.data.designer);
-                                    this.SETDESIGNERS(res.data.designer);
+                                if(res.designer){
+                                    setStore("designers",res.designer);
+                                    this.SETDESIGNERS(res.designer);
                                 }
                                 //是否需要微信绑定
-                                if(res.data.weixin){
-                                    this.SETQRCODE(res.data.weixin);
+                                if(res.weixin){
+                                    this.SETQRCODE(res.weixin);
                                 }
-                                //设置权限列表
-                                if(res.data.menus){
-                                    setStore("menus",res.data.menus);
-                                    this.SETMENUS(res.data.menus);
-
-                                    //设置跳转路径
-                                    let goPath = res.data.menus[0].menus[0].path;
-                                    setTimeout(function(){
-                                        that.$router.push(goPath);
-                                    },3000);
-                                }
-                            }
-                        }).catch(error=>{
-                            this.loginBtnStatus = false;
-                            this.$message({
-                                message: error.message,
-                                type: 'error'
+                            }).catch(error=>{
+                                this.loginBtnStatus = false;
                             });
-                        });
-                    }
-                });
+                        } else {
+                            return false;
+                        }
+                    });
+                } catch(e) {
+                    this.loginBtnStatus = false;
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    });
+                }
             }
         }
     }

@@ -134,10 +134,10 @@
                             });
                             that.closeProgrammeInfoDialog("programmeForm",res.data);
                         }).catch(error=>{
-                            this.$message({
-                                message: error.message,
-                                type: 'error'
-                            });
+                            // this.$message({
+                            //     message: error,
+                            //     type: 'error'
+                            // });
                             this.submitBtnStatus = false;
                         });
                     });

@@ -50,24 +50,17 @@
         },
         methods:{
             handleRemove(file, fileList) {
-                try {
-                    if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
-                        var tempImageIds = [];
-                        fileList.forEach( function(item, index) {
-                            if(item.response && item.response.success && item.response.success.length>0){
-                                tempImageIds.push(item.response.success[0].image_id);
-                            }else if(item.status === 'success'){
-                                tempImageIds.push(item.url);
-                            }
-                        });
-                        this.dataForm.image_url = tempImageIds.slice();
-                        this.dataForm.imageLists = fileList;
-                    }
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
+                if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                    var tempImageIds = [];
+                    fileList.forEach( function(item, index) {
+                        if(item.response && item.response.success && item.response.success.length>0){
+                            tempImageIds.push(item.response.success[0].image_id);
+                        }else if(item.status === 'success'){
+                            tempImageIds.push(item.url);
+                        }
                     });
+                    this.dataForm.image_url = tempImageIds.slice();
+                    this.dataForm.imageLists = fileList;
                 }
             },
             handlePictureCardPreview(file) {
@@ -96,30 +89,19 @@
                         this.$refs['carouselItems'].setActiveItem(file.url);
                     }
                 } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
                 }
             },
             handleSuccess(response, file, fileList){//上传成功
-                try {
-                    if(response.success && response.success.length>0){
-                        if(!this.dataForm.image_url){
-                            this.dataForm.image_url = [];
-                        }
-                        this.dataForm.image_url.push(response.success[0].image_id);
+                if(response.success && response.success.length>0){
+                    if(!this.dataForm.image_url){
+                        this.dataForm.image_url = [];
                     }
-                    this.dataForm.imageLists = fileList;
-                    let fileUrl = getUploadIcon(file.name);
-                    if(fileUrl){
-                        file.url = fileUrl;
-                    }
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
+                    this.dataForm.image_url.push(response.success[0].image_id);
+                }
+                this.dataForm.imageLists = fileList;
+                let fileUrl = getUploadIcon(file.name);
+                if(fileUrl){
+                    file.url = fileUrl;
                 }
             },
             beforeAvatarUpload(file) {

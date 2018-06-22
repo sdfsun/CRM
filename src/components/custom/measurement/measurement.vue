@@ -118,38 +118,31 @@
                 });
             },
             editMeasurementRecord(){//编辑测量记录
-                try {
-                    if(!this.currentrow){
-                        this.$message({
-                            message:'请先选中需要编辑的测量记录！',
-                            type:'error'
-                        });
-                        return false;
-                    }
-                    this.editActiveRow = Object.assign({},this.currentrow);
-                    if(this.editActiveRow.image_id && this.editActiveRow.image_id.length>0){
-                        this.editActiveRow.image_id = this.currentrow.image_id.slice();
-                        let imageLists = [];
-                        this.editActiveRow.image_id.forEach( function(item, index) {
-                            imageLists.push({url:item});
-                        });
-                        // Object.assign(this.editActiveRow,{imageLists:imageLists});
-                        this.editActiveRow.imageLists = imageLists.slice();
-                    }else{
-                        this.editActiveRow.image_id = [];
-                    }
-                    let measurementWrapper = document.querySelector(".measurement_container .el-table__body-wrapper");
-                    let measurementLists = measurementWrapper.querySelectorAll("tr");
-                    if(measurementLists && measurementLists.length === 1){
-                        this.editActiveRow.complex = "1";
-                    }
-                    this.measurementDialogVisible = true;
-                } catch(e) {
+                if(!this.currentrow){
                     this.$message({
-                        message: e.message,
-                        type: 'error'
+                        message:'请先选中需要编辑的测量记录！',
+                        type:'error'
                     });
+                    return false;
                 }
+                this.editActiveRow = Object.assign({},this.currentrow);
+                if(this.editActiveRow.image_id && this.editActiveRow.image_id.length>0){
+                    this.editActiveRow.image_id = this.currentrow.image_id.slice();
+                    let imageLists = [];
+                    this.editActiveRow.image_id.forEach( function(item, index) {
+                        imageLists.push({url:item});
+                    });
+                    // Object.assign(this.editActiveRow,{imageLists:imageLists});
+                    this.editActiveRow.imageLists = imageLists.slice();
+                }else{
+                    this.editActiveRow.image_id = [];
+                }
+                let measurementWrapper = document.querySelector(".measurement_container .el-table__body-wrapper");
+                let measurementLists = measurementWrapper.querySelectorAll("tr");
+                if(measurementLists && measurementLists.length === 1){
+                    this.editActiveRow.complex = "1";
+                }
+                this.measurementDialogVisible = true;
             },
             updateMeasurementRecord(callbackData){
                 this.measurementDialogVisible = false;

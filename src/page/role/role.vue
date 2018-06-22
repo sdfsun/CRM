@@ -1,5 +1,5 @@
 <template>
-    <section class="role_container">
+    <section class="customerSource_container">
         <el-button type="primary" icon='el-icon-plus' class='add_source' @click='insertRole'>新建角色记录</el-button>
         <el-table
             :data="roleLists"
@@ -22,7 +22,6 @@
             </el-table-column>
             <el-table-column
                 label="等级名称"
-                min-width='100'
                 >
                 <template slot-scope='scope'>
                     <span v-if='scope.row.editFlag'>
@@ -32,8 +31,7 @@
                 </template>
             </el-table-column>
             <el-table-column
-                label="描述"
-                min-width='120'>
+                label="描述">
                 <template slot-scope='scope'>
                     <span v-if='scope.row.editFlag'>
                         <el-input  v-model="scope.row.remark"></el-input>
@@ -42,8 +40,7 @@
                 </template>
             </el-table-column>
             <el-table-column
-                label="等级代码"
-                min-width='100'>
+                label="等级代码">
                 <template slot-scope='scope'>
                     <span v-if='scope.row.editFlag'>
                         <el-input  v-model="scope.row.lv_code"></el-input>
@@ -53,7 +50,6 @@
             </el-table-column>
             <el-table-column
                 label="是否开启"
-                min-width='80'
                 >
                 <template slot-scope='scope'>
                     <el-switch
@@ -64,7 +60,7 @@
             </el-table-column>
             <el-table-column
               label="操作"
-              min-width="120">
+              width="120">
                 <template slot-scope="scope">
                     <el-button
                     @click.native.prevent="handleEdit(scope.$index)"
@@ -78,38 +74,15 @@
                     size="medium">
                         保存
                     </el-button>
-                    <el-button
-                    @click.native.prevent="setCurrentRoleMenu(scope.$index,scope.row)"
-                    type="text"
-                    size="medium">
-                        分配权限
-                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <!-- 分配权限 -->
-        <el-dialog title="权限管理" :visible.sync="formDialogVisible" @close='resetFormDialog' :close-on-click-modal='false'>
-            <el-tree
-                :data="menusData"
-                show-checkbox
-                default-expand-all
-                node-key="menu_type"
-                ref="menuTree"
-                highlight-current
-                check-strictly
-                :props='defaultProps'
-                >
-            </el-tree>
-            <div class="btns">
-                <el-button type="primary" class='submit_btn' @click='saveMenuHandle'>保存</el-button>
-            </div>
-        </el-dialog>
     </section>
 </template>
 <script>
     import Vue from 'vue';
     import {mapActions,mapMutations} from 'vuex';
-    import {member_role,add_role,role_access} from '@/service/getData';
+    import {member_role,add_role} from '@/service/getData';
     import { setStore } from '@/utils/';
 
     export default{
@@ -117,14 +90,7 @@
         data(){
             return{
                 roleLists:[],
-                menusData:[],//权限列表
-                currentRoleIndex:'',//当前分配权限的角色索引
-                defaultProps: {
-                    id:'menu_type',
-                    label: 'menu_title'
-                },
-                submitBtnStatus:false,
-                formDialogVisible:false
+                submitBtnStatus:false
             }
         },
         mounted(){
@@ -153,17 +119,14 @@
                         }
                         return false;
                     }
-                    if(res.success && res.success.member_role){
-                        res.success.member_role.forEach( function(el, index) {
+                    if(res.success){
+                        res.success.forEach( function(el, index) {
                             el.disabled = el.disabled === 'true'?true:false;
                             el.editFlag = false;
                         });
-                        this.roleLists = res.success.member_role;
+                        this.roleLists = res.success;
                     }else{
                         this.roleLists = [];
-                    }
-                    if(res.success && res.success.menus){
-                        this.menusData = res.success.menus;
                     }
                     let tempLists = [];
                     this.roleLists.forEach( function(el2, index) {
@@ -241,59 +204,6 @@
                         type: 'error'
                     });
                 }
-            },
-            setCurrentRoleMenu(index,currentRow){//分配权限
-                this.currentRoleIndex = index;
-                let checkedKeys = currentRow.workground?currentRow.workground:[];
-                this.formDialogVisible = true;
-                this.$nextTick(function(){
-                   this.$refs['menuTree'].setCheckedKeys(checkedKeys); 
-                });
-            },
-            resetFormDialog(){
-
-            },
-            async saveMenuHandle(){
-                try {
-                    if(this.submitBtnStatus){
-                        return false;
-                    }
-                    const that = this;
-                    let formData = {};
-                    formData.workground = this.$refs['menuTree'].getCheckedKeys();
-                    formData.member_role_id = this.roleLists[this.currentRoleIndex].member_role_id;
-                    this.submitBtnStatus = true;
-                    const res = await role_access(formData);
-                    this.submitBtnStatus = false;
-                    if(res.error){
-                        this.$message({
-                            message: res.error,
-                            type: 'error'
-                        });
-                        if(res.nologin === 1){//未登录
-                            setTimeout(()=>{
-                                that.$router.push('/');
-                            },3000);
-                        }
-                        return false;
-                    }
-                    if(res.success){
-                        this.$message({
-                            message:res.success,
-                            type:'success'
-                        });
-                        this.$set(this.roleLists[this.currentRoleIndex],'workground',res.data);
-                        setTimeout(function(){
-                            that.formDialogVisible = false;
-                        },500);
-                    }
-                } catch(e) {
-                    this.submitBtnStatus = false;
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
             }
         }
     }
@@ -304,8 +214,5 @@
     }
     .add_source{
         margin-bottom: 20px;
-    }
-    .btns{
-        text-align: center;
     }
 </style>

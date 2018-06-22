@@ -9,10 +9,6 @@ const user = r => require.ensure([], () => r(require('@/page/user/user.vue')), '
 const activity = r => require.ensure([], () => r(require('@/page/activity/activity.vue')), '活动管理');
 const updatePasd = r => require.ensure([], () => r(require('@/page/updatePasd/updatePasd.vue')), '修改密码');
 const report = r => require.ensure([], () => r(require('@/page/report/report.vue')), '报表管理');
-const notFound = r => require.ensure([], () => r(require('@/page/notFound/notFound.vue')), '404页面');
-const authority = r => require.ensure([], () => r(require('@/page/authority/authority.vue')), '菜单管理');
-const orderSearch = r => require.ensure([], () => r(require('@/page/order/search.vue')), '产品下单');
-const orderCheckout = r => require.ensure([], () => r(require('@/page/order/checkout.vue')), '结算页');
 
 
 export default [
@@ -59,24 +55,7 @@ export default [
             {
                 path: '/report',
                 component: report
-            },
-            {
-                path: '/authority',
-                component: authority
-            },
-            {
-                path: '/search',
-                component: orderSearch
-            },
-            {
-                path: '/checkout',
-                component: orderCheckout
             }
-
         ]
-    },
-    { 
-        path: '*', 
-        component: notFound
     }
 ]

@@ -92,9 +92,5 @@ export default{
         }
         setStore("designers",tempLists);
         commit('SETDESIGNERS',tempLists);
-    },
-    setMenus({commit},name){//设置菜单权限列表
-        const lists = JSON.parse(getStore(name));
-        commit('SETMENUS',lists);
     }
 }

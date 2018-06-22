@@ -104,20 +104,13 @@
                 this.currentrow = currentrow;
             },
             addreceivablesRecord(){//新增收款记录
-                try {
-                    this.editActiveRow = {};
-                    if(this.receivablesRecords && this.receivablesRecords.length>0){
-                        this.editActiveRow.sum_price = this.receivablesRecords[0].sum_price;
-                    }else{
-                        this.editActiveRow.sum_price = 0;
-                    }
-                    this.receivablesDialogVisible = true;
-                } catch(e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
+                this.editActiveRow = {};
+                if(this.receivablesRecords && this.receivablesRecords.length>0){
+                    this.editActiveRow.sum_price = this.receivablesRecords[0].sum_price;
+                }else{
+                    this.editActiveRow.sum_price = 0;
                 }
+                this.receivablesDialogVisible = true;
             },
             editreceivablesRecord(){//编辑收款记录
                 if(!this.currentrow){

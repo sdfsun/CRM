@@ -6,7 +6,7 @@ export const setStore = (name, content) => {
     if (typeof content !== 'string') {
         content = JSON.stringify(content);
     }
-    localStorage.setItem(name, content);
+    window.localStorage.setItem(name, content);
 }
 
 /**
@@ -14,7 +14,7 @@ export const setStore = (name, content) => {
  */
 export const getStore = name => {
     if (!name) return;
-    return localStorage.getItem(name);
+    return window.localStorage.getItem(name);
 }
 
 

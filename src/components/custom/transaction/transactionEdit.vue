@@ -97,38 +97,47 @@
                 if(this.submitBtnStatus === true){
                     return false;
                 }
-                let that = this;
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.submitBtnStatus = true;
-                        transaction_save(this.transactionForm).then(res=>{
-                            this.submitBtnStatus = false;
-                            if(res.error){
-                                this.$message({
-                                    message: res.error,
-                                    type: 'error'
-                                });
-                                if(res.nologin === 1){//未登录
-                                    setTimeout(()=>{
-                                        that.$router.push('/');
-                                    },3000);
+                try {
+
+                    let that = this;
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.submitBtnStatus = true;
+                            transaction_save(this.transactionForm).then(res=>{
+                                this.submitBtnStatus = false;
+                                if(res.error){
+                                    this.$message({
+                                        message: res.error,
+                                        type: 'error'
+                                    });
+                                    if(res.nologin === 1){//未登录
+                                        setTimeout(()=>{
+                                            that.$router.push('/');
+                                        },3000);
+                                    }
+                                    return false;
                                 }
-                                return false;
-                            }
-                            this.$message({
-                                message:res.success,
-                                type:'success'
+                                this.$message({
+                                    message:res.success,
+                                    type:'success'
+                                });
+                                that.closeTransactionInfoDialog("transactionForm",res.data);
+                            }).catch(error=>{
+                                // this.$message({
+                                //     message: error,
+                                //     type: 'error'
+                                // });
+                                this.submitBtnStatus = false;
                             });
-                            that.closeTransactionInfoDialog("transactionForm",res.data);
-                        }).catch(error=>{
-                            this.$message({
-                                message: error.message,
-                                type: 'error'
-                            });
-                            this.submitBtnStatus = false;
-                        });
-                    }
-                });
+                        }
+                    })
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                    this.submitBtnStatus = false;
+                }
             },
             closeTransactionInfoDialog(formName,result){//关闭弹框
                 this.$refs[formName].resetFields();//重置表单数据

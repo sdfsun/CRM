@@ -396,7 +396,7 @@
                 <div class="el-autocomplete-suggestion__wrap el-scrollbar__wrap" style="margin-bottom: -10px; margin-right: -10px;">
                     <ul class="el-scrollbar__view el-autocomplete-suggestion__list" role="listbox" id="el-autocomplete-7241">
                         <li v-for="item in searchCrmResults">
-                            {{item.id}}
+                            {{item.name}}({{item.status_name}})
                         </li>
                     </ul>
                 </div>

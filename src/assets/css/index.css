@@ -766,3 +766,5 @@ body{
 .historyOrdersDialog .el-collapse-item__header.is-active .icon-zhankai:before {
     content: "\e63a";
 }
+/*结算页crm账户搜索下拉框*/
+.hidePopup{display: none;}

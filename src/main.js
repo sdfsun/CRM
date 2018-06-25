@@ -17,6 +17,11 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 
+//自定义指令
+Vue.directive('focus', function (el) {
+    el.querySelector('input').focus()
+})
+
 const router = new VueRouter({
     routes
 });

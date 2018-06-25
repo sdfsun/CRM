@@ -5,9 +5,24 @@
             <div class="search-form">
                 <el-row>
                     <el-col :span="12">
-                        <el-input v-model="searchPhone" maxlength='11' placeholder="请输入用户联系方式" class="search-input" clearable @keyup.13.native="searchCrmInfomation">
+                        <el-input v-model="searchPhone" ref="searchPhoneItem" maxlength='11' placeholder="请输入用户联系方式" class="search-input" clearable @keyup.13.native="searchCrmInfomation" v-show="!autocompleteVisible">
                             <el-button slot="append" @click="searchCrmInfomation">搜索</el-button>
                         </el-input>
+                        <el-autocomplete
+                            v-show="autocompleteVisible"
+                            class="search-input"
+                            :value="searchPhone"
+                            v-focus="autocompleteVisible"
+                            :popper-class="autocompleteVisible?'':'hidePopup'"
+                            :fetch-suggestions="querySearchAsync"
+                            placeholder="请输入内容"
+                            @select="handleSelect"
+                            @blur="autocompleteChangeHandle">
+                            <template slot-scope="{ item }">
+                                <div class="name">{{ item.name }}({{item.status_name}})</div>
+                            </template>
+                            <el-button slot="append" @click="searchCrmInfomation">搜索</el-button>
+                        </el-autocomplete>
                     </el-col>
                     <el-col :span="12" style="text-align: right;">
                         <el-button type="primary" class="getHistoryOrders" @click="getHistoryOrders">历史订单</el-button>
@@ -390,25 +405,6 @@
                 </div>
             </div>
         </div>
-        <!--多个crm账户时显示搜索列表-->
-        <div v-show="autocompleteVisible" role="region" class="el-autocomplete-suggestion el-popper" style="position: absolute; top: 56px; left: 230px; transform-origin: center top 0px; z-index: 2003; width: 400px;" x-placement="bottom-start">
-            <div class="el-scrollbar">
-                <div class="el-autocomplete-suggestion__wrap el-scrollbar__wrap" style="margin-bottom: -10px; margin-right: -10px;">
-                    <ul class="el-scrollbar__view el-autocomplete-suggestion__list" role="listbox" id="el-autocomplete-7241">
-                        <li v-for="item in searchCrmResults">
-                            {{item.name}}({{item.status_name}})
-                        </li>
-                    </ul>
-                </div>
-                <div class="el-scrollbar__bar is-horizontal">
-                    <div class="el-scrollbar__thumb" style="transform: translateX(0%);"></div>
-                </div>
-                <div class="el-scrollbar__bar is-vertical">
-                    <div class="el-scrollbar__thumb" style="transform: translateY(0%);"></div>
-                </div>
-            </div>
-            <div x-arrow="" class="popper__arrow" style="left: 35px;"></div>
-        </div>
         <!--历史订单-->
         <el-dialog title="历史订单" :visible.sync="historyOrdersDialogVisible" class='historyOrdersDialog' :close-on-click-modal='false'>
             <el-collapse accordion @change="historyOrdersChangeHandle">
@@ -753,6 +749,11 @@
                         this.searchCrmResults = res.success.information;
                         this.autocompleteVisible = true;
                     }else{
+                        this.$message({
+                            message: '该号码非CRM客户',
+                            type: 'error'
+                        });
+                        this.UPDATECUSTOMINFO({});
                         this.tips = '*请先输入客户联系方式判断是否为CRM用户，再行下单';
                     }
                 }catch (e) {
@@ -761,6 +762,31 @@
                         type: 'error'
                     });
                 }
+            },
+            querySearchAsync(queryString, cb){
+                if(queryString !== this.searchPhone){
+                    this.autocompleteVisible = false;
+                    this.searchPhone = queryString;
+                    this.$refs['searchPhoneItem'].focus();
+                }
+                cb(this.searchCrmResults);
+            },
+            handleSelect(item){//
+                try {
+                    this.UPDATECUSTOMINFO(item);
+                    this.tips = '该号码为CRM客户';
+                    this.autocompleteVisible = false;
+                    this.$refs['searchPhoneItem'].focus();
+                }catch(e){
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            autocompleteChangeHandle(){
+                this.autocompleteVisible = false;
+                this.$refs['searchPhoneItem'].focus();
             },
             updateGoodDataHandle(index,item){//是否定制
                 try {

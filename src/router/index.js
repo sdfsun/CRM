@@ -8,8 +8,10 @@ const role = r => require.ensure([], () => r(require('@/page/role/role.vue')), '
 const user = r => require.ensure([], () => r(require('@/page/user/user.vue')), '用户管理');
 const activity = r => require.ensure([], () => r(require('@/page/activity/activity.vue')), '活动管理');
 const updatePasd = r => require.ensure([], () => r(require('@/page/updatePasd/updatePasd.vue')), '修改密码');
-const report = r => require.ensure([], () => r(require('@/page/report/report.vue')), '报表管理');
-
+const report = r => require.ensure([], () => r(require('@/page/report/report.vue')), 'CRM报表');
+const storeMarket = r => require.ensure([], () => r(require('@/page/report/storeMarket.vue')), '门店销售报表');
+const present = r => require.ensure([], () => r(require('@/page/present/present.vue')), '奖品管理');
+const receive = r => require.ensure([], () => r(require('@/page/present/receive.vue')), '奖品领取管理');
 
 export default [
     {
@@ -55,6 +57,18 @@ export default [
             {
                 path: '/report',
                 component: report
+            },
+            {
+                path: '/storeMarket',
+                component: storeMarket
+            },
+            {
+                path: '/present',
+                component: present
+            },
+            {
+                path: '/receive',
+                component: receive
             }
         ]
     }

@@ -36,7 +36,8 @@
                     <template slot="title">
                         <span>报表管理</span>
                     </template>
-                    <el-menu-item index="/report">报表管理</el-menu-item>
+                    <el-menu-item index="/report">留资报表</el-menu-item>
+                    <el-menu-item index="/storeMarket">门店销售报表</el-menu-item>
                 </el-submenu>
                 <el-submenu index="4" v-if='memberRoleId.member_role_id !== "designer"'>
                     <template slot="title">
@@ -44,6 +45,8 @@
                     </template>
                     <el-menu-item index="/source">渠道来源管理</el-menu-item>
                     <el-menu-item index="/activity">活动管理</el-menu-item>
+                    <el-menu-item index="/present">奖品管理</el-menu-item>
+                    <el-menu-item index="/receive">奖品领取管理</el-menu-item>
                 </el-submenu>
                 <el-submenu index="5">
                     <template slot="title">

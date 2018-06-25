@@ -11,64 +11,65 @@
                 </el-col>
             </el-row>
             <el-form ref="search_form" :model="searchForm" class='search_form'>
-                <el-row :gutter="20" style='margin:0;'>
-                    <el-col :span='9' style='padding-left:0;'>
+                <el-row :gutter="10">
+                    <el-col :span='7'>
                         <el-form-item prop='content'>
                             <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
-                                <!-- <el-select v-model="searchForm.searchName" slot="prepend" placeholder="请选择类型">
-                                    <el-option label="姓名" value="name"></el-option>
-                                    <el-option label="客户编号" value="customer_number"></el-option>
-                                    <el-option label="电话" value="tel"></el-option>
-                                    <el-option label="手机" value="mobile"></el-option>
-                                    <el-option label="客户来源" value="source"></el-option>
-                                </el-select> -->
                                 <el-button slot="append" icon="el-icon-search" @click='searchFormDatas'></el-button>
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span='15' style='padding-right:0;'>
-                        <el-row :gutter="10">
-                            <el-col :span='7' v-if='id === "0" || id === "reception"'>
-                                <el-form-item class='search_form_item' prop='status'>
-                                    <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
-                                        <el-option
-                                            v-for="item in customStatus"
-                                            :key="item.val"
-                                            :label="item.label"
-                                            :value="item.val">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span='6' v-if='memberRoleId.member_role_id !== "designer"'>
-                                <el-form-item class='search_form_item' prop='member_id'>
-                                    <el-select v-model="searchForm.member_id" clearable placeholder="设计师" @change='searchFormDatas'>
-                                        <el-option
-                                            v-for="item in designers"
-                                            :key="item.member_id"
-                                            :label="item.name"
-                                            :value="item.member_id">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="8">
-                                <el-form-item class='search_form_item' prop='time'>
-                                    <el-date-picker
-                                        v-model="searchForm.time"
-                                        type="daterange"
-                                        range-separator="至"
-                                        start-placeholder="开始日期"
-                                        end-placeholder="结束日期"
-                                        value-format='yyyy-MM-dd'
-                                        @change='searchFormDatas'>
-                                    </el-date-picker>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span='3'>
-                                <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
-                            </el-col>
-                        </el-row>
+                    <el-col :span='5' v-if='id === "0" || id === "reception"'>
+                        <el-form-item class='search_form_item' prop='status'>
+                            <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
+                                <el-option
+                                        v-for="item in customStatus"
+                                        :key="item.val"
+                                        :label="item.label"
+                                        :value="item.val">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span='4' v-if='memberRoleId.member_role_id !== "designer"'>
+                        <el-form-item class='search_form_item' prop='member_id'>
+                            <el-select v-model="searchForm.member_id" clearable placeholder="设计师" @change='searchFormDatas'>
+                                <el-option
+                                        v-for="item in designers"
+                                        :key="item.member_id"
+                                        :label="item.name"
+                                        :value="item.member_id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item class='search_form_item' prop='time'>
+                            <el-date-picker
+                                    v-model="searchForm.time"
+                                    type="daterange"
+                                    range-separator="至"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期"
+                                    value-format='yyyy-MM-dd'
+                                    @change='searchFormDatas'>
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5" v-if='id === "2"'>
+                        <el-form-item class='search_form_item' prop='estimate_times'>
+                            <el-select v-model="searchForm.estimate_times" clearable placeholder="预计回访时间" @change='searchFormDatas'>
+                                <el-option key="3day" label="近3天" value="3day"></el-option>
+                                <el-option key="2week" label="近2周" value="2week"></el-option>
+                                <el-option key="1month" label="近1个月" value="1month"></el-option>
+                                <el-option key="3month" label="近3个月" value="3month"></el-option>
+                                <el-option key="6month" label="近6个月" value="6month"></el-option>
+                                <el-option key="1year" label="近1年" value="1year"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span='3'>
+                        <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
                     </el-col>
                 </el-row>
             </el-form>
@@ -88,12 +89,6 @@
                 v-if='idStatus'
                 >
             </el-table-column>
-            <!-- <el-table-column
-                prop="customer_number"
-                label="客户编号"
-                min-width='70px'
-                >
-            </el-table-column> -->
             <el-table-column
                 prop="name"
                 label="客户"
@@ -109,7 +104,7 @@
             <el-table-column
                 prop='star_level'
                 label="星级"
-                min-width='90px'
+                min-width='82px'
                 sortable='custom'
                 >
                 <template slot-scope='scope'>
@@ -119,26 +114,19 @@
             <el-table-column
                 prop="area"
                 label="客户地区"
-                min-width='150px'>
+                min-width='140px'>
             </el-table-column>
             <el-table-column
                 prop="addr"
                 label="客户地址"
-                min-width='180px'>
+                min-width='140px'>
             </el-table-column>
-            <!-- <el-table-column
-                label="房屋类型"
-                min-width='180px'>
-                <template slot-scope='scope'>
-                    <span v-if='scope.row.house_type'>{{scope.row.house_type}}/{{scope.row.house_status}}</span>
-                </template>
-            </el-table-column> -->
             <el-table-column
                 prop='status_name'
                 label="客户状态"
                 min-width='120px'>
             </el-table-column>
-            <template v-if='id === "2"'>
+            <template v-if='id === "2" || id === "reception"'>
                 <el-table-column
                     prop='apart_day'
                     label="留资天数"
@@ -163,7 +151,14 @@
             <el-table-column
                 prop='createtime'
                 label="创建日期"
-                min-width='150px'>
+                min-width='135px'>
+            </el-table-column>
+            <el-table-column
+                prop='outline'
+                label="沟通概要"
+                min-width='80px'
+                :show-overflow-tooltip='true'
+                v-if='id === "reception"'>
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
@@ -229,7 +224,8 @@
                     time:'',
                     searchName:'',
                     member_id:'',
-                    port:''
+                    port:'',
+                    estimate_times:''
                 },
                 customLists: [],//客户列表
                 totalNum:0,//客户列表总数
@@ -711,7 +707,7 @@
         width: 90px;
     }
     .edit_btn{
-        width: 80px;
+        width: 100%;
         height: 36px;
         padding: 9px 0;
     }

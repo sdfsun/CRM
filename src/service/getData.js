@@ -132,5 +132,20 @@ export const store_vain = () => axios.post('/crm-store_vain.html', {
     showLoad: '3'
 });
 
-//报表
+//CRM报表
 export const incomeSearch = (formData) => axios.post('/crm-incomeSearch.html',formData);
+
+//门店销售报表
+export const order_counts = (formData) => axios.post('/crm-order_counts.html',formData);
+
+//获取奖品列表
+export const prize_index = () => axios.post('/crm-prize_index.html');
+
+//奖品保存
+export const prize_save = (formData) => axios.post('/crm-prize_save.html',formData);
+
+//奖品领取记录
+export const prize_log = (formData) => axios.post('/crm-prize_log.html',formData);
+
+//奖品发放
+export const prize_grant = (formData) => axios.post('/crm-prize_grant.html',formData);

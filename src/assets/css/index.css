@@ -515,3 +515,7 @@ body{
 .report_container td{
     border-top: 1px solid #606266;
 }
+/*门店销售报表*/
+.report_container .has-gutter td.cell_noSum_label .cell{
+    display: none;
+}

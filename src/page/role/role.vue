@@ -49,8 +49,7 @@
                 </template>
             </el-table-column>
             <el-table-column
-                label="是否开启"
-                >
+                label="是否开启">
                 <template slot-scope='scope'>
                     <el-switch
                         v-model="scope.row.disabled"
@@ -59,28 +58,27 @@
                 </template>
             </el-table-column>
             <el-table-column
-              label="操作"
-              width="120">
-                <template slot-scope="scope">
-                    <el-button
-                    @click.native.prevent="handleEdit(scope.$index)"
-                    type="text"
-                    size="medium">
-                        编辑
-                    </el-button>
-                    <el-button
-                    @click.native.prevent="handleSave(scope.$index,scope.row)"
-                    type="text"
-                    size="medium">
-                        保存
-                    </el-button>
-                </template>
+                label="操作"
+                width="120">
+                    <template slot-scope="scope">
+                        <el-button
+                        @click.native.prevent="handleEdit(scope.$index)"
+                        type="text"
+                        size="medium">
+                            编辑
+                        </el-button>
+                        <el-button
+                        @click.native.prevent="handleSave(scope.$index,scope.row)"
+                        type="text"
+                        size="medium">
+                            保存
+                        </el-button>
+                    </template>
             </el-table-column>
         </el-table>
     </section>
 </template>
 <script>
-    import Vue from 'vue';
     import {mapActions,mapMutations} from 'vuex';
     import {member_role,add_role} from '@/service/getData';
     import { setStore } from '@/utils/';
@@ -155,14 +153,14 @@
                     if(this.submitBtnStatus){
                         return false;
                     }
-                    if(formData.name === ''){
+                    if(!formData.name || formData.name === ''){
                         this.$message({
                             message: '等级名称不能为空',
                             type: 'error'
                         });
                         return false;
                     }
-                    if(formData.lv_code === ''){
+                    if(!formData.lv_code || formData.lv_code === ''){
                         this.$message({
                             message: '等级代码不能为空',
                             type: 'error'

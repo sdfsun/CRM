@@ -52,7 +52,7 @@
             :data="reportLists"
             highlight-current-row
             show-summary
-            class='customListsTableInfo'
+            class='tableInfo'
             header-row-class-name='header_row_style'>
             <el-table-column
                 prop="name"

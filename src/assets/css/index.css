@@ -498,7 +498,7 @@ body{
     margin-right: 0px;
 }
 /*报表*/
-.report_container .el-table th{
+.report_container .el-table.tableInfo th{
     text-align: right;
 }
 .report_container .el-table .cell{
@@ -540,9 +540,6 @@ body{
 }
 .report_container th,.report_container td{
     border-right: 1px solid #606266;
-}
-.report_container .cell_15_label,.report_container tr td:last-child{
-    border-right:none;
 }
 .report_container td{
     border-top: 1px solid #606266;
@@ -768,3 +765,15 @@ body{
 }
 /*结算页crm账户搜索下拉框*/
 .hidePopup{display: none;}
+
+/*门店销售报表*/
+.report_container .has-gutter td.cell_noSum_label .cell{
+    display: none;
+}
+.report_container .orderInfoDialog .el-dialog{
+    width: 700px;
+}
+.report_container .orderInfoDialog th, .report_container .orderInfoDialog td{
+    border-right: none;
+}
+

@@ -93,6 +93,17 @@
                         <el-input readonly='true' v-model="communicateForm.name"></el-input>
                     </el-form-item>
                 </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="estimate_times">
+                        <el-date-picker
+                                v-model="communicateForm.estimate_times"
+                                type="datetime"
+                                placeholder="预计回访时间"
+                                value-format='yyyy-MM-dd HH:mm:ss'
+                                clearable>
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
             </el-row>
             <el-form-item prop='outline' class='form_item_style_width'>
                 <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="communicateForm.outline" placeholder='沟通概要'></el-input>
@@ -141,7 +152,8 @@
                     is_arrival:'',//是否到店
                     scale_time:'',//预约量尺时间
                     member_id:'',//指派的设计师
-                    outline:''//沟通概要
+                    outline:'',//沟通概要
+                    estimate_times:''//预计回访时间
                 },
                 outlineTags:['打了无人接听','打通了客户没空','有接电话无需测量'],
                 assignDesignerLists:[],//可指派设计师
@@ -168,6 +180,7 @@
                 this.resetFormData();
                 this.assignDesignerLists = [];
             }
+            this.$set(this.communicateForm,'estimate_times',this.informationItem.estimate_times);
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
@@ -180,6 +193,7 @@
                     this.resetFormData();
                     this.assignDesignerLists = [];
                 }
+                this.$set(this.communicateForm,'estimate_times',this.informationItem.estimate_times);
             }
         },
         methods:{
@@ -274,6 +288,7 @@
                 }else{
                     tempFormData.information.area=[];
                 }
+                tempFormData.information.estimate_times = this.communicateForm.estimate_times;
                 communicate_save(tempFormData).then(res=>{
                     this.submitBtnStatus = false;
                     if(res.error){

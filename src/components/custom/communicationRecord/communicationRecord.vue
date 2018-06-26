@@ -174,7 +174,6 @@
                 this.activeName = '1';
                 this.editActiveRow = {};
                 this.$refs['communicationEdit'].$refs['communicateForm'].resetFields();
-                // this.$refs['communicateBasicForms'].$refs['basicForms'].resetFields();
                 if(this.formSuccessData){
                     this.communicateBasicFormData = Object.assign({},this.formSuccessData);
                 }else{

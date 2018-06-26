@@ -8,12 +8,14 @@ const role = r => require.ensure([], () => r(require('@/page/role/role.vue')), '
 const user = r => require.ensure([], () => r(require('@/page/user/user.vue')), '用户管理');
 const activity = r => require.ensure([], () => r(require('@/page/activity/activity.vue')), '活动管理');
 const updatePasd = r => require.ensure([], () => r(require('@/page/updatePasd/updatePasd.vue')), '修改密码');
-const report = r => require.ensure([], () => r(require('@/page/report/report.vue')), '报表管理');
+const report = r => require.ensure([], () => r(require('@/page/report/report.vue')), '留资报表管理');
 const notFound = r => require.ensure([], () => r(require('@/page/notFound/notFound.vue')), '404页面');
 const authority = r => require.ensure([], () => r(require('@/page/authority/authority.vue')), '菜单管理');
 const orderSearch = r => require.ensure([], () => r(require('@/page/order/search.vue')), '产品下单');
 const orderCheckout = r => require.ensure([], () => r(require('@/page/order/checkout.vue')), '结算页');
-
+const storeMarket = r => require.ensure([], () => r(require('@/page/report/storeMarket.vue')), '门店销售报表');
+const present = r => require.ensure([], () => r(require('@/page/present/present.vue')), '奖品管理');
+const receive = r => require.ensure([], () => r(require('@/page/present/receive.vue')), '奖品领取管理');
 
 export default [
     {
@@ -61,6 +63,18 @@ export default [
                 component: report
             },
             {
+                path: '/storeMarket',
+                component: storeMarket
+            },
+            {
+                path: '/present',
+                component: present
+            },
+            {
+                path: '/receive',
+                component: receive
+            },
+            {
                 path: '/authority',
                 component: authority
             },
@@ -72,7 +86,6 @@ export default [
                 path: '/checkout',
                 component: orderCheckout
             }
-
         ]
     },
     { 

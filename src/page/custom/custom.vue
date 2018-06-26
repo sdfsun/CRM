@@ -43,17 +43,29 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="5" style='min-width:212px;'>
+                    <el-col :span="5">
                         <el-form-item class='search_form_item' prop='time'>
                             <el-date-picker
-                                v-model="searchForm.time"
-                                type="daterange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                value-format='yyyy-MM-dd'
-                                @change='searchFormDatas'>
+                                    v-model="searchForm.time"
+                                    type="daterange"
+                                    range-separator="至"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期"
+                                    value-format='yyyy-MM-dd'
+                                    @change='searchFormDatas'>
                             </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5" v-if='id === "2"'>
+                        <el-form-item class='search_form_item' prop='estimate_times'>
+                            <el-select v-model="searchForm.estimate_times" clearable placeholder="预计回访时间" @change='searchFormDatas'>
+                                <el-option key="3day" label="近3天" value="3day"></el-option>
+                                <el-option key="2week" label="近2周" value="2week"></el-option>
+                                <el-option key="1month" label="近1个月" value="1month"></el-option>
+                                <el-option key="3month" label="近3个月" value="3month"></el-option>
+                                <el-option key="6month" label="近6个月" value="6month"></el-option>
+                                <el-option key="1year" label="近1年" value="1year"></el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span='3'>
@@ -77,12 +89,6 @@
                 v-if='idStatus'
                 >
             </el-table-column>
-            <!-- <el-table-column
-                prop="customer_number"
-                label="客户编号"
-                min-width='70px'
-                >
-            </el-table-column> -->
             <el-table-column
                 prop="name"
                 label="客户"
@@ -98,7 +104,7 @@
             <el-table-column
                 prop='star_level'
                 label="星级"
-                min-width='90px'
+                min-width='82px'
                 sortable='custom'
                 >
                 <template slot-scope='scope'>
@@ -108,26 +114,19 @@
             <el-table-column
                 prop="area"
                 label="客户地区"
-                min-width='150px'>
+                min-width='140px'>
             </el-table-column>
             <el-table-column
                 prop="addr"
                 label="客户地址"
-                min-width='180px'>
+                min-width='140px'>
             </el-table-column>
-            <!-- <el-table-column
-                label="房屋类型"
-                min-width='180px'>
-                <template slot-scope='scope'>
-                    <span v-if='scope.row.house_type'>{{scope.row.house_type}}/{{scope.row.house_status}}</span>
-                </template>
-            </el-table-column> -->
             <el-table-column
                 prop='status_name'
                 label="客户状态"
                 min-width='120px'>
             </el-table-column>
-            <template v-if='id === "2"'>
+            <template v-if='id === "2" || id === "reception"'>
                 <el-table-column
                     prop='apart_day'
                     label="留资天数"
@@ -152,7 +151,14 @@
             <el-table-column
                 prop='createtime'
                 label="创建日期"
-                min-width='150px'>
+                min-width='135px'>
+            </el-table-column>
+            <el-table-column
+                prop='outline'
+                label="沟通概要"
+                min-width='80px'
+                :show-overflow-tooltip='true'
+                v-if='id === "reception"'>
             </el-table-column>
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
@@ -218,7 +224,8 @@
                     time:'',
                     searchName:'',
                     member_id:'',
-                    port:''
+                    port:'',
+                    estimate_times:''
                 },
                 customLists: [],//客户列表
                 totalNum:0,//客户列表总数

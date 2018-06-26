@@ -40,8 +40,8 @@
                 label="用户等级">
             </el-table-column>
             <el-table-column
-              label="操作"
-              width="120">
+                label="操作"
+                width="120">
                 <template slot-scope="scope">
                     <el-button
                     @click.native.prevent="handleEdit(scope.row)"
@@ -75,8 +75,7 @@
     </section>
 </template>
 <script>
-    import Vue from 'vue';
-    import {mapMutations,mapActions} from 'vuex';
+    import {mapMutations} from 'vuex';
     import {member,password} from '@/service/getData';
     import userEdit from '@/components/user/userEdit';
     import { setStore } from '@/utils/';

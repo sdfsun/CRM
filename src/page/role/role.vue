@@ -53,8 +53,7 @@
             </el-table-column>
             <el-table-column
                 label="是否开启"
-                min-width='80'
-                >
+                min-width='80'>
                 <template slot-scope='scope'>
                     <el-switch
                         v-model="scope.row.disabled"
@@ -63,8 +62,8 @@
                 </template>
             </el-table-column>
             <el-table-column
-              label="操作"
-              min-width="120">
+                label="操作"
+                min-width="120">
                 <template slot-scope="scope">
                     <el-button
                     @click.native.prevent="handleEdit(scope.$index)"
@@ -107,7 +106,6 @@
     </section>
 </template>
 <script>
-    import Vue from 'vue';
     import {mapActions,mapMutations} from 'vuex';
     import {member_role,add_role,role_access} from '@/service/getData';
     import { setStore } from '@/utils/';
@@ -192,14 +190,14 @@
                     if(this.submitBtnStatus){
                         return false;
                     }
-                    if(formData.name === ''){
+                    if(!formData.name || formData.name === ''){
                         this.$message({
                             message: '等级名称不能为空',
                             type: 'error'
                         });
                         return false;
                     }
-                    if(formData.lv_code === ''){
+                    if(!formData.lv_code || formData.lv_code === ''){
                         this.$message({
                             message: '等级代码不能为空',
                             type: 'error'

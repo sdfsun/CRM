@@ -100,7 +100,6 @@
                                 type="datetime"
                                 placeholder="预计回访时间"
                                 value-format='yyyy-MM-dd HH:mm:ss'
-                                @change='estimateTimesHandleChange'
                                 clearable>
                         </el-date-picker>
                     </el-form-item>
@@ -181,7 +180,7 @@
                 this.resetFormData();
                 this.assignDesignerLists = [];
             }
-            this.communicateForm.estimate_times = this.informationItem.estimate_times;
+            this.$set(this.communicateForm,'estimate_times',this.informationItem.estimate_times);
         },
         watch:{
             editInfos:function(newVal,oldVal){//不应该使用箭头函数来定义 watcher 函数 箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例
@@ -194,7 +193,7 @@
                     this.resetFormData();
                     this.assignDesignerLists = [];
                 }
-                this.communicateForm.estimate_times = this.informationItem.estimate_times;
+                this.$set(this.communicateForm,'estimate_times',this.informationItem.estimate_times);
             }
         },
         methods:{
@@ -273,9 +272,6 @@
                         that.communicateForm.member_id = '';
                     });
                 }
-            },
-            estimateTimesHandleChange(val){//预计回访时间
-                console.log(val);
             },
             submitFormHandle(type){
                 let that = this;

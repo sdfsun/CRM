@@ -210,7 +210,7 @@
             },
             insertRecord(){//新增记录
                 this.presentForm = {};
-                this.presentForm.disabled = 'false';
+                this.$set(this.presentForm,'disabled','false');
                 this.presentDialogVisible = true;
             },
             handleEdit(curRow){//编辑

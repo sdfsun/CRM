@@ -57,14 +57,14 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="5" v-if='id === "2"'>
-                        <el-form-item class='search_form_item' prop='estimate_times'>
-                            <el-select v-model="searchForm.estimate_times" clearable placeholder="预计回访时间" @change='searchFormDatas'>
-                                <el-option key="3day" label="近3天" value="3day"></el-option>
-                                <el-option key="2week" label="近2周" value="2week"></el-option>
-                                <el-option key="1month" label="近1个月" value="1month"></el-option>
-                                <el-option key="3month" label="近3个月" value="3month"></el-option>
-                                <el-option key="6month" label="近6个月" value="6month"></el-option>
-                                <el-option key="1year" label="近1年" value="1year"></el-option>
+                        <el-form-item class='search_form_item' prop='e_times'>
+                            <el-select v-model="searchForm.e_times" clearable placeholder="预计回访时间" @change='searchFormDatas("times")'>
+                                <el-option
+                                    v-for="item in esTimesOptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
@@ -225,7 +225,8 @@
                     searchName:'',
                     member_id:'',
                     port:'',
-                    estimate_times:''
+                    s_times:'',
+                    e_times:''
                 },
                 customLists: [],//客户列表
                 totalNum:0,//客户列表总数
@@ -254,6 +255,32 @@
                         label: '可再联系'
                     }
                 ],
+                esTimesOptions: [//预计回访时间
+                    {
+                        value: '3day',
+                        label: '近3天'
+                    },
+                    {
+                        value: '2week',
+                        label: '近2周'
+                    },
+                    {
+                        value: '1month',
+                        label: '近1个月'
+                    },
+                    {
+                        value: '3month',
+                        label: '近3个月'
+                    },
+                    {
+                        value: '6month',
+                        label: '近6个月'
+                    },
+                    {
+                        value: '1year',
+                        label: '近1年'
+                    }
+                ],
                 pageForm:{
                     range:80,
                     HAS_DATA:true,
@@ -278,6 +305,7 @@
             this.id = to.params.id;
             this.$refs['search_form'].resetFields();
             this.searchForm.searchName = '';
+            this.searchForm.s_times = '';
             this.page = 1;
             this.pageForm.HAS_DATA = true;
             this.pageForm.isOn = true;
@@ -386,11 +414,30 @@
             resetQrcodeDialog(){
                 this.SETQRCODE({});
             },
-            searchFormDatas(){//搜索表单数据
-                this.page = 1;
-                this.pageForm.HAS_DATA = true;
-                this.pageForm.isOn = true;
-                this.init();
+            searchFormDatas(type){//搜索表单数据
+                try {
+                    const that = this;
+                    this.page = 1;
+                    this.pageForm.HAS_DATA = true;
+                    this.pageForm.isOn = true;
+                    if(type && type === 'times' && this.searchForm.e_times){//预计回访时间
+                        const index = this.esTimesOptions.findIndex(function(item, index, arr) {
+                            return item.value === that.searchForm.e_times;
+                        });
+                        if(index-1 >= 0){
+                            that.searchForm.s_times = this.esTimesOptions[index-1].value;
+                        }else{
+                            that.searchForm.s_times = '';
+                        }
+                    }
+                    console.log(this.searchForm);
+                    this.init();
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             },
             up_down_tabs(){//展开或隐藏信息栏
                 try {

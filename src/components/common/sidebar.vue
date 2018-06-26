@@ -36,8 +36,9 @@
     </div>
 </template>
 <script>
-    import {mapState} from 'vuex';
+    import {mapState,mapMutations} from 'vuex';
     import {unset_member} from '@/service/getData';
+    import { setStore } from '@/utils/';
 
     export default {
         name: 'sidebar',
@@ -53,6 +54,9 @@
             ])
         },
         methods:{
+            ...mapMutations([
+                'SETMEMBERROLEID'
+            ]),
             async logout(){//退出用户
                 try {
                     const res  = await unset_member();
@@ -60,7 +64,9 @@
                         this.$message({
                             message:res.success,
                             type:'success'
-                           });
+                        });
+                        setStore("memberRoleId",{});
+                        this.SETMEMBERROLEID({});
                         setTimeout(()=>{
                             this.$router.push('/');
                         },3000);

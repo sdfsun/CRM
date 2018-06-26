@@ -652,6 +652,13 @@
                     </el-table>
                 </el-collapse-item>
             </el-collapse>
+            <div class="history-btns">
+                <el-button type="primary" @click="extractOrder" class='submit_btn' v-if="!extractOrderFlag">提取订单</el-button>
+                <template v-else>
+                    <el-button type="primary"  class='submit_btn'>确定</el-button>
+                    <p class="extractOrderTips">是否确认提取历史订单替换当前订单？</p>
+                </template>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -680,7 +687,8 @@
                 searchCrmResults:[],//存储多个crm账户
                 autocompleteVisible:false,//是否显示多个crm账户下拉列表
                 historyOrdersDialogVisible:false,//历史订单弹框是否可见
-                historyActiveIndex:''//历史订单当前选中的订单索引
+                historyActiveIndex:'',//历史订单当前选中的订单索引
+                extractOrderFlag:false,//是否确认提取历史订单
             }
         },
         computed:{
@@ -1190,6 +1198,9 @@
                         type: 'error'
                     });
                 }
+            },
+            extractOrder(){//历史订单提取
+                this.extractOrderFlag =  true;
             }
         }
     }
@@ -1367,5 +1378,19 @@
         background: #f4f4f4;
         border-top: 1px solid #E0E0E0;
         box-sizing: border-box;
+    }
+    .extractOrderTips{
+        font-size: 10px;
+        color: #F25406;
+        margin-top: 4px;
+    }
+    .el-collapse{
+        flex: 1;
+        overflow: auto;
+        border-bottom: none;
+    }
+    .history-btns{
+        text-align: center;
+        padding-top: 10px;
     }
 </style>

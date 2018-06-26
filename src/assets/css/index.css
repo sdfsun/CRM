@@ -721,12 +721,16 @@ body{
 .historyOrdersDialog .el-dialog{
     width: 80%;
     min-width: 1100px;
+    min-height: 500px;
+    max-height: 760px;
 }
 .historyOrdersDialog .el-dialog__header{
     padding-left: 30px;
 }
 .historyOrdersDialog .el-dialog__body{
-    padding: 20px 0;
+    padding: 20px 0 10px;
+    display: flex;
+    flex-direction: column;
 }
 .historyOrdersDialog .el-collapse{
     border-color: #D6D7DC;

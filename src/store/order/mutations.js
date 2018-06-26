@@ -82,4 +82,7 @@ export default {
         state.checkoutSwitch = 0;//结算页开关 0为显示第一页 1位显示第二页
         state.checkoutDetailInfo = null;//结算页第二页明细
     },
+    [types.SETMEMBERID](state,data) {//设置商城用户member_id
+        state.member_id = data;
+    }
 }

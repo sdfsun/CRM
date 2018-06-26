@@ -445,6 +445,7 @@
     }
     .spec-modal .s2{
         display: flex;
+        margin-bottom: 25px;
     }
     .spec-modal .spec-store{
         margin-left: 20px;
@@ -452,7 +453,7 @@
     }
     .spec-modal .s3 .txt-1{
         color: #999999;
-        margin: 25px 0 9px;
+        margin: 15px 0 9px;
     }
     .spec-modal .s3 ul{
         overflow: hidden;
@@ -467,6 +468,7 @@
         list-style-type: none;
         text-align: center;
         cursor: pointer;
+        margin-bottom: 10px;
     }
     .spec-modal .s3 li:nth-child(2n){
         margin-left: 20px;

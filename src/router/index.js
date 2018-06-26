@@ -16,6 +16,7 @@ const orderCheckout = r => require.ensure([], () => r(require('@/page/order/chec
 const storeMarket = r => require.ensure([], () => r(require('@/page/report/storeMarket.vue')), '门店销售报表');
 const present = r => require.ensure([], () => r(require('@/page/present/present.vue')), '奖品管理');
 const receive = r => require.ensure([], () => r(require('@/page/present/receive.vue')), '奖品领取管理');
+const historyOrders = r => require.ensure([], () => r(require('@/page/order/historyOrders.vue')), '奖品领取管理');
 
 export default [
     {
@@ -85,6 +86,10 @@ export default [
             {
                 path: '/checkout',
                 component: orderCheckout
+            },
+            {
+                path: '/historyOrders',
+                component: historyOrders
             }
         ]
     },

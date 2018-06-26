@@ -11,7 +11,7 @@ export default {
         payMoney:0,//实付金额
         freight:0,//运费
         orderid:'',//订单号
-        cumtomFormData:{
+        cumtomFormData:{//存储CRM用户相关信息
             acceptOrdMan:'',//收货人
             acceptOrdPhone:'',//收货人手机号
             area:[],//收货地区
@@ -25,8 +25,9 @@ export default {
             information_id:'',//crm客户id
             sum_money:0,//用户可用余额
             last_discount:0,//用户可用折扣
-            uFinPay:0,//用户欠款金额
+            uFinPay:0//用户欠款金额
         },
+        member_id:'',//商城用户id
         checkoutSwitch:0,//结算页开关 0为显示第一页 1位显示第二页
         checkoutDetailInfo:{}//结算页第二页明细
     },

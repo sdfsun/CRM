@@ -33,19 +33,19 @@
             <div class="custom-info">
                 <el-row :gutter="20">
                     <el-col :span="5">
-                        <label>可用余额：</label>
+                        <label class="txt-label">可用余额：</label>
                         <el-input  class="formItem" readonly :value="cumtomFormData.sum_money">
                             <i slot="suffix">元</i>
                         </el-input>
                     </el-col>
                     <el-col :span="6">
-                        <label>可用抵扣金额：</label>
+                        <label class="txt-label">可用抵扣金额：</label>
                         <el-input  class="formItem" readonly :value="cumtomFormData.last_discount">
                             <i slot="suffix">元</i>
                         </el-input>
                     </el-col>
                     <el-col :span="6">
-                        <label>当前欠款金额：</label>
+                        <label class="txt-label">当前欠款金额：</label>
                         <el-input  class="formItem" readonly :value="cumtomFormData.uFinPay">
                             <i slot="suffix">元</i>
                         </el-input>
@@ -53,15 +53,15 @@
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="5">
-                        <label>姓名：</label>
+                        <label class="txt-label">姓名：</label>
                         <el-input  placeholder="请输入姓名" clearable class="formItem" v-model="cumtomFormData.acceptOrdMan"></el-input>
                     </el-col>
                     <el-col :span="6">
-                        <label>联系方式：</label>
+                        <label class="txt-label">联系方式：</label>
                         <el-input  placeholder="请输入联系方式" maxlength='11' clearable class="formItem" v-model="cumtomFormData.acceptOrdPhone"></el-input>
                     </el-col>
                     <el-col :span="6">
-                        <label>地区：</label>
+                        <label class="txt-label">地区：</label>
                         <el-cascader
                                 v-model="cumtomFormData.area"
                                 :options="areaOptions"
@@ -70,20 +70,20 @@
                         </el-cascader>
                     </el-col>
                     <el-col :span="7">
-                        <label>详细地址：</label>
+                        <label class="txt-label">详细地址：</label>
                         <el-input  placeholder="请输入详细地址" clearable class="formItem" v-model="cumtomFormData.addr"></el-input>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="5" style="line-height: 36px;">
-                        <label>是否有电梯：</label>
+                        <label class="txt-label">是否有电梯：</label>
                         <el-radio-group v-model="cumtomFormData.liftSel">
                             <el-radio :label="true">是</el-radio>
                             <el-radio :label="false">否</el-radio>
                         </el-radio-group>
                     </el-col>
                     <el-col :span="6">
-                        <label>仓库完成时间：</label>
+                        <label class="txt-label">仓库完成时间：</label>
                         <el-date-picker
                                 v-model="cumtomFormData.sendProDate"
                                 type="date"
@@ -95,11 +95,11 @@
                         </el-date-picker>
                     </el-col>
                     <el-col :span="6">
-                        <label>合同编号：</label>
+                        <label class="txt-label">合同编号：</label>
                         <el-input  placeholder="请输入合同编号" clearable class="formItem" v-model="cumtomFormData.contractCode"></el-input>
                     </el-col>
                     <el-col :span="7">
-                        <label>表头附件：</label>
+                        <label class="txt-label">表头附件：</label>
                         <el-button type="primary" class="biaotoufujian" @click="uploadFileHandle('aaa')">
                             <template v-if="this.cumtomFormData.fileUrls">
                                 <i class="crmiconfont icon-ic_folder_close" style="margin-right: 7px;"></i>添加
@@ -112,11 +112,11 @@
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="11">
-                        <label>订单备注：</label>
+                        <label class="txt-label">订单备注：</label>
                         <el-input  placeholder="请输入订单备注" clearable class="formItem" v-model="cumtomFormData.orderRemarks"></el-input>
                     </el-col>
                     <el-col :span="13">
-                        <label>客户特殊要求：</label>
+                        <label class="txt-label">客户特殊要求：</label>
                         <el-input  placeholder="请输入客户特殊要求" clearable class="formItem" v-model="cumtomFormData.custReRemark"></el-input>
                     </el-col>
                 </el-row>
@@ -418,9 +418,12 @@
                             <span class="txt">客户名</span>
                             <span class="txt">123 1212 1234</span>
                             <span class="txt">福建省/泉州市/惠安县</span>
+                            <span class="txt">当前账户余额</span>
+                            <span class="txt">已支付</span>
+                            <span class="txt">未支付</span>
                         </div>
                         <div class="header-right">
-                            <span class="txt money-item">实付金额：￥<strong>1200.00</strong></span>
+                            <!--<span class="txt money-item">实付金额：￥<strong>1200.00</strong></span>-->
                             <span class="txt choose-color" style="margin-right: 0;">展开<i class="crmiconfont icon-zhankai" style="font-size: 12px;margin-left: 5px;"></i></span>
                         </div>
                     </template>
@@ -717,7 +720,8 @@
                 'DELETEGOOD',
                 'UPDATEORDERMONEY',
                 'UPDATECUSTOMINFO',
-                'UPDATECHECKOUTDETAILINFO'
+                'UPDATECHECKOUTDETAILINFO',
+                'SETMEMBERID'
             ]),
             ...mapActions([
                 'updateGood',
@@ -764,6 +768,7 @@
                         this.UPDATECUSTOMINFO({});
                         this.tips = '*请先输入客户联系方式判断是否为CRM用户，再行下单';
                     }
+                    this.SETMEMBERID(res.success.member_id);
                 }catch (e) {
                     this.$message({
                         message: e.message,
@@ -1100,6 +1105,7 @@
                         formData.orderid = orderJson.orderid;//订单号
                         formData.pmt_order = orderJson.discount;//门店优惠
                         formData.info = orderJson.goods;//商品
+                        formData.member_id = orderJson.member_id;//商城用户id
                         //校验数据
                         //校验定制单产品是否有上传附件
                         const goodItem = formData.info.find(function (item) {
@@ -1247,7 +1253,7 @@
         border-radius: 0;
     }
     .custom-info {
-        padding: 20px 50px 4px;
+        padding: 20px 50px 4px 20px;
     }
     .custom-info .el-col{
         display: flex;
@@ -1257,6 +1263,10 @@
     }
     .custom-info .formItem{
         flex: 1;
+    }
+    .section-1 .custom-info label.txt-label{
+        width: 85px;
+        text-align: right;
     }
     .checkoutTableInfo{
         text-align: center;

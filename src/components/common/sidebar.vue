@@ -27,6 +27,7 @@
                     </template>
                     <el-menu-item index="/search">产品下单</el-menu-item>
                     <el-menu-item index="/checkout">结算页</el-menu-item>
+                    <el-menu-item index="/historyOrders">历史订单</el-menu-item>
                 </el-submenu>
           </el-menu>
         </div>

@@ -8,6 +8,10 @@ export default {
         res.sum = Number(res.num*res.price);
         res.gifs_flag = false;//是否是赠品
         res.fileStr = '';//附件
+        res.install_flag = 'false';//设置为非安装服务
+        if(!res.send_time && state.cumtomFormData.sendProDate){
+            res.send_time = state.cumtomFormData.sendProDate;
+        }
         if(cartGoods.length > 0){
             const index = cartGoods.findIndex((item=>{
                 return item.product_id === res.product_id;
@@ -22,8 +26,9 @@ export default {
         }else{
             commit('ADDCARTGOODS',res);//添加产品
         }
-        dispatch('setOrderTotalMoney');
         dispatch('setOrderMethod');//设置配送方式
+        dispatch('setOrderTotalMoney');
+        dispatch('setBuyInstallFlag');//设置是否可购买安装服务
     },
     updateGood({state,commit,dispatch},data){//更新产品数量，小计，应付，实付金额
         const index = data.index;
@@ -40,14 +45,28 @@ export default {
         updateGoodJson.index = index;
         updateGoodJson.goodData = data.res;
         commit('UPDATEGOODDATA',updateGoodJson);//更新购物车产品数量及小计
+        //查看是否有安装服务 同时修改安装服务的数量
+        if(data.res.install_pid){
+            dispatch('updateServiceGood',{proItem:data.res});
+        }
         dispatch('setOrderTotalMoney');
     },
     setOrderTotalMoney({state,commit}){//设置订单总金额 添加产品，删除产品，更改数量，标记赠品，提取订单
-        let totalMoney = 0;
+        let totalMoney = 0,serviceMoney = 0;
         state.goods.forEach( function(item, il) {
-            totalMoney += Number(item.num*item.price);
+            if(item.install_flag === 'false'){//产品
+                totalMoney += Number(item.num*item.price);
+            }else{//安装服务
+                serviceMoney += Number(item.num*item.price);
+            }
         });
-        commit('UPDATEORDERMONEY',{'totalMoney':totalMoney});//设置订单总金额 实付金额
+        const selectedZitiMethod = state.goods.every(function (e1) {
+            return e1.canal === 'ziti';
+        });
+        serviceMoney = serviceMoney > 0 ? serviceMoney < 80 ? 80 : serviceMoney : 0;
+        totalMoney += serviceMoney;
+
+        commit('UPDATEORDERMONEY',{'totalMoney':totalMoney,'selectedZitiMethod':selectedZitiMethod});//设置订单总金额 实付金额
     },
     setOrderMethod({state,commit}){//设置配送方式 添加产品，删除产品，产品设置配送方式，提取订单
         const wuliuFlag = state.goods.some(item=>{
@@ -56,5 +75,63 @@ export default {
         const method = wuliuFlag?'wuliu':'kuaidi';
         commit('SETORDERMETHOD',method);//设置订单的配送方式
         commit('RESETGOODMETHOD');//重置产品的配送方式
+    },
+    setBuyInstallFlag({state,commit}){//设置是否可购买安装服务
+        const buyInstallFlag = state.goods.some(item=>{
+            return item.install === 'true';//是否有大件
+        });
+        commit('SETBUYINSTALLFLAG',buyInstallFlag);//重置产品的配送方式
+    },
+    addService({state,commit,dispatch},lists) {//添加安装服务
+        //先删除购物车里的安装服务
+        let newArr = state.goods.filter(function(item,index) {
+            if(item.install_flag === 'false'){//产品
+                return item;
+            }
+        });
+        let goods = newArr.concat(lists);
+        commit('ADDSERVICES',goods);
+        dispatch('setOrderTotalMoney');
+    },
+    updateServiceGood({state,commit},data){//更改安装服务的数量
+        //找到对应的安装服务
+        const serviceIndex = state.goods.findIndex(function (item) {
+            return data.proItem.install_pid === item.product_id;
+        });
+        if(serviceIndex !== -1){//找到安装服务，同时修改数量   产品修改数量，删除产品时都需要调用这个方法 安装服务和产品存在一对多的关系
+            let item = state.goods[serviceIndex];
+            let relaPros = item.parent_id;
+            let serviceNum = 0,num = 0,temp = false;
+            let tempItem;
+            relaPros.forEach(function (item, index) {
+                state.goods.forEach(function (el, il) {
+                    if(item === el.product_id){
+                        serviceNum += Number(el.num);
+                        num++;
+                        if(!temp) {//删除产品时 重置安装服务的配送方式及空间
+                            if(!tempItem){
+                                tempItem = el;
+                            }
+                            if(el.canal === 'wuliu' || el.canal === 'kuaidi'){
+                                tempItem = el;
+                                temp = true;
+                            }
+                        }
+                    }
+                });
+            });
+            if(num > 0){
+                const sum = Number(serviceNum*item.price);
+                item.num = serviceNum;
+                item.sum = sum;
+                item.canal = tempItem.canal;
+                item.space = tempItem.space;
+                item.channel = tempItem.channel;
+                item.send_time = tempItem.send_time;
+                commit('UPDATEGOODDATA',{index:serviceIndex,goodData:item});//更新安装服务
+            }else{//删除安装服务
+                commit('DELETEGOOD',serviceIndex);
+            }
+        }
     }
 }

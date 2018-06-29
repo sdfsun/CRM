@@ -27,11 +27,26 @@
                             <h2 class="pro-title">{{item.product_name}}</h2>
                             <div class="item1">
                                 <p class="pro-price">￥{{item.price}}</p>
-                                <p class="pro-store" v-if="item.is_custom === 'false'">库存：{{item.store}}</p>
+                                <p class="pro-store" v-if="item.is_custom === 'false'">
+                                    <template v-if="item.canal === 'ziti'">
+                                        门店：{{item.org_store}}，线上：{{item.store}}
+                                    </template>
+                                    <template v-else>
+                                        库存：{{item.store}}
+                                    </template>
+                                </p>
                             </div>
                             <p class="pro-status">{{item.status}}</p>
                             <div class="item1">
-                                <el-input-number value="1" :min="1" :max="item.store" v-model="item.num"></el-input-number>
+                                <template v-if="item.canal === 'ziti'">
+                                    <el-input-number v-model="item.num" :min="1" :max='item.org_store' v-if="item.org_store>0"></el-input-number>
+                                    <el-input-number v-model="item.num" :min="1" :max='item.store' v-else-if="item.store>0"></el-input-number>
+                                    <el-input-number :value='0' :min="0" :max='0' v-else></el-input-number>
+                                </template>
+                                <template v-else>
+                                    <el-input-number v-model="item.num" :min="1" :max='item.store' v-if="item.store>0"></el-input-number>
+                                    <el-input-number :value='0' :min="0" :max='0'  v-else></el-input-number>
+                                </template>
                                 <el-button type="primary" class="addCart" @click="addCart(item)">加入订单</el-button>
                             </div>
                         </div>
@@ -204,7 +219,7 @@
             async addCart(item){//加入购物车
                 try {
                     if(item.is_spec === 'true'){//多规格
-                        this.choose_spec(item.goods_id,item.product_id);
+                        this.choose_spec(item.goods_id,item.product_id,item.num);
                         return false;
                     }
                     this.addGoods(Object.assign({},item));
@@ -219,7 +234,7 @@
                     });
                 }
             },
-            async choose_spec(goods_id,product_id){//多规格切换
+            async choose_spec(goods_id,product_id,num){//多规格切换
                 try {
                     if(!product_id){
                         return false;
@@ -238,14 +253,19 @@
                         return false;
                     }
                     if(res.success && res.success.get_goods){
+                        if(num){//
+                            this.tempProSpecNum = num;
+                        }
                         if(this.proSpecDatas && this.proSpecDatas.product_id){
                             this.tempProSpecNum = this.proSpecDatas.num;
                         }
                         this.proSpecDatas = res.success.get_goods;
                         if(this.proSpecDatas && this.proSpecDatas.canal === 'ziti'){
-                            this.tempProSpecNum = this.tempProSpecNum > this.proSpecDatas.org_store ? this.proSpecDatas.org_store:this.tempProSpecNum;
+                            this.tempProSpecNum = this.tempProSpecNum > this.proSpecDatas.org_store ? this.proSpecDatas.org_store:
+                                this.proSpecDatas.org_store > 0 && this.tempProSpecNum === 0 ? 1 : this.tempProSpecNum;
                         }else{
-                            this.tempProSpecNum = this.tempProSpecNum > this.proSpecDatas.store ? this.proSpecDatas.store:this.tempProSpecNum;
+                            this.tempProSpecNum = this.tempProSpecNum > this.proSpecDatas.store ? this.proSpecDatas.store:
+                                this.proSpecDatas.store > 0 && this.tempProSpecNum === 0 ? 1 : this.tempProSpecNum;
                         }
                         this.proSpecDatas.num = this.tempProSpecNum;
                         if(!this.proSpecDialogVisible){
@@ -381,6 +401,11 @@
     .search-results .pro-price{
         font-size: 16px;
         color: #1876EF;
+    }
+    .search-results .pro-store{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
     .search-results .pro-status{
         color: #919191;

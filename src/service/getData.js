@@ -182,3 +182,12 @@ export const prize_log = (formData) => axios.post('/crm-prize_log.html',formData
 
 //奖品发放
 export const prize_grant = (formData) => axios.post('/crm-prize_grant.html',formData);
+
+//获取安装服务
+export const service = (formData) => axios.post('/crm-service.html',formData);
+
+//推送订单
+export const push_order = (formData) => axios.post('/crm-push_order.html',formData);
+
+//历史订单
+export const order_detail = (formData) => axios.post('/crm-order_detail.html',formData);

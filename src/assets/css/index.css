@@ -148,6 +148,7 @@ body{
     left: 90px;
     max-height: 100%;
     border-radius: 10px;
+    width: 763px;
 }
 /*去除输入框校验成功的border样式*/
 .el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
@@ -173,14 +174,14 @@ body{
     color: #F25406;
 }
 /*客户列表底部切换栏*/
-.custom_container .el-tabs--border-card{
+.el-tabs--border-card{
     border:none;
 }
-.custom_container .el-tabs--border-card>.el-tabs__header{
+.el-tabs--border-card>.el-tabs__header{
     background: #f7f7f7;
     border-bottom: none;
 }
-.custom_container .el-tabs__item{
+.el-tabs__item{
     width: 140px;
     height: 40px;
     line-height: 40px;
@@ -192,7 +193,7 @@ body{
     transition: none !important;
     padding: 0 !important;
 }
-.custom_container .el_tabs_footer .el-tabs__item#tab-8{
+.el_tabs_footer .el-tabs__item#tab-8{
     width: 80px;
     height: 30px;
     line-height: 30px;
@@ -202,6 +203,51 @@ body{
     margin-left: 20px;
     position: absolute;
     right: 0;
+}
+.el-tabs__item::before{
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: -1;
+    background-color: #1876EF;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    transform: perspective(20px) rotateX(5deg);
+    transform-origin: left;
+}
+.el_tabs_footer .el-tabs__item#tab-8::before{
+    position: relative;
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
+    z-index: 3;
+    background: transparent;
+    color: #1876EF !important;
+    border:none;
+}
+.el_tabs_footer>.el-tabs__header .el-tabs__item#tab-8.is-active{
+    background-color:#1876EF;
+    color: #fff !important;
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active::before{
+    background-color: #fff;
+    box-shadow:0 0 20px rgba(0,0,0,.2);
+}
+.el-tabs--border-card > .el-tabs__content,.el-tabs__nav-wrap.is-scrollable{
+    padding: 0;
+    /*z-index: 1;*/
+}
+.el-tabs__nav-next, .el-tabs__nav-prev{
+    display: none;
+}
+.el-tabs__nav{
+    width: 100%;
+    padding-right: 80px;
+    position: relative;
+    min-width: 1060px;
+    box-sizing: border-box;
+}
+.el_tabs_footer > .el-tabs__content .el-tab-pane{
+    height: 260px;
 }
 .communicationAndBasicDialog .el-tabs__item,.communicationAndBasicDialog .el_tabs_footer .el-tabs__item:last-child{
     flex:inherit;
@@ -232,51 +278,6 @@ body{
 .custom_container.up .el-tabs__item#tab-8:last-child i:before{
     content: "\e63d";
 }
-.custom_container .el-tabs__item::before{
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    z-index: -1;
-    background-color: #1876EF;
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    transform: perspective(20px) rotateX(5deg);
-    transform-origin: left;
-}
-.custom_container .el_tabs_footer .el-tabs__item#tab-8::before{
-    position: relative;
-}
-.custom_container .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
-    z-index: 3;
-    background: transparent;
-    color: #1876EF !important;
-    border:none;
-}
-.custom_container .el_tabs_footer>.el-tabs__header .el-tabs__item#tab-8.is-active{
-    background-color:#1876EF;
-    color: #fff !important;
-}
-.custom_container .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active::before{
-    background-color: #fff;
-    box-shadow:0 0px 20px rgba(0,0,0,.2);
-}
-.custom_container .el-tabs--border-card > .el-tabs__content,.custom_container .el-tabs__nav-wrap.is-scrollable{
-    padding: 0;
-    /*z-index: 1;*/
-}
-.custom_container .el-tabs__nav-next, .custom_container .el-tabs__nav-prev{
-    display: none;
-}
-.custom_container .el-tabs__nav{
-    width: 100%;
-    padding-right: 80px;
-    position: relative;
-    min-width: 1060px;
-    box-sizing: border-box;
-}
-.custom_container .el_tabs_footer > .el-tabs__content .el-tab-pane{
-    height: 260px;
-}
 .custom_container.down .el_tabs_footer > .el-tabs__content .el-tab-pane{
     min-height: 0;
     height: 0;
@@ -304,11 +305,6 @@ body{
 }
 .custom_container .budget_item .el-input__suffix,.custom_container .acreage_item .el-input__suffix{
     right: 13px;
-}
-/*客户相关记录弹框*/
-.customRelationInfoDialog .el-dialog,.custom_container .basicInfoDialog .el-dialog{
-    width: 763px;
-    min-width: 763px;
 }
 .customRelationInfoDialog .form_item_style_width .el-form-item__content,
     .customRelationInfoDialog .el-date-editor.el-input, .customRelationInfoDialog .el-date-editor.el-input__inner,
@@ -507,7 +503,7 @@ body{
 }
 .report_container .el-table th.cell_all{
     text-align: center;
-    border-bottom-color: #000;
+    border-bottom-color: #e6e6df;
 }
 .report_container .el-table__fixed::before, .report_container .el-table__fixed-right::before{
     background: transparent;
@@ -519,30 +515,45 @@ body{
 .report_container .el-table__body tr.current-row > td {
     background-color: transparent;
 }
-.report_container .cell_0_label{
+.report_container .cell_0_label,.report_container .el-table__footer .cell_0_label{
     text-align: center !important;
-    background: #EBF1DE !important;
+    background: #F9C5B3 !important;
+}
+.report_container td.cell_0_label {
+    background: #FFE9E2 !important;
 }
 .report_container .cell_1{
-    background: #92D050 !important;
+    background: #FBDDA9 !important;
+}
+.report_container td.cell_1{
+    background: #FCF1DE !important;
 }
 .report_container .cell_2{
-    background: #00B0F0 !important;
+    background: #F6F4B1 !important;
+}
+.report_container td.cell_2{
+    background: #FAF9DC !important;
 }
 .report_container .cell_3{
-    background: #FABF8F !important;
+    background: #D4EEAA !important;
+}
+.report_container td.cell_3{
+    background: #EBF6D9 !important;
 }
 .report_container .cell_4{
-    background: #FFFF00 !important;
+    background: #C2E6F5 !important;
+}
+.report_container td.cell_4{
+    background: #E3F1F7 !important;
 }
 .report_container .el-date-editor.el-input,.report_container  .el-date-editor.el-input__inner{
     width: 100%;
 }
 .report_container th,.report_container td{
-    border-right: 1px solid #606266;
+    border-right: 1px solid #e6e6df;
 }
 .report_container td{
-    border-top: 1px solid #606266;
+    border-top: 1px solid #e6e6df;
 }
 
 /*菜单管理*/
@@ -717,7 +728,10 @@ body{
     width: 808px;
     min-height: 500px;
 }
-/*结算页获取历史订单弹框*/
+.checkoutUploadDialog.readOnlyDialog .el-upload--picture-card{
+    display: none;
+}
+    /*结算页获取历史订单弹框*/
 .historyOrdersDialog .el-dialog{
     width: 80%;
     min-width: 1100px;
@@ -767,8 +781,20 @@ body{
 .historyOrdersDialog .el-collapse-item__header.is-active .icon-zhankai:before {
     content: "\e63a";
 }
+
 /*结算页crm账户搜索下拉框*/
 .hidePopup{display: none;}
+
+/*结算页购买安装服务*/
+.serviceListsDialog .el-dialog{
+    width: 900px;
+    min-height: 620px;
+}
+
+/*结算页发票*/
+.invoiceDialog .el-dialog{
+    width: 800px;
+}
 
 /*门店销售报表*/
 .report_container .has-gutter td.cell_noSum_label .cell{
@@ -781,3 +807,74 @@ body{
     border-right: none;
 }
 
+/*历史订单页*/
+.historyOrders-container .el-tabs__item{
+    color: #1a1a1a !important;
+    width: 112px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+}
+.historyOrders-container .el-tabs__item::before{
+    background-color: #EAECEE;
+    -webkit-transform: perspective(20px) rotateX(10deg);
+    transform: perspective(20px) rotateX(10deg);
+}
+.historyOrders-container .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
+    background: #f9f9f9;
+    color: #1a1a1a !important;
+}
+.historyOrders-container .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active::before{
+    background-color: #F9F9F9;
+    -webkit-box-shadow: 0 0 6px rgba(19,19,19,0.2);
+    box-shadow:0 0 6px rgba(19,19,19,0.2);
+}
+.historyOrders-container .el-collapse-item__content{
+    padding-bottom: 0;
+}
+.historyOrders-container .el_tabs_footer > .el-tabs__content .el-tab-pane{
+    height: auto;
+}
+.historyOrders-container .el-dialog{
+    width: 720px;
+    min-width: 720px;
+    height: 697px;
+}
+/*历史订单物流进度*/
+.historyOrders-container .el-step__head.is-wait,.historyOrders-container .el-step__head.is-process{
+    color: #d2d2d2;
+    border-color: #d2d2d2;
+    font-weight: normal;
+}
+.historyOrders-container .el-step__description.is-wait,.historyOrders-container .el-step__description.is-process,
+.historyOrders-container .el-step__title.is-process,.historyOrders-container .el-step__title.is-wait{
+    color: #919191;
+    font-weight: normal;
+}
+.historyOrders-container .el-step__description.is-finish,.historyOrders-container .el-step__title.is-finish{
+    color: #F25406;
+}
+.historyOrders-container .el-step__head.is-finish{
+    color: #F25406;
+    border-color: #F25406;
+}
+.historyOrders-container .el-steps{
+    padding-left: 100px;
+}
+.historyOrders-container .el-step.is-vertical .el-step__title{
+    position: absolute;
+    left: -80px;
+    width: 70px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+}
+.historyOrders-container .el-step__description{
+    margin-top: 0;
+}
+.historyOrders-container .el-step.is-vertical{
+    min-height: 60px;
+}
+.historyOrders-container .el-step.is-vertical .el-step__main{
+    overflow: hidden;
+}

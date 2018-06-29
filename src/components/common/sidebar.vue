@@ -68,6 +68,7 @@
                         });
                         setStore("memberRoleId",{});
                         this.SETMEMBERROLEID({});
+                        this.RESETCHECKOUTDATA();//重置结算页数据
                         setTimeout(()=>{
                             this.$router.push('/');
                         },3000);

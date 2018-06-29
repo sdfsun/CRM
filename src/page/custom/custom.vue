@@ -310,6 +310,7 @@
             this.pageForm.HAS_DATA = true;
             this.pageForm.isOn = true;
             this.pageForm.elWraper.scrollTop = 0;
+            this.status = 'down';
             this.init();
             next();
         },
@@ -430,7 +431,6 @@
                             that.searchForm.s_times = '';
                         }
                     }
-                    console.log(this.searchForm);
                     this.init();
                 }catch (e) {
                     this.$message({

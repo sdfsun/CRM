@@ -187,7 +187,37 @@ export const prize_grant = (formData) => axios.post('/crm-prize_grant.html',form
 export const service = (formData) => axios.post('/crm-service.html',formData);
 
 //推送订单
-export const push_order = (formData) => axios.post('/crm-push_order.html',formData);
+export const push_order = (transaction_id) => axios.post('/crm-push_order.html',{
+    transaction_id
+});
 
 //历史订单
-export const order_detail = (formData) => axios.post('/crm-order_detail.html',formData);
+export const order_detail = (page,num,formData) => axios.post('/crm-order_detail-'+page+'-'+num+'.html',formData);
+
+//非CRM用户支付订单
+export const ajax_pay = (formData) => axios.post('/crm-ajax_pay.html',formData);
+
+//查询支付订单是否完成
+export const query_new = (formData) => axios.post('/crm-query_new.html',formData);
+
+//微信、支付宝支付重新调用（防止图片过期）
+export const pay_new = (payment_id,payment) => axios.post('/crm-pay_new.html',{
+    payment_id,
+    payment,
+    showLoad:'3'
+});
+
+//订单作废
+export const order_dead = (transaction_id) => axios.post('/crm-order_dead.html',{
+    transaction_id
+});
+
+//订单补款
+export const order_supplement = (transaction_id) => axios.post('/crm-order_supplement.html',{
+    transaction_id
+});
+
+//订单审批
+export const order_arrears = (transaction_id) => axios.post('/crm-order_arrears.html',{
+    transaction_id
+});

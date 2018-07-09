@@ -62,6 +62,16 @@
                 </template>
             </el-table-column>
             <el-table-column
+                label="审批权限"
+                min-width='80'>
+                <template slot-scope='scope'>
+                    <el-switch
+                        v-model="scope.row.is_arrears"
+                        active-color="#409EFF">
+                    </el-switch>
+                </template>
+            </el-table-column>
+            <el-table-column
                 label="操作"
                 min-width="120">
                 <template slot-scope="scope">
@@ -87,7 +97,7 @@
             </el-table-column>
         </el-table>
         <!-- 分配权限 -->
-        <el-dialog title="权限管理" :visible.sync="formDialogVisible" @close='resetFormDialog' :close-on-click-modal='false'>
+        <el-dialog title="权限管理" :visible.sync="formDialogVisible" :close-on-click-modal='false'>
             <el-tree
                 :data="menusData"
                 show-checkbox
@@ -95,7 +105,6 @@
                 node-key="menu_type"
                 ref="menuTree"
                 highlight-current
-                check-strictly
                 :props='defaultProps'
                 >
             </el-tree>
@@ -154,6 +163,7 @@
                     if(res.success && res.success.member_role){
                         res.success.member_role.forEach( function(el, index) {
                             el.disabled = el.disabled === 'true'?true:false;
+                            el.is_arrears = el.is_arrears === 'true'?true:false;
                             el.editFlag = false;
                         });
                         this.roleLists = res.success.member_role;
@@ -179,7 +189,7 @@
                 }
             },
             insertRole(){//新增记录
-                this.roleLists.push({editFlag:true,disabled:true});
+                this.roleLists.push({editFlag:true,disabled:true,is_arrears:false});
             },
             handleEdit(index){//设置单元格可编辑
                 this.roleLists[index].editFlag = true;
@@ -227,6 +237,7 @@
                         let resData = res.data;
                         resData.editFlag = false;
                         resData.disabled = res.data.disabled === 'true'?true:false;
+                        resData.is_arrears = res.data.is_arrears === 'true'?true:false;
                         this.$set(this.roleLists,index,resData);
                         if(resData && resData.disabled === 'true'){
                             this.updateMemberRoles(resData);
@@ -248,9 +259,6 @@
                    this.$refs['menuTree'].setCheckedKeys(checkedKeys); 
                 });
             },
-            resetFormDialog(){
-
-            },
             async saveMenuHandle(){
                 try {
                     if(this.submitBtnStatus){
@@ -258,7 +266,7 @@
                     }
                     const that = this;
                     let formData = {};
-                    formData.workground = this.$refs['menuTree'].getCheckedKeys();
+                    formData.workground = this.$refs['menuTree'].getCheckedKeys(true);
                     formData.member_role_id = this.roleLists[this.currentRoleIndex].member_role_id;
                     this.submitBtnStatus = true;
                     const res = await role_access(formData);

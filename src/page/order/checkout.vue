@@ -1,17 +1,19 @@
 <template>
     <div class="orderCheckout-container orderRelation-container">
         <!--结算页第一页-->
-        <div class="section-1" v-if="checkoutSwitch === 0">
+        <div class="section-1" v-if="checkoutSwitch == 0">
             <div class="search-form">
                 <el-row>
                     <el-col :span="12">
                         <el-autocomplete
                             :maxlength='11'
                             class="search-input"
+                            :disabled="cumtomFormData.information_id !== '' || searchCrmResults.length == 0 && member_id !== ''"
                             :trigger-on-focus="false"
                             :hide-loading="true"
                             :popper-class="searchCrmResults.length>0?'':'hidePopup'"
-                            v-model="searchPhone"
+                            v-model="cumtomFormData.searchPhone"
+                            :value="cumtomFormData.searchPhone"
                             :fetch-suggestions="searchCrmInfomation"
                             placeholder="请输入用户联系方式"
                             @keyup.13.native="searchCrmInfomation"
@@ -19,15 +21,16 @@
                             <template slot-scope="{ item }">
                                 <div class="name">{{ item.name }}({{item.status_name}})</div>
                             </template>
-                            <el-button slot="append" @click="searchCrmInfomation">搜索</el-button>
+                            <el-button slot="append" @click="logoutCustom" v-if="cumtomFormData.information_id !== '' || (searchCrmResults.length == 0 && member_id !== '')">退出</el-button>
+                            <el-button slot="append" @click="searchCrmInfomation" v-else>搜索</el-button>
                         </el-autocomplete>
                     </el-col>
                     <el-col :span="12" style="text-align: right;">
-                        <el-button type="primary" class="getHistoryOrders" @click="getHistoryOrders">历史订单</el-button>
+                        <el-button type="primary" class="getHistoryOrders" @click="getHistoryOrders('mounted')">历史订单</el-button>
+                        <el-button type="primary" class="getHistoryOrders" @click="resetOrderHandle">重新下单</el-button>
                     </el-col>
                 </el-row>
-                <p class="tips" v-if="cumtomFormData.information_id">该号码为CRM客户</p>
-                <p class="tips" v-else>*请先输入客户联系方式判断是否为CRM用户，再行下单</p>
+                <p class="tips">{{tips}}</p>
             </div>
             <div class="custom-info">
                 <el-row :gutter="20" v-if="cumtomFormData.information_id">
@@ -85,13 +88,13 @@
                     <el-col :span="6">
                         <label class="txt-label">仓库完成时间：</label>
                         <el-date-picker
-                                v-model="cumtomFormData.sendProDate"
-                                type="date"
-                                placeholder="交期时间"
-                                value-format='yyyy-MM-dd'
-                                clearable
-                                style="flex: 1;"
-                                @change="sendProDateChangeHandle">
+                            v-model="cumtomFormData.sendProDate"
+                            type="date"
+                            placeholder="交期时间"
+                            value-format='yyyy-MM-dd'
+                            clearable
+                            style="flex: 1;"
+                            @change="sendProDateChangeHandle">
                         </el-date-picker>
                     </el-col>
                     <el-col :span="6">
@@ -115,9 +118,15 @@
                         <label class="txt-label">订单备注：</label>
                         <el-input  placeholder="请输入订单备注" clearable class="formItem" v-model="cumtomFormData.orderRemarks"></el-input>
                     </el-col>
-                    <el-col :span="13">
+                    <el-col :span="6">
                         <label class="txt-label">客户特殊要求：</label>
                         <el-input  placeholder="请输入客户特殊要求" clearable class="formItem" v-model="cumtomFormData.custReRemark"></el-input>
+                    </el-col>
+                    <el-col :span="7">
+                        <label class="txt-label">发票信息：</label>
+                        <el-button type="primary" class="biaotoufujian" @click="setInvoiceHandle(true)">
+                            设置
+                        </el-button>
                     </el-col>
                 </el-row>
             </div>
@@ -129,60 +138,64 @@
                     class='checkoutTableInfo'
                     header-row-class-name='header_row_style'>
                 <el-table-column
-                        type="index"
-                        :index="1"
-                        label='序号'
-                        width='80'>
+                    type="index"
+                    :index="1"
+                    label='序号'
+                    width='80'>
                 </el-table-column>
                 <el-table-column
-                        prop="space"
-                        label="空间"
-                        min-width='120px'
-                        class-name="alignCenterColumn">
+                    prop="space"
+                    label="空间"
+                    min-width='120px'
+                    class-name="alignCenterColumn"
+                    :show-overflow-tooltip='true'>
                     <template slot-scope='scope'>
                         <el-input  v-model="scope.row.space"  @change="proAtributeChangeHandle(scope.row)"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="bn"
-                        label="产品型号"
-                        min-width='110px'>
+                    prop="bn"
+                    label="产品型号"
+                    min-width='110px'
+                    :show-overflow-tooltip='true'>
                 </el-table-column>
                 <el-table-column
-                        prop="product_name"
-                        label="产品名称"
-                        min-width='180px'
-                        class-name="alignCenterColumn">
+                    prop="product_name"
+                    label="产品名称"
+                    min-width='180px'
+                    class-name="alignCenterColumn"
+                    :show-overflow-tooltip='true'>
                     <template slot-scope='scope'>
-                        <el-input  v-model="scope.row.product_name"  v-if="scope.row.is_stand === 1"></el-input>
+                        <el-input  v-model="scope.row.product_name"  v-if="scope.row.is_stand == 1"></el-input>
                         <span v-else>{{scope.row.product_name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="is_custom"
-                        label="是否定制"
-                        min-width='80px'>
+                    prop="is_custom"
+                    label="是否定制"
+                    min-width='80px'>
                     <template slot-scope="scope">
-                        <el-checkbox  v-if="scope.row.install_flag === 'true'" disabled></el-checkbox>
+                        <el-checkbox  v-if="scope.row.install_flag == 'true'" disabled></el-checkbox>
                         <template v-else>
-                            <el-checkbox checked v-if="scope.row.is_custom && scope.row.is_stand === 1 || scope.row.install_flag === 'true'" disabled></el-checkbox>
+                            <el-checkbox checked v-if="scope.row.is_custom == 'true' && scope.row.is_stand == 1 || scope.row.install_flag == 'true'" disabled></el-checkbox>
                             <el-checkbox v-model="scope.row.is_standSelected" @change="updateGoodDataHandle(scope.$index,scope.row)" v-else></el-checkbox>
                         </template>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop='orderDRemark'
-                        label="定制需求"
-                        min-width='140px'
-                        class-name="alignCenterColumn">
+                    prop='orderDRemark'
+                    label="定制需求"
+                    min-width='140px'
+                    class-name="alignCenterColumn"
+                    :show-overflow-tooltip='true'>
                     <template slot-scope='scope'>
-                        <el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag === 'false'"></el-input>
+                        <el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop='send_time'
-                        label="交期"
-                        min-width='160px'>
+                    prop='send_time'
+                    label="交期"
+                    min-width='160px'>
                     <template slot-scope="scope">
                         <el-date-picker
                             v-model="scope.row.send_time"
@@ -194,70 +207,70 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop='canal'
-                        label="配送方式"
-                        min-width='110px'>
+                    prop='canal'
+                    label="配送方式"
+                    min-width='110px'>
                     <template slot-scope="scope">
-                        <span v-if="scope.row.install_flag === 'true'">{{scope.row.canal === "ziti" ? "自提" : scope.row.canal === "wuliu" ? "物流" : "快递"}}</span>
+                        <span v-if="scope.row.install_flag == 'true'">{{scope.row.canal == "ziti" ? "自提" : scope.row.canal == "wuliu" ? "物流" : "快递"}}</span>
                         <template v-else>
-                            <el-select v-model="scope.row.canal" placeholder="请选择" v-if="scope.row.channel === 'store'" @change="canalChangeHandle(scope.$index,scope.row)">
+                            <el-select v-model="scope.row.canal" placeholder="请选择" v-if="scope.row.channel == 'store'" @change="canalChangeHandle(scope.$index,scope.row)">
                                 <el-option key="ziti" label="自提" value="ziti"></el-option>
-                                <el-option :key="method" :label="method === 'kuaidi'?'快递':'物流'" :value="method"></el-option>
+                                <el-option :key="method" :label="method == 'kuaidi'?'快递':'物流'" :value="method"></el-option>
                             </el-select>
                             <el-select v-model="scope.row.canal" placeholder="请选择" v-else>
-                                <el-option :key="scope.row.canal" :label="scope.row.canal === 'kuaidi'?'快递':'物流'" :value="scope.row.canal"></el-option>
+                                <el-option :key="scope.row.canal" :label="scope.row.canal == 'kuaidi'?'快递':'物流'" :value="scope.row.canal"></el-option>
                             </el-select>
                         </template>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop='fileStr'
-                        label="附件"
-                        min-width='100px'>
+                    prop='fileStr'
+                    label="附件"
+                    min-width='100px'>
                     <template slot-scope="scope">
-                        <template v-if="scope.row.install_flag === 'false'">
-                            <span style="color: #1876EF;cursor: pointer;" @click="uploadFileHandle(scope.$index)" v-if="scope.row.fileStr === ''">上传附件</span>
+                        <template v-if="scope.row.install_flag == 'false'">
+                            <span style="color: #1876EF;cursor: pointer;" @click="uploadFileHandle(scope.$index)" v-if="scope.row.fileStr == ''">上传附件</span>
                             <span style="color: #1876EF;cursor: pointer;" @click="uploadFileHandle(scope.$index)" v-if="scope.row.fileStr !== ''"><i class="crmiconfont icon-ic_folder_close" style="margin-right: 7px;"></i>添加</span>
                         </template>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop='price'
-                        label="单价"
-                        min-width='130px'
-                        class-name="alignCenterColumn">
+                    prop='price'
+                    label="单价"
+                    min-width='130px'
+                    class-name="alignCenterColumn">
                     <template slot-scope='scope'>
-                        <el-input v-model="scope.row.price" @change="priceChangeHandle(scope.$index,scope.row)" clearable v-if="scope.row.is_stand === 1"></el-input>
+                        <el-input v-model="scope.row.price" @change="priceChangeHandle(scope.$index,scope.row)" clearable v-if="scope.row.is_stand == 1"></el-input>
                         <span v-else>{{scope.row.price}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop='num'
-                        label="数量"
-                        min-width='100px'
-                        class-name="inputNumColumn">
+                    prop='num'
+                    label="数量"
+                    min-width='100px'
+                    class-name="inputNumColumn">
                     <template slot-scope='scope'>
-                        <span v-if="scope.row.install_flag === 'true'">{{scope.row.num}}</span>
+                        <span v-if="scope.row.install_flag == 'true'">{{scope.row.num}}</span>
                         <template v-else>
-                            <el-input-number v-model="scope.row.num" :min="1" :max="scope.row.org_store" v-if="scope.row.canal === 'ziti'" @change="numChangeHandle(scope.$index,scope.row)"></el-input-number>
+                            <el-input-number v-model="scope.row.num" :min="1" :max="scope.row.org_store" v-if="scope.row.canal == 'ziti'" @change="numChangeHandle(scope.$index,scope.row)"></el-input-number>
                             <el-input-number v-model="scope.row.num" :min="1" :max="scope.row.store" @change="numChangeHandle(scope.$index,scope.row)" v-else></el-input-number>
                         </template>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop='sum'
-                        label="小计"
-                        min-width='100px'>
+                    prop='sum'
+                    label="小计"
+                    min-width='100px'>
                     <template slot-scope="scope">
                         <span>￥{{scope.row.sum}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        label="编辑"
-                        min-width='100px'>
+                    label="编辑"
+                    min-width='100px'>
                     <template slot-scope="scope">
                         <a href="javascript:void(0);" class="operation-btn" @click="deleteGoodHandle(scope.$index,scope.row)"><i class="crmiconfont icon-shanchu"></i></a>
-                        <a href="javascript:void(0);" v-if='scope.row.install_flag === "false"' class="operation-btn" :class="{disabled:scope.row.gifs_flag}" @click="markGiftHandle(scope.$index,scope.row,scope.row.gifs_flag?false:true)"><i class="crmiconfont icon-zengpin" style="font-size: 18px;"></i></a>
+                        <a href="javascript:void(0);" v-if='scope.row.install_flag == "false"' class="operation-btn" :class="{disabled:scope.row.gifs_flag == 'true'}" @click="markGiftHandle(scope.$index,scope.row)"><i class="crmiconfont icon-zengpin" style="font-size: 18px;"></i></a>
                     </template>
                 </el-table-column>
             </el-table>
@@ -277,7 +290,7 @@
                     </div>
                 </div>
                 <div class="t-right">
-                    <el-button type="primary" @click="buyService" class='buyService_btn' v-show="buyInstallFlag">购买安装服务</el-button>
+                    <el-button type="primary" @click="buyService" class='buyService_btn' v-show="buyInstallFlag == 'true'">购买安装服务</el-button>
                     <el-button type="primary" @click="submitOrder" class='submit_btn'>保存</el-button>
                 </div>
             </div>
@@ -309,45 +322,52 @@
                         <el-table-column
                             prop="saleCode"
                             label="产品型号"
-                            min-width='80px'>
+                            min-width='100px'
+                            :show-overflow-tooltip='true'>
                         </el-table-column>
                         <el-table-column
                             prop="materialDesc"
                             label="产品名称"
-                            min-width='160px'>
+                            min-width='160px'
+                            :show-overflow-tooltip='true'>
                         </el-table-column>
                         <el-table-column
                             prop="is_custom"
                             label="是否定制"
                             min-width='80px'>
                             <template slot-scope="scope">
-                                <span>{{scope.row.noStandargPro === 1 ? "是" : "否"}}</span>
+                                <span style="color: #F25406;" v-if="scope.row.noStandargPro == 1">是</span>
+                                <span v-else>否</span>
                             </template>
                         </el-table-column>
                         <el-table-column
                             prop='sendProDate'
                             label="交期"
-                            min-width='160px'>
+                            min-width='110px'>
                         </el-table-column>
                         <el-table-column
                             prop='price'
                             label="商品单价"
-                            min-width='130px'>
+                            min-width='100px'>
                         </el-table-column>
                         <el-table-column
                             prop='orderCount'
                             label="数量"
-                            min-width='100px'>
+                            min-width='90px'>
                         </el-table-column>
                         <el-table-column
-                            prop='orderprice'
-                            label="商品均摊价"
-                            min-width='130px'>
+                            prop='orderDRemark'
+                            label="定制需求"
+                            min-width='140px'
+                            :show-overflow-tooltip='true'>
                         </el-table-column>
                         <el-table-column
-                            prop='sapPrice'
-                            label="商品入SAP单价"
-                            min-width='130px'>
+                            prop='fileStr'
+                            label="附件"
+                            min-width='80px'>
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.fileStr" @click="uploadFileHandle('lookFiles',scope.$index)" style="cursor:pointer;color: #1876EF;">查看</span>
+                            </template>
                         </el-table-column>
                     </el-table>
                 </div>
@@ -360,11 +380,10 @@
                     <p class="txt">表头附件：
                         <span class="t2" @click="uploadFileHandle('lookFiles')" v-if="checkoutDetailInfo.fileUrls">查看附件</span>
                     </p>
-                    <p class="txt">是否有电梯：<span class="t1">{{checkoutDetailInfo.liftSel==="true"?"是":"否"}}</span></p>
-                    <p class="txt">是否需要发票：<span class="t2" @click="setInvoiceHandle(true)">设置</span></p>
+                    <p class="txt">是否有电梯：<span class="t1">{{checkoutDetailInfo.liftSel=="true"?"是":"否"}}</span></p>
                     <ul class="invoice-infos" v-if="invoice.tax_company">
                         <li>
-                            <p class="txt">发票类型：<span class="t1">{{invoice.tax_type === 'personal' ? '个人' : '公司'}}</span></p>
+                            <p class="txt">发票类型：<span class="t1">{{invoice.tax_type == 'personal' ? '个人' : '公司'}}</span></p>
                         </li>
                         <li>
                             <p class="txt">发票抬头：<span class="t1">{{invoice.tax_company}}</span></p>
@@ -372,11 +391,14 @@
                         <li>
                             <p class="txt">发票内容：<span class="t1">{{invoice.tax_content}}</span></p>
                         </li>
-                        <li v-if="invoice.tax_type === 'company'">
+                        <li v-if="invoice.tax_type == 'company'">
                             <p class="txt">纳税人识别号：<span class="t1">{{invoice.tax_no}}</span></p>
                         </li>
                         <li>
-                            <p class="txt">是否开增值税发票：<span class="t1">{{invoice.vat_invoice === 'true' ? '是' : '否'}}</span></p>
+                            <p class="txt">电子发票文件：<span class="t2" v-if="invoice.invoice_file" @click="uploadFileHandle('lookFiles','invoice')">查看</span></p>
+                        </li>
+                        <li>
+                            <p class="txt">是否开增值税发票：<span class="t1">{{invoice.vat_invoice == 'true' ? '是' : '否'}}</span></p>
                         </li>
                         <li>
                             <p class="txt">发票备注：<span class="t1">{{invoice.invoice_mark}}</span></p>
@@ -388,7 +410,7 @@
                         收款折扣金额：<span class="t3">￥{{checkoutDetailInfo.discount}}</span>
                         订单支付金额：<span class="t3">￥{{checkoutDetailInfo.final_amount}}</span>
                         入SAP总优惠金额：<span class="t3">￥{{checkoutDetailInfo.disCountPay}}</span>
-                        入SAP的最终价格：<span class="t3">￥{{checkoutDetailInfo.contractPay}}</span>
+                        入SAP的最终货款：<span class="t3">￥{{checkoutDetailInfo.contractPay}}</span>
                     </p>
                 </div>
             </div>
@@ -409,7 +431,9 @@
                 </div>
                 <div class="t-right">
                     <el-button type="primary" @click="goBackCheckoutHandle" class='submit_btn'>返回</el-button>
-                    <el-button type="primary" @click="pushOrderHandle" class='submit_btn'>推送订单</el-button>
+                    <el-button type="primary" @click="pushOrderHandle" class='submit_btn' :disabled="checkoutDetailInfo.uFinPay > 0 ? true : false" v-if="checkoutDetailInfo.information_id">推送订单</el-button>
+                    <el-button type="primary" @click="payOrderHandle('3')" class='submit_btn' v-else>支付</el-button>
+                    <el-button type="primary" @click="resetOrderHandle" class='submit_btn' v-if="checkoutDetailInfo.uFinPay > 0">重新下单</el-button>
                 </div>
             </div>
         </div>
@@ -444,33 +468,42 @@
             </div>
         </el-dialog>
         <!--历史订单-->
-        <el-dialog title="历史订单" :visible.sync="historyOrdersDialogVisible" class='historyOrdersDialog' :close-on-click-modal='false'>
-            <el-collapse accordion @change="historyOrdersChangeHandle">
-                <el-collapse-item name="1">
+        <el-dialog title="历史订单" :visible.sync="historyOrdersDialogVisible" class='historyOrdersDialog' :close-on-click-modal='false' @close="resetHistoryDialog">
+            <div class="header-left header-label">
+                <span class="txt txt-0">订单号</span>
+                <span class="txt txt-1">接待人</span>
+                <span class="txt txt-2">创建时间</span>
+                <span class="txt txt-1">收货人</span>
+                <span class="txt txt-3">收货人手机</span>
+                <span class="txt txt-4">收货人地区</span>
+                <span class="txt txt-5">可用余额</span>
+                <span class="txt txt-5">已支付</span>
+                <span class="txt txt-5">未支付</span>
+            </div>
+            <el-collapse accordion v-model="historyActiveIndex" @change="historyOrdersChangeHandle">
+                <el-collapse-item :name="index" v-for="(item,index) in historyOrders" :key="index">
                     <template slot="title">
                         <div class="header-left">
                             <i class="crmiconfont icon--xuankuang choose-color" style="margin-right: 15px;"></i>
-                            <span class="txt">订单编号：D10011295</span>
-                            <span class="txt">接待人</span>
-                            <span class="txt">2018-06-02 14:52</span>
-                            <span class="txt">客户名</span>
-                            <span class="txt">123 1212 1234</span>
-                            <span class="txt">福建省/泉州市/惠安县</span>
-                            <span class="txt">当前账户余额</span>
-                            <span class="txt">已支付</span>
-                            <span class="txt">未支付</span>
+                            <span class="txt txt-0">{{item.orderid}}</span>
+                            <span class="txt txt-1">{{item.saleName}}</span>
+                            <span class="txt txt-2">{{item.createtime}}</span>
+                            <span class="txt txt-1">{{item.cumtomFormData.acceptOrdMan}}</span>
+                            <span class="txt txt-3">{{item.cumtomFormData.acceptOrdPhone}}</span>
+                            <span class="txt txt-4">{{item.cumtomFormData.area}}</span>
+                            <span class="txt txt-5">{{item.cumtomFormData.sum_money}}</span>
+                            <span class="txt txt-5">{{item.finPay}}</span>
+                            <span class="txt txt-5" style="color: #F25406;">{{item.uFinPay}}</span>
                         </div>
                         <div class="header-right">
-                            <!--<span class="txt money-item">实付金额：￥<strong>1200.00</strong></span>-->
                             <span class="txt choose-color" style="margin-right: 0;">展开<i class="crmiconfont icon-zhankai" style="font-size: 12px;margin-left: 5px;"></i></span>
                         </div>
                     </template>
                     <el-table
-                        ref='checkoutDetailInfo'
-                        :data="checkoutDetailInfo.transaction_items"
+                        :data="item.goods"
                         stripe
                         highlight-current-row
-                        class='checkoutTableInfo'
+                        class='historyOrdersTableInfo'
                         header-row-class-name='header_row_style'>
                         <el-table-column
                             type="index"
@@ -481,27 +514,34 @@
                         <el-table-column
                             prop="space"
                             label="空间"
-                            min-width='80px'>
+                            min-width='80px'
+                            :show-overflow-tooltip='true'>
                         </el-table-column>
                         <el-table-column
                             prop="bn"
                             label="产品型号"
-                            min-width='80px'>
+                            min-width='80px'
+                            :show-overflow-tooltip='true'>
                         </el-table-column>
                         <el-table-column
                             prop="product_name"
                             label="产品名称"
-                            min-width='120px'>
+                            min-width='120px'
+                            :show-overflow-tooltip='true'>
                         </el-table-column>
                         <el-table-column
                             prop="is_custom"
                             label="是否定制"
                             min-width='80px'>
+                            <template slot-scope="scope">
+                                <span>{{scope.row.is_custom == 'true' ? '是' : '否'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column
                             prop='orderDRemark'
                             label="定制需求"
-                            min-width='130px'>
+                            min-width='130px'
+                            :show-overflow-tooltip='true'>
                         </el-table-column>
                         <el-table-column
                             prop='send_time'
@@ -512,6 +552,9 @@
                             prop='canal'
                             label="配送方式"
                             min-width='80px'>
+                            <template slot-scope="scope">
+                                <span>{{scope.row.canal == 'wuliu' ? '物流' : scope.row.canal == 'kuaidi' ? '快递' : '自提'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column
                             prop='price'
@@ -532,9 +575,9 @@
                 </el-collapse-item>
             </el-collapse>
             <div class="history-btns">
-                <el-button type="primary" @click="extractOrder" class='submit_btn' v-if="!extractOrderFlag">提取订单</el-button>
+                <el-button type="primary" @click="extractOrder" class='submit_btn' v-if="!extractOrderFlag" :disabled="historyOrders[historyActiveIndex] ? historyOrders[historyActiveIndex].status !== 'active' ? true : false : false">提取订单</el-button>
                 <template v-else>
-                    <el-button type="primary"  class='submit_btn'>确定</el-button>
+                    <el-button type="primary"  class='submit_btn' @click="extractOrder('confirm')">确定</el-button>
                     <p class="extractOrderTips">是否确认提取历史订单替换当前订单？</p>
                 </template>
             </div>
@@ -577,7 +620,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="纳税人识别号：" prop='tax_no' v-if="invoiceForm.tax_type === 'company'">
+                <el-form-item label="纳税人识别号：" prop='tax_no' v-if="invoiceForm.tax_type == 'company'">
                     <el-input v-model="invoiceForm.tax_no" placeholder='请输入纳税人识别号' clearable></el-input>
                 </el-form-item>
                 <el-form-item label="电子发票文件：">
@@ -597,13 +640,36 @@
                 <el-button type="primary" class='submit_btn' @click="setInvoiceHandle(false)">保存</el-button>
             </div>
         </el-dialog>
+        <!--支付弹框-->
+        <el-dialog title="" :visible.sync="payOrderDialogVisible"  class='invoiceDialog payOrderDialog' :close-on-click-modal='false' :before-close="closePayOrderDialog">
+            <p class="money">该订单需支付：<span class="t1">￥</span><span class="t2">{{checkoutDetailInfo.final_amount}}</span></p>
+            <template v-if='!payOrderForm.showQrcodeVisible'>
+                <ul>
+                    <li v-for="(item,index) in payMethod" :class="[payOrderForm.curMethod==index?'active':'','method'+index]"  @click="choosePayMethod(item.value,index)">
+                        <i class="crmiconfont" :class="item.icon"></i>
+                        {{item.label}}
+                        <i class="iconfont el-icon-check"></i>
+                    </li>
+                </ul>
+                <div class="payOrder-btns">
+                    <el-button type="primary" class='submit_btn' @click="orderDeadHandle">订单作废</el-button>
+                    <el-button type="primary" class='submit_btn' @click="payOrderHandle('1')">确定</el-button>
+                </div>
+            </template>
+            <!-- 二维码 -->
+            <div class="qrCode_container" v-else>
+                <p class="method_name">{{payOrderForm.title}}</p>
+                <iframe :src="payOrderForm.url" :class="{iframeEl:payOrderForm.payment=='alif2fpay'}"></iframe>
+                <p class="payOrderTips">{{payOrderForm.message}}</p>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
     import { region } from '@/service/region';
     import {mapState,mapActions,mapMutations} from 'vuex';
     import {getUploadIcon} from '@/utils/index';
-    import {post_login,pre_order,service,push_order,order_detail} from '@/service/getData';
+    import {post_login,pre_order,service,push_order,order_detail,ajax_pay,query_new,pay_new,order_dead} from '@/service/getData';
     const priceRegx = /(^[1-9]\d*(\.\d*)?$)|(^0(\.\d*)?$)/;//校验金额
     const phoneRegx = /^1[3456789]\d{9}$/;//校验手机
 
@@ -611,6 +677,7 @@
         name:'checkout',
         data(){
             return{
+                tips:'*请先输入客户联系方式判断是否为CRM用户，再行下单',
                 areaOptions:region,
                 uploadDialogVisible:false,
                 uploadReadonlyFlag:false,
@@ -620,7 +687,6 @@
                 dialogVisible:false,
                 goodIndex:null,//购物车产品索引 用于上传图片
                 discountTemp:this.$store.state.order.discount,
-                searchPhone:"",//搜索手机号
                 searchCrmResults:[],//存储多个crm账户
                 historyOrdersDialogVisible:false,//历史订单弹框是否可见
                 historyActiveIndex:'',//历史订单当前选中的订单索引
@@ -659,7 +725,51 @@
                         label:'公司发票'
                     }
                 ],
-                searchCb:null
+                searchCb:null,
+                payMethod:[
+                    {
+                        icon:'icon-weixin_',
+                        label:'微信支付',
+                        value:'wxf2fpay'
+                    },
+                    {
+                        icon:'icon-zhifubao',
+                        label:'支付宝支付',
+                        value:'alif2fpay'
+                    },
+                    {
+                        icon:'icon-posjizhifu',
+                        label:'POS机支付',
+                        value:'pos'
+                    },
+                    {
+                        icon:'icon-xianjinzhifu',
+                        label:'现金支付',
+                        value:'cash'
+                    },
+                    {
+                        icon:'icon-duigongzhuanzhang',
+                        label:'对公转账',
+                        value:'transfer'
+                    }
+                ],
+                payOrderDialogVisible:false,//支付弹框
+                qrcodeTime:null,//支付定时器
+                payOrderForm:{
+                    showQrcodeVisible:false,//是否显示二维码
+                    payment:'wxf2fpay',//当前选中的支付方式
+                    curMethod:0,//当前选中的支付方式索引
+                    title:'',
+                    message:''
+                },
+                historyOrders:[],//历史订单
+                pageForm:{
+                    page:1,
+                    range:80,
+                    HAS_DATA:true,
+                    isOn:true,
+                    elWraper:null
+                }
             }
         },
         computed:{
@@ -673,7 +783,8 @@
                 checkoutSwitch:state => state.order.checkoutSwitch,
                 checkoutDetailInfo:state => state.order.checkoutDetailInfo,
                 buyInstallFlag:state => state.order.buyInstallFlag,
-                invoice:state => state.order.invoice
+                invoice:state => state.order.invoice,
+                member_id:state => state.order.member_id
             }),
             cumtomFormData:{
                 get:function () {
@@ -695,7 +806,8 @@
                 'UPDATEDISCOUNT',
                 'UPDATECHECKOUTSWITCH',
                 'RESETCHECKOUTDATA',
-                'UPDATEINVOICEDATA'
+                'UPDATEINVOICEDATA',
+                'EXTRACTORDERSETDATA'
             ]),
             ...mapActions([
                 'updateGood',
@@ -711,37 +823,43 @@
                         this.searchCb = cb;
                     }
                     if(typeof queryString !== 'string'){//回车事件 或 点击事件
-                        if(!this.searchPhone){
+                        if(!this.cumtomFormData.searchPhone){
                             return false;
                         }
-                        if(!phoneRegx.test(this.searchPhone)){
+                        if(!phoneRegx.test(this.cumtomFormData.searchPhone)){
                             this.$message({
                                 message: '请输入正确的手机格式',
                                 type: 'error'
                             });
                             return false;
                         }
-                        const res = await post_login(this.searchPhone);
+                        const res = await post_login(this.cumtomFormData.searchPhone);
                         if(res.error){
                             this.$message({
                                 message: res.error,
                                 type: 'error'
                             });
-                            if(res.nologin === 1){//未登录
+                            if(res.nologin == 1){//未登录
                                 setTimeout(()=>{
                                     that.$router.push('/');
                                 },3000);
                             }
                             return false;
                         }
-                        if(res.success.information && res.success.information.length === 1){//一个crm账户
+                        if(res.success.information && res.success.information.length == 1){//一个账户
                             //赋值
                             this.UPDATECUSTOMINFO(res.success.information[0]);
+                            if(res.success.information[0] && res.success.information[0].id){//CRM用户
+                                this.tips = '该号码为CRM用户';
+                            }else{
+                                this.tips = '该号码为商城用户';
+                            }
                             this.areaChangeHandle();
                         }else if(res.success.information.length >1){//多个crm账户
                             this.searchCrmResults = res.success.information;
                             this.searchCb(this.searchCrmResults);
                         }else{
+                            this.tips = '该号码既不是CRM用户，也不是商城用户';
                             this.UPDATECUSTOMINFO({});
                             this.areaChangeHandle();
                         }
@@ -754,9 +872,10 @@
                     });
                 }
             },
-            handleSelect(item){//
+            handleSelect(item){//选择CRM账户
                 try {
                     this.UPDATECUSTOMINFO(item);
+                    this.tips = '该号码为CRM用户';
                     this.searchCrmResults = [];
                     this.areaChangeHandle();
                 }catch(e){
@@ -771,7 +890,7 @@
                     if(item.install_pid){//查看是否有购买安装服务 并修改安装服务的配送方式
                         const goods = this.cartGoods;
                         const serviceIndex = goods.findIndex(function (el) {
-                            return item.install_pid === el.product_id;
+                            return item.install_pid == el.product_id;
                         });
                         if(serviceIndex !== -1){
                             let sItem = goods[serviceIndex];
@@ -779,12 +898,12 @@
                             let tempItem,temp=false;
                             relaPros.forEach(function (e1, index) {
                                 goods.forEach(function (e2, il) {
-                                    if (e1 === e2.product_id) {
+                                    if (e1 == e2.product_id) {
                                         if(!temp) {//删除产品时 重置安装服务的配送方式及空间
                                             if(!tempItem){
                                                 tempItem = e2;
                                             }
-                                            if(e2.canal === 'wuliu' || e2.canal === 'kuaidi'){
+                                            if(e2.canal == 'wuliu' || e2.canal == 'kuaidi'){
                                                 tempItem = e2;
                                                 temp = true;
                                             }
@@ -792,7 +911,7 @@
                                     }
                                 });
                             });
-                            if(item.product_id === tempItem.product_id){//如果当前修改的产品是控制安装服务的产品 则更新对应的安装服务
+                            if(item.product_id == tempItem.product_id){//如果当前修改的产品是控制安装服务的产品 则更新对应的安装服务
                                 sItem.space = tempItem.space;
                                 sItem.send_time = tempItem.send_time;
                                 this.UPDATEGOODDATA({index:serviceIndex,goodData:sItem});//更新安装服务
@@ -806,9 +925,12 @@
                     });
                 }
             },
-            updateGoodDataHandle(index,item){//是否定制
+            updateGoodDataHandle(index,item){//是否定制 如果自提产品，选择了定制，则默认修改配送方式为快递或物流
                 try {
                     item.is_stand = item.is_standSelected ? 1 : 0;
+                    if(item.is_stand == 1 && item.canal == 'ziti'){
+                        item.canal = this.method;
+                    }
                     this.UPDATEGOODDATA({index:index,goodData:item});
                 }catch (e) {
                     this.$message({
@@ -832,7 +954,7 @@
                     const that = this;
                     //配送方式改变 同时修改产品数量
                     let num = item.num;
-                    if(item.canal === 'ziti'){
+                    if(item.canal == 'ziti'){
                         num = num > item.org_store ? item.org_store : num;
                     }else{
                         num = num > item.store ? item.store : num;
@@ -878,14 +1000,14 @@
                     type: 'warning'
                 }).then(() => {
                     that.DELETEGOOD(index);
-                    if(item.install_flag === 'false' && item.install_pid){//产品删除时 需要判断是否有对应的安装服务 并修改安装服务的数量
+                    if(item.install_flag == 'false' && item.install_pid){//产品删除时 需要判断是否有对应的安装服务 并修改安装服务的数量
                         that.updateServiceGood({proItem:item});//更改安装服务数量或者删除安装服务
                     }
                     that.setOrderMethod();
                     that.setOrderTotalMoney();
                     that.setBuyInstallFlag();
                 }).catch((e) => {
-                    if(e === 'cancel'){
+                    if(e == 'cancel'){
                         return false;
                     }
                     this.$message({
@@ -894,10 +1016,10 @@
                     });
                 });
             },
-            markGiftHandle(index,item,val){//标记赠品
+            markGiftHandle(index,item){//标记赠品
                 try {
-                    item.gifs_flag = val;
-                    if(val){//标记赠品
+                    item.gifs_flag = item.gifs_flag == 'true' ? 'false' : 'true';
+                    if(item.gifs_flag == 'true'){//标记赠品
                         item.price = 0;
                     }else{//取消赠品
                         item.price = item.vprice;
@@ -914,12 +1036,12 @@
             },
             handleRemove(file, fileList) {//删除图片
                 try {
-                    if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                    if(file.response && file.response.success && file.response.success.length>0 || file.status == 'success'){
                         var tempImageIds = [];
                         fileList.forEach( function(item, index) {
                             if(item.response && item.response.success && item.response.success.length>0){
                                 tempImageIds.push(item.response.success[0].url);
-                            }else if(item.status === 'success'){
+                            }else if(item.status == 'success'){
                                 tempImageIds.push(item.url);
                             }
                         });
@@ -941,7 +1063,7 @@
                         if(getUploadIcon(fileUrl)){
                             flag = true;
                         }
-                    }else if(file.status === 'success'){
+                    }else if(file.status == 'success'){
                         fileUrl = file.url;
                         if(getUploadIcon(fileUrl)){
                             flag = true;
@@ -952,7 +1074,7 @@
                     }else{
                         let tempLists = this.uploadImageLists;
                         const index = tempLists.findIndex(function(item, index, arr) {
-                            return item.url === file.url
+                            return item.url == file.url
                         });
                         this.initialIndex = index;
                         this.dialogVisible = true;
@@ -996,15 +1118,23 @@
                 }
                 return isLt2M;
             },
-            uploadFileHandle(index){//购物车产品上传附件 或者 表头附件
+            uploadFileHandle(index,type){//购物车产品上传附件 或者 表头附件
                 try {
                     let item = null;
-                    if(index === 'aaa'){//表头附件
+                    if(index == 'aaa'){//表头附件
                         item = this.cumtomFormData.fileUrls;
-                    }else if(index === 'invoice'){//结算页第二页电子发票文件
+                    }else if(index == 'invoice'){//结算页第二页电子发票文件
                         item = this.invoiceForm.invoice_file;
-                    }else if(index === 'lookFiles'){//结算页第二页查看表头附件
-                        item = this.checkoutDetailInfo.fileUrls;
+                    }else if(index == 'lookFiles'){//结算页第二页查看表头附件
+                        if(type || type == 0){//结算页第二页产品清单附件
+                            if(type == 'invoice'){//查看电子发票文件
+                                item = this.invoice.invoice_file;
+                            }else{
+                                item = this.checkoutDetailInfo.transaction_items[type].fileStr;
+                            }
+                        }else{
+                            item = this.checkoutDetailInfo.fileUrls;
+                        }
                     }else{
                         item = this.cartGoods[index].fileStr;
                     }
@@ -1026,7 +1156,7 @@
                         this.image_id = [];
                     }
                     this.goodIndex = index;
-                    if(index === 'lookFiles'){//结算页第二页查看表头附件
+                    if(index == 'lookFiles'){//结算页第二页查看表头附件
                         this.uploadReadonlyFlag = true;//上传图片控件是否只读
                     }else{
                         this.uploadReadonlyFlag = false;//上传图片控件是否只读
@@ -1045,9 +1175,9 @@
                     if(this.image_id && this.image_id.length>0){
                         fileStr = this.image_id.join(';');
                     }
-                    if(this.goodIndex === 'aaa'){//表头附件
+                    if(this.goodIndex == 'aaa'){//表头附件
                         this.cumtomFormData.fileUrls = fileStr;
-                    }else if(this.goodIndex === 'invoice'){//结算页第二页发票文件
+                    }else if(this.goodIndex == 'invoice'){//结算页第二页发票文件
                         this.invoiceForm.invoice_file = fileStr;
                     }else{//产品附件
                         let item = this.cartGoods[this.goodIndex];
@@ -1106,7 +1236,22 @@
                     });
                 }
             },
-            async getHistoryOrders(){//获取历史订单
+            resetHistoryDialog(){//关闭历史订单弹框时重置数据
+                try {
+                    this.pageForm.page = 1;
+                    this.pageForm.HAS_DATA = true;
+                    this.pageForm.isOn = true;
+                    this.pageForm.elWraper.scrollTop = 0;
+                    this.extractOrderFlag =  false;
+                    this.historyActiveIndex = '';
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            async getHistoryOrders(type){//获取历史订单
                 try {
                     const that = this;
                     const orderJson = this.$store.state.order;
@@ -1116,22 +1261,75 @@
                     }else if(orderJson.cumtomFormData && orderJson.cumtomFormData.information_id){//获取crm客户id
                         formData.information_id = orderJson.cumtomFormData.information_id;
                     }else{//获取当前登录账户工号
-                        formData.gonghao = this.$store.state.memberRoleId.gonghao;
+                        formData.gonghao = this.$store.state.memberRoleId.usercode;
                     }
-                    const res = await order_detail(formData);
+                    if(type == 'page'){
+                        formData.showLoad = '3';
+                    }
+                    const res = await order_detail(this.pageForm.page,15,formData);
                     if(res.error){
                         this.$message({
                             message: res.error,
                             type: 'error'
                         });
-                        if(res.nologin === 1){//未登录
+                        if(res.nologin == 1){//未登录
                             setTimeout(()=>{
                                 that.$router.push('/');
                             },3000);
                         }
                         return false;
                     }
-                    this.historyOrdersDialogVisible = true;
+                    if(res.success && res.success.length>0){
+                        if(this.pageForm.page == 1){
+                            this.historyOrders = res.success;
+                        }else{
+                            this.historyOrders =  this.historyOrders.concat(res.success);
+                        }
+                        this.historyOrdersDialogVisible = true;
+                        that.pageForm.isOn = true;
+                        if(type == 'mounted'){
+                            this.$nextTick(function () {
+                                if(this.historyOrdersDialogVisible){
+                                    that.scrollHistoryOrdersLists();
+                                }
+                            });
+                        }
+                    }else{
+                        if(this.pageForm.page == 1){
+                            this.historyOrders = [];
+                        }else{//最后一页了
+                            this.pageForm.page--;
+                        }
+                        this.pageForm.HAS_DATA = false;
+                        if(type == 'mounted'){
+                            this.$message({
+                                message: '暂没有历史订单数据',
+                                type: 'error'
+                            });
+                        }
+                    }
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            scrollHistoryOrdersLists(){//历史订单列表滚动加载
+                try {
+                    let that = this;
+                    that.pageForm.elWraper = document.querySelector(".el-collapse");
+                    that.pageForm.elWraper.addEventListener('scroll',function(){
+                        let srollPos = that.pageForm.elWraper.scrollTop;    //滚动条距顶部距离(页面超出窗口的高度)
+                        let totalheight = parseFloat(that.pageForm.elWraper.clientHeight) + parseFloat(srollPos);
+                        if((that.pageForm.elWraper.scrollHeight-that.pageForm.range) <= totalheight && that.pageForm.HAS_DATA == true && srollPos>0) {
+                            if(that.pageForm.isOn){
+                                that.pageForm.isOn = false;
+                                that.pageForm.page++;
+                                that.getHistoryOrders('page');
+                            }
+                        }
+                    });
                 } catch(e) {
                     this.$message({
                         message: e.message,
@@ -1140,16 +1338,40 @@
                 }
             },
             historyOrdersChangeHandle(val){//历史订单当前激活面板改变时触发
-                this.historyActiveIndex = val;
+                this.extractOrderFlag =  false;
             },
-            extractOrder(){//历史订单提取
-                this.extractOrderFlag =  true;
+            extractOrder(type){//历史订单提取
+                try {
+                    if(this.historyActiveIndex === ''){
+                        this.$message({
+                            message: '请先选择需要提取的订单',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    if(type === 'confirm'){//确认提取订单
+                        this.EXTRACTORDERSETDATA(this.historyOrders[this.historyActiveIndex]);
+                        this.discountTemp = this.discount;
+                        this.historyOrdersDialogVisible = false;
+                        this.$message({
+                            message: '提取成功',
+                            type: 'success'
+                        });
+                    }else{
+                        this.extractOrderFlag =  true;
+                    }
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             },
             areaChangeHandle(){//客户地区改变 重新选择安装服务
                 try {
                     let services = [];
                     this.cartGoods.forEach(function (item,index) {
-                        if(item.install_flag === 'true'){
+                        if(item.install_flag == 'true'){
                             services.push(item);
                         }
                     });
@@ -1173,7 +1395,7 @@
                     if(this.cartGoods && this.cartGoods.length>0) {
                         let installPros = [],area = '',formData = {};
                         this.cartGoods.forEach(function (item,index) {
-                           if(item.install === 'true'){//有安装服务的产品
+                           if(item.install == 'true'){//有安装服务的产品
                                installPros.push({"product_id":item.product_id,"num":item.num});
                            }
                         });
@@ -1184,7 +1406,7 @@
                             });
                             return false;
                         }
-                        if(typeof this.cumtomFormData.area === 'object'){
+                        if(typeof this.cumtomFormData.area == 'object'){
                             area = this.cumtomFormData.area.join(" ");//收货地区
                         }else{
                             area = this.cumtomFormData.area;//收货地区
@@ -1204,7 +1426,7 @@
                                 message: res.error,
                                 type: 'error'
                             });
-                            if(res.nologin === 1){//未登录
+                            if(res.nologin == 1){//未登录
                                 setTimeout(()=>{
                                     that.$router.push('/');
                                 },3000);
@@ -1215,7 +1437,7 @@
                         if(res.success.length>0){
                             res.success.forEach(function (item,index) {
                                 that.cartGoods.forEach(function (el,il) {
-                                    if(item.product_id === el.product_id){
+                                    if(item.product_id == el.product_id){
                                         item.selected = true;
                                         serviceSelectedFlag = true;
                                         serviceMoney += Number(item.price*item.num);
@@ -1275,11 +1497,11 @@
                             let tempItem;
                             item.parent_id.forEach(function (e1) {
                                 that.cartGoods.forEach(function (e2,i2) {
-                                    if(e1 === e2.product_id){
+                                    if(e1 == e2.product_id){
                                         if(!tempItem){
                                             tempItem = e2;
                                         }
-                                        if(e2.canal === 'wuliu' || e2.canal === 'kuaidi'){
+                                        if(e2.canal == 'wuliu' || e2.canal == 'kuaidi'){
                                             tempItem = e2;
                                             return false;
                                         }
@@ -1306,14 +1528,18 @@
                     });
                 }
             },
-            async submitOrder(){//提交订单
+            submitOrder(){//提交订单
                 try {
+                    const that = this;
                     if(this.cartGoods && this.cartGoods.length>0){
                         const orderJson = this.$store.state.order;
                         let formData = {};
+                        if(this.invoice.tax_type){//需要发票
+                            formData = Object.assign({},this.invoice);
+                        }
                         formData.acceptOrdMan = orderJson.cumtomFormData.acceptOrdMan;//收货人
                         formData.acceptOrdPhone = orderJson.cumtomFormData.acceptOrdPhone;//收货手机号
-                        if(typeof orderJson.cumtomFormData.area === 'object'){
+                        if(typeof orderJson.cumtomFormData.area == 'object'){
                             formData.area = orderJson.cumtomFormData.area.join(" ");//收货地区
                         }else{
                             formData.area = orderJson.cumtomFormData.area;//收货地区
@@ -1334,7 +1560,7 @@
                         //校验数据
                         //校验定制单产品是否有上传附件
                         const goodItem = formData.info.find(function (item) {
-                            return item.is_stand === 1 && item.fileStr === '';
+                            return item.is_stand == 1 && item.fileStr == '';
                         });
                         if(goodItem){
                             this.$message({
@@ -1345,7 +1571,7 @@
                         }
                         //判断是否有定制单
                         const isStand = formData.info.some(function (item) {
-                            return item.is_stand === 1;
+                            return item.is_stand == 1;
                         });
                         //有定制单但是为非crm客户
                         if(isStand && !formData.information_id){
@@ -1399,24 +1625,47 @@
                             });
                             return false;
                         }
-                        const res = await pre_order(formData);
-                        if(res.error){
-                            this.$message({
-                                message: res.error,
-                                type: 'error'
-                            });
-                            if(res.nologin === 1){//未登录
-                                setTimeout(()=>{
-                                    that.$router.push('/');
-                                },3000);
+                        //判断配送方式是否不同 不同的话会导致拆单 需要提示框
+                        let tempCanals = [],dismantlingFlag = false,proSpaceFlag=false;//dismantlingFlag 是否存在自提且非定制的产品
+                        formData.info.forEach(function(item){
+                            if(!item.space){
+                                that.$message({
+                                    message: item.product_name+'的所属空间不能为空',
+                                    type: 'error'
+                                });
+                                proSpaceFlag = true;
+                                return false;
                             }
+                            let tempCanalString = tempCanals.join(",");
+                            if(tempCanalString.indexOf(item.canal) == -1){
+                                tempCanals.push(item.canal);
+                            }
+                            if(item.canal == 'ziti' && item.is_stand == 0 && !dismantlingFlag){//自提且为非定制
+                                dismantlingFlag = true;
+                            }
+                        });
+                        if(proSpaceFlag){//有产品空间为空值
                             return false;
                         }
-                        this.$message({
-                            message: '保存成功',
-                            type: 'success'
-                        });
-                        this.UPDATECHECKOUTDETAILINFO(res.success);
+                        if(tempCanals.length >= 2 &&  dismantlingFlag){//存在多种配送方式 存在自提且非定制的产品 则需要拆单
+                            this.$confirm('该订单存在不同的配送方式，系统将自动拆单，是否继续操作？', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                that.submitOrderCallback(formData);
+                            }).catch((error) => {
+                                if(error == 'cancel'){
+                                    return false;
+                                }
+                                this.$message({
+                                    message: error.message,
+                                    type: 'error'
+                                });
+                            });
+                        }else{
+                            that.submitOrderCallback(formData);
+                        }
                     }else{
                         this.$message({
                             message: '请先添加产品',
@@ -1424,6 +1673,34 @@
                         });
                     }
                 } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            async submitOrderCallback(formData){//提交订单
+                try {
+                    const that = this;
+                    const res = await pre_order(formData);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin == 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.$message({
+                        message: '保存成功',
+                        type: 'success'
+                    });
+                    this.UPDATECHECKOUTDETAILINFO(res.success);
+                }catch (e) {
                     this.$message({
                         message: e.message,
                         type: 'error'
@@ -1474,7 +1751,6 @@
             async pushOrderHandle(){//推送订单
                 try {
                     const that = this;
-                    let formData = {};
                     if(!this.checkoutDetailInfo.transaction_id){
                         this.$message({
                             message: '订单数据有误，请刷新重试',
@@ -1482,17 +1758,13 @@
                         });
                         return false;
                     }
-                    if(this.invoice.tax_type){//需要发票
-                        formData = this.invoice;
-                    }
-                    formData.transaction_id = this.checkoutDetailInfo.transaction_id;
-                    const res = await push_order(formData);
+                    const res = await push_order(this.checkoutDetailInfo.transaction_id);
                     if(res.error){
                         this.$message({
                             message: res.error,
                             type: 'error'
                         });
-                        if(res.nologin === 1){//未登录
+                        if(res.nologin == 1){//未登录
                             setTimeout(()=>{
                                 that.$router.push('/');
                             },3000);
@@ -1504,12 +1776,213 @@
                         type: 'success'
                     });
                     this.RESETCHECKOUTDATA();//重置结算页数据
+                    this.discountTemp = 0;
                 }catch (e) {
                     this.$message({
                         message: e.message,
                         type: 'error'
                     });
                 }
+            },
+            resetOrderHandle(type){//重新下单
+                try {
+                    if(type === 'logoutCustom'){
+                        this.RESETCHECKOUTDATA(type);//重置结算页数据
+                    }else{
+                        this.RESETCHECKOUTDATA();//重置结算页数据
+                        this.discountTemp = 0;
+                        if(type == 'order'){//下单成功后调用回调 清除页面数据
+                            this.payOrderDialogVisible = false;
+                        }else{
+                            this.$router.push('/search');
+                        }
+                    }
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            logoutCustom(){//退出账户登录
+                this.resetOrderHandle('logoutCustom');
+            },
+            choosePayMethod(methodVal,index){//选择支付方式
+                this.payOrderForm.curMethod = index;
+                this.payOrderForm.payment = methodVal;
+            },
+            closePayOrderDialog(done){//关闭支付方式弹框
+                if(this.payOrderForm.showQrcodeVisible){//显示二维码弹框 则点击关闭显示支付方式选择
+                    this.payOrderForm.showQrcodeVisible = false;
+                }else{
+                    done();
+                }
+                clearTimeout(this.qrcodeTime);
+            },
+            async checkPaySuccess(payment_id,payment,num){//二维码支付 查询订单是否已完成
+                try {
+                    if(!this.payOrderForm.showQrcodeVisible){
+                        clearTimeout(this.qrcodeTime);
+                        return false;
+                    }
+                    const that = this;
+                    if(!this.checkoutDetailInfo.transaction_id){
+                        this.$message({
+                            message: '订单数据有误，请刷新重试',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    const res = await query_new({"transaction_id":this.checkoutDetailInfo.transaction_id,"showLoad":"3"});
+                    this.payOrderForm.message = res.data.msg;
+                    if(res.status == "failed"){
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'error'
+                        });
+                        clearTimeout(this.qrcodeTime);
+                        return false;
+                    }
+                    if(res.status == "success"){//成功
+                        this.$message({
+                            message: '支付成功！',
+                            type: 'success'
+                        });
+                        clearTimeout(this.qrcodeTime);
+                        that.resetOrderHandle('order');
+                    }else if(res.status == "error"){//还未支付
+                        num++;
+                        if(num>60){//限制5分钟 重新获取二维码图片
+                            const res2 = await pay_new(payment_id,payment);
+                            if(res2.error){
+                                this.$message({
+                                    message: res2.error,
+                                    type: 'error'
+                                });
+                                return false;
+                            }
+                            this.payOrderForm.url="/qrcode/index.html?text="+res2.returnInfo.qrcode;
+                            num = 1;
+                        }
+                        that.qrcodeTime = setTimeout(function(){
+                            that.checkPaySuccess(payment_id,payment,num);
+                        },5000);
+                    }
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            async payOrderHandle(status){//非CRM用户支付
+                if(status !== '3'){//确定支付
+                    try {
+                        const that = this;
+                        if(status == "1"){//订单完成需选择支付方式
+                            let payment = this.payOrderForm.payment;
+                            if(!payment){
+                                this.$message({
+                                    message: '请先选择支付方式',
+                                    type: 'error'
+                                });
+                                return false;
+                            }
+                            let formData = {};
+                            if(!this.checkoutDetailInfo.transaction_id){
+                                this.$message({
+                                    message: '订单数据有误，请刷新重试',
+                                    type: 'error'
+                                });
+                                return false;
+                            }
+                            if(this.invoice.tax_type){//需要发票
+                                formData = Object.assign({},this.invoice);
+                            }
+                            formData.transaction_id = this.checkoutDetailInfo.transaction_id;
+                            formData.payment = payment;
+                            const res = await ajax_pay(formData);
+                            if(res.error){
+                                this.$message({
+                                    message: res.error,
+                                    type: 'error'
+                                });
+                                if(res.nologin == 1){//未登录
+                                    setTimeout(()=>{
+                                        that.$router.push('/');
+                                    },3000);
+                                }
+                                return false;
+                            }
+                            if(res.success && res.success.returnInfo){//微信，支付宝
+                                this.payOrderForm.message = '';
+                                this.payOrderForm.url="/qrcode/index.html?text="+res.success.returnInfo.qrcode;
+                                this.payOrderForm.title = payment == 'wxf2fpay' ? '微信扫描支付' : payment == 'alif2fpay' ? '支付宝扫描支付' : '';
+                                this.payOrderForm.showQrcodeVisible = true;
+                                let  num= 1;//控制次数
+                                that.qrcodeTime = setTimeout(function(){
+                                    that.checkPaySuccess(res.success.payment_id,res.success.method,num);
+                                },5000);
+                            }else{//现金，pos，对公转账
+                                this.$message({
+                                    message: '支付成功',
+                                    type: 'success'
+                                });
+                                that.resetOrderHandle('order');
+                            }
+                        }
+                    }catch (e) {
+                        this.$message({
+                            message: e.message,
+                            type: 'error'
+                        });
+                    }
+                }else{//显示支付弹框
+                    this.payOrderDialogVisible = true;
+                }
+            },
+            orderDeadHandle(){//订单作废
+                const that = this;
+                this.$confirm('确定作废订单吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    if(!that.checkoutDetailInfo.transaction_id){
+                        that.$message({
+                            message: '订单数据有误，请刷新重试',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    order_dead(that.checkoutDetailInfo.transaction_id).then(res=>{
+                        if(res.error){
+                            that.$message({
+                                message: res.error,
+                                type: 'error'
+                            });
+                            if(res.nologin == 1){//未登录
+                                setTimeout(()=>{
+                                    that.$router.push('/');
+                                },3000);
+                            }
+                            return false;
+                        }
+                        that.$message({
+                            message: res.success,
+                            type: 'success'
+                        });
+                        that.resetOrderHandle('order');
+                    });
+                }).catch((e) => {
+                    if(e == 'cancel'){
+                        return false;
+                    }
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                });
             }
         }
     }
@@ -1812,10 +2285,143 @@
         padding: 0;
         border-radius: 6px;
     }
-    .invoice-infos{
-        padding-left: 26px;
-    }
     .invoice-infos li{
         list-style-type: none;
+    }
+    /*支付方式弹框*/
+    .payOrderDialog .money{
+        text-align: center;
+        font-size: 14px;
+        color: #1A1A1A;
+        line-height: 36px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    .payOrderDialog .money .t1{
+        color: #919191;
+        font-size: 16px;
+    }
+    .payOrderDialog .money .t2{
+        color: #F25406;
+        font-size: 28px;
+        vertical-align: middle;
+    }
+    .payOrderDialog ul{
+        overflow: hidden;
+        padding-top: 40px;
+    }
+    .payOrderDialog li{
+        list-style-type: none;
+        float: left;
+        width: 220px;
+        height: 90px;
+        line-height: 90px;
+        font-size: 18px;
+        color: #4D4D4D;
+        border: 2px solid #50B674;
+        text-align: center;
+        box-sizing: border-box;
+        margin-bottom: 24px;
+        cursor: pointer;
+        position: relative;
+    }
+    .payOrderDialog li .el-icon-check{
+        position: absolute;
+        font-size: 20px;
+        margin-right: 0;
+        right: 0;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-left: 46px solid transparent;
+        border-top: 46px solid transparent;
+        border-right: 46px solid;
+    }
+    .payOrderDialog li .el-icon-check:before{
+        content: "\E611";
+        position: absolute;
+        top: -23px;
+        right: -43px;
+        color: #fff;
+        font-weight: bold;
+    }
+    .payOrderDialog li.method1,.payOrderDialog li.method4{
+        margin: 0 30px;
+    }
+    .payOrderDialog li i{
+        color: #50B674;
+        font-size: 60px;
+        vertical-align: middle;
+        margin-right: 20px;
+    }
+    .payOrderDialog .method1{
+        border-color: #56ABE4;
+    }
+    .payOrderDialog .method1 i{
+        color: #56ABE4;
+    }
+    .payOrderDialog .method2{
+        border-color: #9997F0;
+    }
+    .payOrderDialog .method2 i{
+        color: #9997F0;
+    }
+    .payOrderDialog .method3{
+        border-color: #F2988E;
+    }
+    .payOrderDialog .method3 i{
+        color: #F2988E;
+    }
+    .payOrderDialog .method4{
+        border-color: #E9B251;
+    }
+    .payOrderDialog .method4 i{
+        color: #E9B251;
+    }
+    .payOrderDialog li.active{
+        border: 3px solid #F25406;
+    }
+    .payOrderDialog li.active .el-icon-check{
+        border-right-color: #F25406;
+    }
+    .payOrderDialog .payOrder-btns{
+        background: #f1f1f1;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 90px;
+        line-height: 90px;
+        text-align: center;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    .qrCode_container{
+        text-align: center;
+        padding-top: 30px;
+    }
+    .qrCode_container .method_name{
+        font-size: 16px;
+        color: #1A1A1A;
+    }
+    .qrCode_container iframe{
+        display: block;
+        width: 215px;
+        height: 215px;
+        margin: 30px auto 10px;
+        border:none;
+    }
+    .qrCode_container .iframeEl{
+        width: 235px;
+        height: 235px;
+    }
+    .qrCode_container .payOrderTips{
+        color: #F25406;
+    }
+    .header-label{
+        padding: 0 30px 0 61px;
+        background: #f4f4f4;
+        line-height: 36px;
+        height: 36px;
     }
 </style>

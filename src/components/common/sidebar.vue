@@ -56,7 +56,8 @@
         },
         methods:{
             ...mapMutations([
-                'SETMEMBERROLEID'
+                'SETMEMBERROLEID',
+                'RESETCHECKOUTDATA'
             ]),
             async logout(){//退出用户
                 try {
@@ -95,6 +96,9 @@
         flex-direction: column;
     }
     .side_menu{
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        -moz-box-flex: 1;
         flex: 1;
     }
     .footer-btns{

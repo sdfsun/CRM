@@ -1,12 +1,11 @@
 export default {
     addGoods({state,commit,dispatch},res){//添加产品到购物车
         const cartGoods =  state.goods;
-        res.space = '主卧';//空间
-        res.is_custom = res.is_custom === 'true'?true:false;//是否是定制单
-        res.is_stand = res.is_custom === true?1:0;//是否是定制单
-        res.is_standSelected = res.is_stand === 1?true:false;//是否选中定制单
+        res.space = '未知';//空间
+        res.is_stand = res.is_custom == 'true'?1:0;//是否是定制单
+        res.is_standSelected = res.is_stand == 1?true:false;//是否选中定制单
         res.sum = Number(res.num*res.price);
-        res.gifs_flag = false;//是否是赠品
+        res.gifs_flag = 'false';//是否是赠品
         res.fileStr = '';//附件
         res.install_flag = 'false';//设置为非安装服务
         if(!res.send_time && state.cumtomFormData.sendProDate){

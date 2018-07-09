@@ -113,7 +113,7 @@
     </div>
 </template>
 <script>
-    import {mapActions} from 'vuex';
+    import {mapActions,mapState,mapMutations} from 'vuex';
     import {goods_custom,search_goods,add_new} from '@/service/getData';
 
     export default{
@@ -133,7 +133,15 @@
         mounted(){
             this.init();
         },
+        computed:{
+            ...mapState({
+                checkoutSwitch: state => state.order.checkoutSwitch
+            })
+        },
         methods:{
+            ...mapMutations([
+               'UPDATECHECKOUTSWITCH'
+            ]),
             ...mapActions([
                 'addGoods'
             ]),
@@ -216,17 +224,54 @@
                     });
                 }
             },
+            addProductHandle(item,type){
+                try {
+                    const that = this;
+                    this.$confirm('此时有个订单已经在结算页中，是否要继续添加到当前订单中？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        that.addGoods(Object.assign({},item));
+                        that.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
+                        if(type){//关闭多规格弹框
+                            that.proSpecDialogVisible = false;
+                        }
+                        that.UPDATECHECKOUTSWITCH(0);
+                    }).catch((e) => {
+                        if(e == 'cancel'){
+                            return false;
+                        }
+                        that.$message({
+                            message: e.message,
+                            type: 'error'
+                        });
+                    });
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
             async addCart(item){//加入购物车
                 try {
                     if(item.is_spec === 'true'){//多规格
                         this.choose_spec(item.goods_id,item.product_id,item.num);
                         return false;
                     }
-                    this.addGoods(Object.assign({},item));
-                    this.$message({
-                        message: '添加成功',
-                        type: 'success'
-                    });
+                    if(this.checkoutSwitch == 1){//此时结算页中存在订单 第二页
+                        this.addProductHandle(item);
+                    }else{
+                        this.addGoods(Object.assign({},item));
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
+                    }
                 }catch (e) {
                     this.$message({
                         message: e.message,
@@ -285,12 +330,16 @@
                     delete tempProSpecDatas['send_type'];
                     delete tempProSpecDatas['spec'];
                     delete tempProSpecDatas['spec_desc'];
-                    this.addGoods(tempProSpecDatas);
-                    this.$message({
-                        message: '添加成功',
-                        type: 'success'
-                    });
-                    this.proSpecDialogVisible = false;
+                    if(this.checkoutSwitch == 1){//此时结算页中存在订单 第二页
+                        this.addProductHandle(tempProSpecDatas,'spec');
+                    }else{
+                        this.addGoods(tempProSpecDatas);
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
+                        this.proSpecDialogVisible = false;
+                    }
                 }catch (e) {
                     this.$message({
                         message: e.message,
@@ -315,6 +364,7 @@
     }
     .orderSearch-container ul{
         overflow: hidden;
+        width: 100%;
     }
     .search-form{
         padding: 20px 50px 10px;
@@ -414,8 +464,7 @@
         height: 20px;
     }
     .addCart{
-        flex: 1;
-        max-width: 140px;
+        width: 56%;
         padding: 4px 5px;
         background: #fff;
         border: 1px solid #1876EF;

@@ -16,6 +16,7 @@ export default {
             acceptOrdPhone:'',//收货人手机号
             area:[],//收货地区
             addr:'',//收货地址
+            searchPhone:'',//用来搜索是否为CRM账户或商城账户
             sendProDate:'',//仓库完成时间
             contractCode:'',//合同编码
             custReRemark:'',//客户特殊要求

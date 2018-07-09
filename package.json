@@ -11,15 +11,16 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "element-theme": "^2.0.1",
-    "element-ui": "^2.3.9",
+    "element-ui": "^2.4.3",
     "normalize.css": "^8.0.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "autoprefixer": "^7.1.2",
+    "autoprefixer": "^8.6.5",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-loader": "^7.1.1",
@@ -63,6 +64,9 @@
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not ie <= 8"
+    "last 10 Chrome versions",
+    "last 5 Firefox versions",
+    "Safari >= 6",
+    "ie > 7"
   ]
 }

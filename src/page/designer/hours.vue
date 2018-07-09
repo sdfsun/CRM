@@ -128,7 +128,7 @@ export default {
         },
         endTimeFun(){
             var timestamp = new Date(this.startTime).getTime();
-            var endTamp = new Date(timestamp + 3600*24*2*1000);
+            var endTamp = new Date(timestamp + 3600*24*13*1000);
             var y = endTamp.getFullYear();
             var m = endTamp.getMonth() + 1;
             var d = endTamp.getDate();

@@ -20,7 +20,7 @@
                 <el-col :xs="8" :sm="8" :md="8" :lg="6" :xl="4" v-for="item in searchResults" :key="item.id">
                     <div class="search-item">
                         <div class="t1">
-                            <img src="../../assets/img/custom.jpg" :alt="item.product_name" v-if="item.is_custom === 'true'">
+                            <img src="https://pic.solux.cn/PC/crm/custom.jpg" :alt="item.product_name" v-if="item.is_custom === 'true'">
                             <img :src="item.image_default_id" :alt="item.product_name" v-else>
                             <p class="pro-guige">{{item.tag}}</p>
                         </div>

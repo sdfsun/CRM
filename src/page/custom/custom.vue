@@ -447,7 +447,7 @@
                             that.searchForm.s_times = '';
                         }
                     }
-                    if(badge && badge !== 'badge'){//
+                    if(badge && badge === 'badge'){//
                         this.id = type;
                     }
                     if(type === 'status'){

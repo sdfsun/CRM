@@ -6,9 +6,12 @@
 .page_hours .el-tabs__nav-wrap{padding:0 80px;}
 .page_hours .el-tabs__nav-wrap::after{height:0;}
 
-.page_hours .el-tabs__item{font-size:20px;font-weight:bold;}
+.page_hours .el-tabs__item{font-size:20px;font-weight:bold;color: #303133 !important;width: auto;padding-right: 20px !important;}
 .page_hours .el-tabs__active-bar{height:4px;}
 .page_hours .el-tab-pane{padding:0 40px;}
+.page_hours .el-tabs__item::before{display: none;}
+.page_hours .el-tabs__item.is-active{color: #1876EF !important;}
+.page_hours .el-tabs--top .el-tabs__item.is-top:last-child{padding: 0 0 0 20px !important;}
 
 /*日期*/
 .pika-single{display:block;position:relative;width:100%;min-width:300px;box-sizing:border-box;margin:40px auto;box-shadow:0 5px 5px rgba(0,0,0,0.1)}

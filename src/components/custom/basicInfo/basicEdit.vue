@@ -140,6 +140,7 @@
                             <el-option label="主卧" value="主卧"></el-option>
                             <el-option label="客卧" value="客卧"></el-option>
                             <el-option label="儿童房" value="儿童房"></el-option>
+                            <el-option label="书房" value="书房"></el-option>
                             <el-option label="客餐厅" value="客餐厅"></el-option>
                             <el-option label="厨房" value="厨房"></el-option>
                             <el-option label="门厅" value="门厅"></el-option>
@@ -330,7 +331,7 @@
                     house_status:"",
                     house_layout:"",
                     budget:"",
-                    status:[],
+                    status:['1','2'],
                     remarks:"",
                     houseTypeOptions:[],//房屋类型
                     client_type:'',

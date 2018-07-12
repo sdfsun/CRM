@@ -16,11 +16,17 @@
                 </el-col>
             </el-row>
             <el-form ref="search_form" :model="searchForm" class='search_form'>
-                <el-row :gutter="10">
-                    <el-col :span='7'>
+                <el-row :gutter="10" type="flex">
+                    <el-col :span='6'>
                         <el-form-item prop='content'>
-                            <el-input placeholder="请输入内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
+                            <el-input placeholder="搜索内容" v-model="searchForm.content" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
                                 <el-button slot="append" icon="el-icon-search" @click='searchFormDatas'></el-button>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span='4'>
+                        <el-form-item prop='usercode'>
+                            <el-input placeholder="导购名称" v-model="searchForm.usercode" class="input-with-select" clearable @keyup.13.native='searchFormDatas'>
                             </el-input>
                         </el-form-item>
                     </el-col>
@@ -47,7 +53,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="5">
+                    <el-col :span="6">
                         <el-form-item class='search_form_item' prop='time'>
                             <el-date-picker
                                     v-model="searchForm.time"
@@ -60,7 +66,7 @@
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="5" v-if='id === "1"'>
+                    <el-col :span="4" v-if='eTimesHandle()'>
                         <el-form-item class='search_form_item' prop='e_times'>
                             <el-select v-model="searchForm.e_times" clearable placeholder="预计回访时间" @change='searchFormDatas("times")'>
                                 <el-option
@@ -72,7 +78,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span='3'>
+                    <el-col :span='2'>
                         <el-button type="primary" class='edit_btn' @click='editCustomBasicInfo'>编辑</el-button>
                     </el-col>
                 </el-row>
@@ -230,7 +236,8 @@
                     member_id:'',
                     port:'',
                     s_times:'',
-                    e_times:''
+                    e_times:'',
+                    usercode:''//导购名称
                 },
                 customLists: [],//客户列表
                 totalNum:0,//客户列表总数
@@ -338,6 +345,25 @@
                 this.pageForm.elWraper.scrollTop = 0;
                 this.init();
             },
+            eTimesHandle(){//是否显示预计回访时间
+                try {
+                    let stateCounts = [];
+                    this.state_count.forEach(function(item){
+                        stateCounts.push(item.id);
+                    });
+                    if(this.id === "1" || this.id === "reception" || stateCounts.join(",").indexOf(this.id) !== -1){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                } catch(e) {
+                    this.$message({
+                        showClose: true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
             async init(type,formData){//获取客户信息列表
                 const that = this;
                 try {
@@ -349,6 +375,8 @@
                     }
                     if(type === 'status'){
                         tempFormData.status = formData.status;
+                    }else{
+                        tempFormData.status = '';
                     }
                     const res = await getCustomLists(this.id,this.page,tempFormData);
                     if(res.error){
@@ -450,10 +478,8 @@
                     if(badge && badge === 'badge'){//
                         this.id = type;
                     }
-                    if(type === 'status'){
-                        const len = tempSearchForm.status.length;
-                        tempSearchForm.status = tempSearchForm.status[len-1];
-                    }
+                    const len = tempSearchForm.status.length;
+                    tempSearchForm.status = tempSearchForm.status[len-1];
                     this.init('status',tempSearchForm);
                 }catch (e) {
                     this.$message({

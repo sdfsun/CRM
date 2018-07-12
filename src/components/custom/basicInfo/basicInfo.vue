@@ -10,6 +10,10 @@
                 </div>
             </li>
             <li>
+                <span class="txt_1">手机：</span>
+                <span class="txt_2">{{basicInfoRecord.mobile}}</span>
+            </li>
+            <li>
                 <span class="txt_1">电话：</span>
                 <span class="txt_2">{{basicInfoRecord.tel}}</span>
             </li>
@@ -33,7 +37,7 @@
         <ul class="col_2">
             <li class="title">客户装修信息</li>
             <li>
-                <span class="txt_1">房屋类型：</span>
+                <span class="txt_1">房屋状态：</span>
                 <span class="txt_2" v-if='basicInfoRecord.house_type'>{{basicInfoRecord.house_type}}/{{basicInfoRecord.house_status}}</span>
             </li>
             <li>
@@ -61,6 +65,37 @@
             <li>
                 <span class="txt_1">来源说明：</span>
                 <span class="txt_2">{{basicInfoRecord.source_explain}}</span>
+            </li>
+        </ul>
+        <ul class="col_3">
+            <li class="title"></li>
+            <li>
+                <span class="txt_1">客户职业：</span>
+                <span class="txt_2">{{basicInfoRecord.occupation}}</span>
+            </li>
+            <li>
+                <span class="txt_1">家庭成员：</span>
+                <span class="txt_2">{{basicInfoRecord.family}}</span>
+            </li>
+            <li>
+                <span class="txt_1">房屋类型：</span>
+                <span class="txt_2">{{basicInfoRecord.house_genre}}</span>
+            </li>
+            <li>
+                <span class="txt_1">装修阶段：</span>
+                <span class="txt_2">{{basicInfoRecord.decoration_stage}}</span>
+            </li>
+            <li>
+                <span class="txt_1">计划入住时间：</span>
+                <span class="txt_2">{{basicInfoRecord.check_time}}</span>
+            </li>
+            <li>
+                <span class="txt_1">准备购买家居空间：</span>
+                <span class="txt_2" v-if='basicInfoRecord.buy_space && basicInfoRecord.buy_space.length>0'>{{basicInfoRecord.buy_space.join(",")}}</span>
+            </li>
+            <li>
+                <span class="txt_1">风格选择：</span>
+                <span class="txt_2">{{basicInfoRecord.house_style}}</span>
             </li>
         </ul>
         <ul class="col_3">
@@ -142,7 +177,7 @@
         width: 90px;
     }
     .col_3 .txt_1{
-        width: 106px;
+        width: 110px;
     }
     .el-rate{
         display: inline-block;

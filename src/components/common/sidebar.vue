@@ -21,14 +21,6 @@
                         </template>
                     </el-submenu>
                 </template>
-                <el-submenu index="9">
-                    <template slot="title">
-                        <span>订单管理</span>
-                    </template>
-                    <el-menu-item index="/search">产品下单</el-menu-item>
-                    <el-menu-item index="/checkout">结算页</el-menu-item>
-                    <el-menu-item index="/historyOrders">历史订单</el-menu-item>
-                </el-submenu>
           </el-menu>
         </div>
         <div class="footer-btns">

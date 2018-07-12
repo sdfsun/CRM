@@ -164,9 +164,7 @@ export const add_new = (goods_id,product_id) => axios.post('/crm-add_new.html',{
 export const pre_order = (formData) => axios.post('/crm-pre_order.html',formData);
 
 //根据手机号判断是否为crm客户
-export const post_login = (mobile) => axios.post('/crm-post_login.html',{
-    mobile
-});
+export const post_login = (formData) => axios.post('/crm-post_login.html',formData);
 
 //门店销售报表
 export const order_counts = (formData) => axios.post('/crm-order_counts.html',formData);
@@ -221,3 +219,14 @@ export const order_supplement = (transaction_id) => axios.post('/crm-order_suppl
 export const order_arrears = (transaction_id) => axios.post('/crm-order_arrears.html',{
     transaction_id
 });
+
+//查询物流进度
+export const order_logistic = (logistic_no) => axios.post('/crm-order_logistic.html',{
+    logistic_no
+});
+
+//客户状态管理
+export const state_index = () => axios.post('/crm-state_index.html');
+
+//保存客户状态
+export const state_save = (formData) => axios.post('/crm-state_save.html',formData);

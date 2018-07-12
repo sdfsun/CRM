@@ -103,6 +103,13 @@
                 </el-col>
             </el-row>
             <el-row :gutter="10">
+                <el-col :span="12">
+                    <el-form-item prop='finance_money' label='财务确认金额'>
+                        <el-input  v-model="receivablesForm.finance_money" placeholder='财务确认金额' :readonly="memberRoleId.member_role_id !== 'finance'"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="10">
                 <el-col :span="24">
                     <el-form-item prop='remarks' :error='remarksError' label='收款备注'>
                         <el-input type="textarea" :autosize="{ minRows: 4}" v-model="receivablesForm.remarks" placeholder='收款备注'></el-input>
@@ -115,7 +122,7 @@
                     action="/crm-upload_image.html"
                     list-type="picture-card"
                     name='mypic[]'
-                    :limit='1'
+                    :multiple='true'
                     :file-list="receivablesForm.imageLists"
                     :on-preview="handlePictureCardPreview"
                     :before-upload="beforeAvatarUpload"
@@ -124,7 +131,11 @@
                     <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-                    <img width="100%" :src="dialogImageUrl" alt="">
+                    <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
+                        <el-carousel-item v-for="(item,index) in receivablesForm.imageLists" :key="index" :name='item.url'>
+                            <img :src="item.url" class="image_carousel_item">
+                        </el-carousel-item>
+                    </el-carousel>
                 </el-dialog>
             </el-form-item>
         </el-form>
@@ -244,7 +255,7 @@
                     voucher:'',//收款凭证号
                     money:'',//收款金额
                     discount:'',//抵扣金额
-                    image_id:'',//发票图片
+                    image_id:[],//发票图片
                     remarks:'',//收款备注
                     is_retainage:'0',//收款类型
                     imageLists:[],//图片列表
@@ -253,6 +264,7 @@
                     expect_money:'',//预计合同金额
                     actual_money:'',//实际总额
                     total_amount:'',//应收尾款
+                    finance_money:''//财务确认金额
                 },
                 remarksError:'',//备注错误信息提醒
                 submitBtnStatus:false,//保存按钮是否可点击
@@ -286,7 +298,8 @@
         },
         computed:{
             ...mapState([
-                'activitys'
+                'activitys',
+                'memberRoleId'
             ])
         },
         mounted(){
@@ -343,18 +356,54 @@
                 this.receivablesForm.total_amount = '';//应收尾款
             },
             handleRemove(file, fileList) {
-                this.receivablesForm.image_id = '';
-                this.receivablesForm.imageLists = fileList;
+                try {
+                    if(file.response && file.response.success && file.response.success.length>0 || file.status === 'success'){
+                        var tempImageIds = [];
+                        fileList.forEach( function(item, index) {
+                            if(item.response && item.response.success && item.response.success.length>0){
+                                tempImageIds.push(item.response.success[0].image_id);
+                            }else if(item.status === 'success'){
+                                tempImageIds.push(item.url);
+                            }
+                        });
+                        this.receivablesForm.imageLists = fileList;
+                        this.receivablesForm.image_id = tempImageIds.slice();
+                    }
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             },
             handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
+                try {
+                    let tempLists = this.receivablesForm.imageLists;
+                    const index = tempLists.findIndex(function(item, index, arr) {
+                        return item.url === file.url
+                    });
+                    this.initialIndex = index;
+                    this.dialogVisible = true;
+                    this.$refs['carouselItems'].setActiveItem(file.url);
+                } catch(e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             },
             handleSuccess(response, file, fileList){//上传成功
-                if(response.success && response.success.length>0){
-                    this.receivablesForm.image_id = response.success[0].image_id;
+                try {
+                    if(response.success && response.success.length>0){
+                        this.receivablesForm.image_id.push(response.success[0].image_id);
+                    }
+                    this.receivablesForm.imageLists = fileList;
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
-                this.receivablesForm.imageLists = fileList;
             },
             beforeAvatarUpload(file) {
                 const isLt2M = file.size / 1024 / 1024 < 2;
@@ -422,6 +471,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.submitBtnStatus = true;
+                        delete this.receivablesForm.imageLists;
                         receivables_save(this.receivablesForm).then(res=>{
                             this.submitBtnStatus = false;
                             if(res.error){

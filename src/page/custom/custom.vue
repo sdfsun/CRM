@@ -1,13 +1,18 @@
 <template>
     <div class="custom_container" :class='status'>
         <section class="custom_header_form">
-            <el-row :gutter="100" style='margin:0;'>
-                <el-col :span='12' style='padding-left: 0;'>
+            <el-row :gutter="10" style='margin:0;'>
+                <el-col :span='5' style='padding-left: 0;'>
                     <el-button type="primary" icon='el-icon-plus' class='add_custom' @click='insertCustomBasicInfo' v-if='memberRoleId.member_role_id !== "designer" && memberRoleId.member_role_id !== "director"'>新建客户信息</el-button>
                     <el-button type="primary" @click='logExportExcel'>导出</el-button>
                 </el-col>
-                <el-col :span='12' style='text-align: right;padding-right: 0;'>
-                    <el-button type="primary">总数：{{totalNum}}</el-button>
+                <el-col :span='19' style='text-align: right;padding-right: 0;'>
+                    <template v-if='state_count.length>0' v-for="item in state_count">
+                        <el-badge :value="item.num" class="badge-item">
+                            <el-button size="small" @click="searchFormDatas(item.id,'badge')" :class="{active:id==item.id}">{{item.name}}</el-button>
+                        </el-badge>
+                    </template>
+                    <el-button type="primary" class="totalNum">总数：{{totalNum}}</el-button>
                 </el-col>
             </el-row>
             <el-form ref="search_form" :model="searchForm" class='search_form'>
@@ -21,14 +26,13 @@
                     </el-col>
                     <el-col :span='5' v-if='id === "0" || id === "reception"'>
                         <el-form-item class='search_form_item' prop='status'>
-                            <el-select v-model="searchForm.status" clearable placeholder="客户状态" @change='searchFormDatas'>
-                                <el-option
-                                    v-for="item in customStatus"
-                                    :key="item.val"
-                                    :label="item.label"
-                                    :value="item.val">
-                                </el-option>
-                            </el-select>
+                            <el-cascader
+                                :options="customStatus"
+                                v-model="searchForm.status"
+                                :props="statusDefaultProps"
+                                @change="searchFormDatas('status')"
+                                clearable>
+                            </el-cascader>
                         </el-form-item>
                     </el-col>
                     <el-col :span='4' v-if='memberRoleId.member_role_id !== "designer"'>
@@ -56,7 +60,7 @@
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="5" v-if='id === "2"'>
+                    <el-col :span="5" v-if='id === "1"'>
                         <el-form-item class='search_form_item' prop='e_times'>
                             <el-select v-model="searchForm.e_times" clearable placeholder="预计回访时间" @change='searchFormDatas("times")'>
                                 <el-option
@@ -207,7 +211,7 @@
     import programme from '@/components/custom/programme/programme';
     import transaction from '@/components/custom/transaction/transaction';
     import complaint from '@/components/custom/complaint/complaint';
-    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,transactions,complaints} from '@/service/getData';
+    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,order_detail,complaints} from '@/service/getData';
     
     export default{
         name:'custom',
@@ -220,7 +224,7 @@
                 idStatus:false,//控制id列隐藏
                 searchForm: {
                     content: '',
-                    status:'',
+                    status:[],
                     time:'',
                     searchName:'',
                     member_id:'',
@@ -281,6 +285,13 @@
                         label: '近1年'
                     }
                 ],
+                visibleBudge:['1','2','3','4','5','6','7'],//可见待联系 头部6个按钮的id
+                state_count:[],//待联系 头部6个按钮数量
+                statusDefaultProps:{
+                    value:'id',
+                    label:'name',
+                    children:'menus'
+                },
                 pageForm:{
                     range:80,
                     HAS_DATA:true,
@@ -327,16 +338,19 @@
                 this.pageForm.elWraper.scrollTop = 0;
                 this.init();
             },
-            async init(type){//获取客户信息列表
+            async init(type,formData){//获取客户信息列表
                 const that = this;
                 try {
-                    let newArr = new Array;
+                    let tempFormData = Object.assign({},this.searchForm);
                     if(type === 'page'){//分页
                         this.searchForm.showLoad = type;
                     }else{
                         delete this.searchForm['showLoad'];
                     }
-                    const res = await getCustomLists(this.id,this.page,this.searchForm);
+                    if(type === 'status'){
+                        tempFormData.status = formData.status;
+                    }
+                    const res = await getCustomLists(this.id,this.page,tempFormData);
                     if(res.error){
                         this.$message({
                             message: res.error,
@@ -353,6 +367,7 @@
                         this.scrollCustomBasicLists();
                     }
                     this.totalNum = res.data ? res.data : 0;
+                    this.state_count = res.state_count ?res.state_count : [];
                     if(res.success && res.success.length>0){
                         if(this.page === 1){
                             this.customLists = res.success;
@@ -415,9 +430,10 @@
             resetQrcodeDialog(){
                 this.SETQRCODE({});
             },
-            searchFormDatas(type){//搜索表单数据
+            searchFormDatas(type,badge){//搜索表单数据
                 try {
                     const that = this;
+                    let tempSearchForm = Object.assign({},this.searchForm);
                     this.page = 1;
                     this.pageForm.HAS_DATA = true;
                     this.pageForm.isOn = true;
@@ -431,7 +447,14 @@
                             that.searchForm.s_times = '';
                         }
                     }
-                    this.init();
+                    if(badge && badge !== 'badge'){//
+                        this.id = type;
+                    }
+                    if(type === 'status'){
+                        const len = tempSearchForm.status.length;
+                        tempSearchForm.status = tempSearchForm.status[len-1];
+                    }
+                    this.init('status',tempSearchForm);
                 }catch (e) {
                     this.$message({
                         message: e.message,
@@ -535,7 +558,7 @@
                                 result = await programmes(customer_id);
                                 break;
                             case 5:
-                                result = await transactions(customer_id);
+                                result = await order_detail(1,4,{'information_id':customer_id,'trans_status':'true'});
                                 break;
                             case 6:
                                 result = await complaints(customer_id);
@@ -626,39 +649,38 @@
             },
             updateCustomRelationRecordItem(callbackData){//新增或更新沟通、测量、方案、收款等记录
                 try {
-                    let that = this;
+                    let that = this,tempCallbackData = null;
                     if(callbackData.data){
+                        if(callbackData.num === 1){//沟通记录
+                            tempCallbackData = Object.assign({},callbackData.data.communicate);
+                        }else if(callbackData.num === 2){//测量记录
+                            tempCallbackData = Object.assign({},callbackData.data.measure);
+                        }else{
+                            tempCallbackData = Object.assign({},callbackData.data);
+                        }
+                        if(callbackData.num === 2 && callbackData.data.communicate) {//测量
+                            this.customInfoArray[1].push(callbackData.data.communicate);
+                        }
                         if(callbackData.type === 'add'){
-                            if(callbackData.num === 1){//沟通记录
-                                if(callbackData.data.communicate){//保存沟通记录
-                                    this.customInfoArray[callbackData.num].push(callbackData.data.communicate);
-                                }
-                            }else {
-                                this.customInfoArray[callbackData.num].push(callbackData.data);
-                            }
+                            this.customInfoArray[callbackData.num].push(tempCallbackData);
                         }else{//编辑
-                            let key_name = 'id',tempCallbackData = callbackData.data;
+                            let key_name = 'id';
                             if(callbackData.num === 3){
                                 key_name = 'receivables_id';
                             }
-                            if(callbackData.num === 1){//沟通记录
-                                tempCallbackData = callbackData.data.communicate;
-                            }
+
                             const index = this.customInfoArray[callbackData.num].findIndex(function(item, index, arr) {
                                 return item[key_name] === tempCallbackData[key_name];
                             });
                             this.$set(this.customInfoArray[callbackData.num],index,tempCallbackData);
-                            
                         }
                         if(callbackData.num === 3){//收款
-                            this.updateReceivablesSumPrice(callbackData.data);
+                            this.updateReceivablesSumPrice(tempCallbackData);
                         }                    
                         const index2 = this.customLists.findIndex(function(item, index, arr) {
                             return item.id === that.currentRow.id;
                         });
-                        let statusFormData = callbackData.data;
                         if(callbackData.num === 1){//沟通记录
-                            statusFormData = callbackData.data.communicate;
                             if(callbackData.data.information){//保存基本信息
                                 let tempCallbackFormData = Object.assign({},callbackData.data.information);
                                 this.$set(this.customInfoArray,0,tempCallbackFormData);
@@ -669,16 +691,13 @@
                         }
                         if(callbackData.num !== 4){//非方案
                             //重置基本信息中的status
-                            let tempStatus = callbackData.num === 1?callbackData.data.information.status:statusFormData.information_status;
+                            let tempStatus = callbackData.num === 1?callbackData.data.information.status:tempCallbackData.information_status;
+                            let tempStatusName = callbackData.num === 1?callbackData.data.information.status_name:tempCallbackData.status_name;
                             this.$set(this.currentRow,'status',tempStatus);
                             this.$set(this.customInfoArray[0],'status',tempStatus);
                             that.$set(that.customLists[index2],'status',tempStatus);
-                            this.customStatus.forEach( function(elm, il) {
-                                if(elm.val === tempStatus){
-                                    that.$set(that.customInfoArray[0],'status_name',elm.label);
-                                    that.$set(that.customLists[index2],'status_name',elm.label);
-                                }
-                            });
+                            that.$set(that.customInfoArray[0],'status_name',tempStatusName);
+                            that.$set(that.customLists[index2],'status_name',tempStatusName);
                         }
                     }
                 } catch(e) {
@@ -720,12 +739,8 @@
                     this.$set(this.currentRow,'status',callbackData.data.information_status);
                     this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
                     that.$set(that.customLists[index2],'status',callbackData.data.information_status);
-                    this.customStatus.forEach( function(elm, il) {
-                        if(elm.val === callbackData.data.information_status){
-                            that.$set(that.customInfoArray[0],'status_name',elm.label);
-                            that.$set(that.customLists[index2],'status_name',elm.label);
-                        }
-                    });
+                    that.$set(that.customInfoArray[0],'status_name',callbackData.data.status_name);
+                    that.$set(that.customLists[index2],'status_name',callbackData.data.status_name);
                 } catch(e) {
                     this.$message({
                         message: e.message,
@@ -757,7 +772,15 @@
         flex-direction: column;
     }
     .custom_header_form{
-        padding: 20px 40px 0;
+        padding: 20px 20px 0;
+    }
+    .totalNum{
+        margin-left: 6px;
+        width: 90px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding: 10px 0;
     }
     .customListsTableInfo{
         width: 100%;
@@ -795,5 +818,23 @@
     .el_tabs_footer{
         overflow: hidden;
     }
-    
+    /*顶部6个按钮*/
+    .badge-item{
+        margin-right: 18px;
+    }
+    .badge-item .el-button{
+        padding: 0;
+        width: 100px;
+        height: 36px;
+        line-height: 36px;
+        background: #EAF3FE;
+        border: none;
+        font-size: 14px;
+        color: #005AFF;
+        border-radius: 18px;
+    }
+    .badge-item .el-button.active{
+        background: #FFF6EE;
+        color: #F25406;
+    }
 </style>

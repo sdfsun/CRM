@@ -8,6 +8,7 @@ export default {
         res.gifs_flag = 'false';//是否是赠品
         res.fileStr = '';//附件
         res.install_flag = 'false';//设置为非安装服务
+        res.bprice = res.price;
         if(!res.send_time && state.cumtomFormData.sendProDate){
             res.send_time = state.cumtomFormData.sendProDate;
         }
@@ -77,7 +78,7 @@ export default {
     },
     setBuyInstallFlag({state,commit}){//设置是否可购买安装服务
         const buyInstallFlag = state.goods.some(item=>{
-            return item.install === 'true';//是否有大件
+            return item.install === 'true';//是否有安装服务
         });
         commit('SETBUYINSTALLFLAG',buyInstallFlag);//重置产品的配送方式
     },
@@ -102,34 +103,38 @@ export default {
             let relaPros = item.parent_id;
             let serviceNum = 0,num = 0,temp = false;
             let tempItem;
-            relaPros.forEach(function (item, index) {
-                state.goods.forEach(function (el, il) {
-                    if(item === el.product_id){
-                        serviceNum += Number(el.num);
-                        num++;
-                        if(!temp) {//删除产品时 重置安装服务的配送方式及空间
-                            if(!tempItem){
-                                tempItem = el;
-                            }
-                            if(el.canal === 'wuliu' || el.canal === 'kuaidi'){
-                                tempItem = el;
-                                temp = true;
+            if(relaPros && relaPros.length>0){
+                relaPros.forEach(function (item, index) {
+                    state.goods.forEach(function (el, il) {
+                        if(item === el.product_id){
+                            serviceNum += Number(el.num);
+                            num++;
+                            if(!temp) {//删除产品时 重置安装服务的配送方式及空间
+                                if(!tempItem){
+                                    tempItem = el;
+                                }
+                                if(el.canal === 'wuliu' || el.canal === 'kuaidi'){
+                                    tempItem = el;
+                                    temp = true;
+                                }
                             }
                         }
-                    }
+                    });
                 });
-            });
-            if(num > 0){
-                const sum = Number(serviceNum*item.price);
-                item.num = serviceNum;
-                item.sum = sum;
-                item.canal = tempItem.canal;
-                item.space = tempItem.space;
-                item.channel = tempItem.channel;
-                item.send_time = tempItem.send_time;
-                commit('UPDATEGOODDATA',{index:serviceIndex,goodData:item});//更新安装服务
-            }else{//删除安装服务
-                commit('DELETEGOOD',serviceIndex);
+                if(num > 0){
+                    const sum = Number(serviceNum*item.price);
+                    item.num = serviceNum;
+                    item.sum = sum;
+                    item.canal = tempItem.canal;
+                    item.space = tempItem.space;
+                    item.channel = tempItem.channel;
+                    item.send_time = tempItem.send_time;
+                    commit('UPDATEGOODDATA',{index:serviceIndex,goodData:item});//更新安装服务
+                }else{//删除安装服务
+                    commit('DELETEGOOD',serviceIndex);
+                }
+            }else{
+                throw {message:'安装服务获取关联产品错误'};
             }
         }
     }

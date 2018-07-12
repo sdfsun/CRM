@@ -13,43 +13,38 @@
                         :data="authorityLists[props.$index].menus"
                         stripe
                         border
-                        style="width: 100%;text-align: center;flex:1;overflow: auto;"
+                        style="width: 100%;text-align: center;flex:1;overflow: auto;border-bottom: 1px solid #ebeef5;"
                         header-row-class-name='header_row_style'>
                         <el-table-column
                             type="index"
                             :index="1"
                             label='序号'
-                            min-width='50'
-                            >
+                            min-width='50'>
                         </el-table-column>
                         <el-table-column
                             prop='menu_title'
                             label="菜单名称"
-                            min-width='120'
-                            >
+                            min-width='120'>
                         </el-table-column>
                         <el-table-column
                             prop='menu_url'
-                            label="菜单路径"
-                            >
+                            label="菜单路径">
                         </el-table-column>
                         <el-table-column
                             prop='menu_type'
-                            label="菜单类型"
-                            >
+                            label="菜单类型">
                         </el-table-column>
                         <el-table-column
                             label="是否开启"
-                            min-width='70'
-                            >
-                                <template slot-scope='scope'>
-                                    <span v-if='scope.row.disabled === "true"'>激活</span>
-                                    <span v-else>关闭</span>
-                                </template>
+                            min-width='70'>
+                            <template slot-scope='scope'>
+                                <span v-if='scope.row.disabled === "true"'>激活</span>
+                                <span v-else>关闭</span>
+                            </template>
                         </el-table-column>
                         <el-table-column
-                          label="操作"
-                          width="60">
+                            label="操作"
+                            width="60">
                             <template slot-scope="scope">
                                 <el-button
                                 @click.native.prevent="handleEdit(2,scope.row)"
@@ -66,30 +61,26 @@
                 type="index"
                 :index="1"
                 label='序号'
-                width='100'
-                >
+                width='100'>
             </el-table-column>
             <el-table-column
                 prop='menu_title'
-                label="菜单名称"
-                >
+                label="菜单名称">
             </el-table-column>
             <el-table-column
                 prop='menu_type'
-                label="菜单类型"
-                >
+                label="菜单类型">
             </el-table-column>
             <el-table-column
-                label="是否开启"
-                >
+                label="是否开启">
                 <template slot-scope='scope'>
                     <span v-if='scope.row.disabled === "true"'>激活</span>
                     <span v-else>关闭</span>
                 </template>
             </el-table-column>
             <el-table-column
-              label="操作"
-              width="120">
+                label="操作"
+                width="120">
                 <template slot-scope="scope">
                     <el-button
                     @click.native.prevent="handleEdit(1,scope.row)"

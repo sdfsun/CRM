@@ -59,7 +59,11 @@ export default {
         state.cumtomFormData.sum_money = data.sum_money;
         state.cumtomFormData.last_discount = data.last_discount;
         state.cumtomFormData.uFinPay = data.uFinPay;
-        state.cumtomFormData.searchPhone = data.mobile;
+        if(data.id){//crm账户
+            state.cumtomFormData.searchPhone = data.mobile ? data.mobile : data.tel;
+        }else{//商城账户
+            state.cumtomFormData.searchPhone = data.searchPhone;
+        }
         // state.status = data.status;
         // state.status_name = data.status_name;
         // state.tel = data.tel;
@@ -82,7 +86,7 @@ export default {
             state.discount = 0;//门店优惠金额
             state.payMoney = 0;//实付金额
             state.freight = 0;//运费
-            state.buyInstallFlag = false;//是否可购买安装服务
+            state.buyInstallFlag = 'false';//是否可购买安装服务
             state.checkoutSwitch = 0;//结算页开关 0为显示第一页 1位显示第二页
             state.checkoutDetailInfo = {};//结算页第二页明细
             state.orderid = '';//订单号
@@ -119,7 +123,7 @@ export default {
         state.member_id = data;
     },
     [types.SETBUYINSTALLFLAG](state,data) {//设置是否可购买安装服务
-        state.buyInstallFlag = data;
+        state.buyInstallFlag = data ? 'true' : 'false';
     },
     [types.ADDSERVICES](state,data) {//添加安装服务，重置购物车
         state.goods = data;

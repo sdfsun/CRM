@@ -2,6 +2,16 @@
     <section class="measurementEdit_container">
         <el-form ref="measurementForm" :model="measurementForm" :rules='measurementFormRules' label-width="0" >
             <el-row :gutter="10">
+                <el-col :span="24">
+                    <el-form-item label='是否创建外出单：' prop='is_outgoing' label-width="110px">
+                        <el-radio-group v-model="measurementForm.is_outgoing">
+                            <el-radio label="true">是</el-radio>
+                            <el-radio label="false">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="10">
                 <el-col :span="7">
                     <el-form-item prop='measure_name'>
                         <el-input  v-model="measurementForm.measure_name" placeholder='测量人名称' readonly='true'></el-input>
@@ -38,41 +48,56 @@
             </el-row>
             <el-row :gutter="20">
                 <el-col :span="12">
+                    <p class="wrapper-txt">测量成功</p>
                     <el-form-item prop='information' class='form_item_style_width'>
                         <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="measurementForm.information" placeholder='量尺信息'></el-input>
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
                     <el-form-item prop='feedback' class='form_item_style_width'>
                         <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="measurementForm.feedback" placeholder='信息回馈'></el-input>
                     </el-form-item>
+                    <el-form-item prop='imageLists'>
+                        <el-upload
+                                ref='upload'
+                                action="/crm-upload_image.html"
+                                list-type="picture-card"
+                                name='mypic[]'
+                                :file-list="measurementForm.imageLists"
+                                :multiple='true'
+                                :on-preview="handlePictureCardPreview"
+                                :before-upload="beforeAvatarUpload"
+                                :on-remove="handleRemove"
+                                :on-success='handleSuccess'>
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
+                            <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
+                                <el-carousel-item v-for="(item,index) in measurementForm.imageLists" :key="index" :name='item.url'>
+                                    <img :src="item.url" class="image_carousel_item">
+                                </el-carousel-item>
+                            </el-carousel>
+                        </el-dialog>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <p class="wrapper-txt">测量失败</p>
+                    <el-form-item prop='change_times'>
+                        <el-date-picker
+                            v-model="measurementForm.change_times"
+                            type="datetime"
+                            placeholder="更改测量时间"
+                            value-format='yyyy-MM-dd HH:mm:ss'>
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item prop='remarks' class='form_item_style_width'>
+                        <el-input type="textarea" :autosize="{ minRows: 4}"  v-model="measurementForm.remarks" placeholder='测量失败备注'></el-input>
+                    </el-form-item>
                 </el-col>
             </el-row>
-            <el-form-item prop='imageLists'>
-                <el-upload
-                    ref='upload'
-                    action="/crm-upload_image.html"
-                    list-type="picture-card"
-                    name='mypic[]'
-                    :file-list="measurementForm.imageLists"
-                    :multiple='true'
-                    :on-preview="handlePictureCardPreview"
-                    :before-upload="beforeAvatarUpload"
-                    :on-remove="handleRemove"
-                    :on-success='handleSuccess'>
-                    <i class="el-icon-plus"></i>
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-                    <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
-                        <el-carousel-item v-for="(item,index) in measurementForm.imageLists" :key="index" :name='item.url'>
-                            <img :src="item.url" class="image_carousel_item">
-                        </el-carousel-item>
-                    </el-carousel>
-                </el-dialog>
-            </el-form-item>
+
         </el-form>
         <div class="btns">
-            <el-button type="primary" @click="onSubmit('measurementForm')" class='submit_btn'>保存</el-button>
+            <el-button type="primary" @click="onSubmit('measurementForm','1')" class='submit_btn'>测量成功</el-button>
+            <el-button type="primary" @click="onSubmit('measurementForm','0')" class='submit_btn'>测量失败</el-button>
         </div>
     </section>
 </template>
@@ -95,7 +120,10 @@
                     image_id:[],//量尺图片
                     information:'',//量尺信息
                     feedback:'',//信息回馈
-                    imageLists:[]//图片列表
+                    imageLists:[],//图片列表
+                    is_outgoing:'true',//是否创建外出单
+                    change_times:'',//更改测量时间
+                    remarks:''//测量失败备注
                 },
                 initialIndex:0,
                 submitBtnStatus:false,//保存按钮是否可点击
@@ -147,6 +175,7 @@
                 delete this.measurementForm['id'];
                 delete this.measurementForm['createtime'];
                 delete this.measurementForm['update_time'];
+                this.measurementForm.is_outgoing = 'true';
             },
             handleRemove(file, fileList) {
                 try {
@@ -205,7 +234,7 @@
             measureTimeHandle(val){//选择开始量尺时间后 自动赋值给结束时间
                 this.measurementForm.end_time = val;
             },
-            onSubmit(formName){
+            onSubmit(formName,type){
                 if(this.submitBtnStatus === true){
                     return false;
                 }
@@ -214,7 +243,8 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.submitBtnStatus = true;
-                            let tempDuration = getDuration(this.measurementForm.measure_time,this.measurementForm.end_time);
+                            let tempFormData = Object.assign({},this.measurementForm);
+                            let tempDuration = getDuration(tempFormData.measure_time,tempFormData.end_time);
                             if(tempDuration < 0){
                                 this.$message({
                                     message:'测量结束时间不能小于测量开始时间',
@@ -223,10 +253,11 @@
                                 this.submitBtnStatus = false;
                                 return false;
                             }else{
-                                this.measurementForm.duration  = tempDuration;
+                                tempFormData.duration  = tempDuration;
                             }
-                            delete this.measurementForm.imageLists;
-                            measure_save(this.measurementForm).then(res=>{
+                            delete tempFormData.imageLists;
+                            tempFormData.measure_state = type;
+                            measure_save(tempFormData).then(res=>{
                                 this.submitBtnStatus = false;
                                 if(res.error){
                                     this.$message({
@@ -288,5 +319,9 @@
     .image_item_upload{
         width: 148px;
         height: 148px;
+    }
+    .wrapper-txt{
+        line-height: 36px;
+        font-weight: bold;
     }
 </style>

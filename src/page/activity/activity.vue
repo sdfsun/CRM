@@ -1,36 +1,32 @@
 <template>
-    <section class="customerSource_container">
+    <section class="customerActivity_container">
         <el-button type="primary" icon='el-icon-plus' class='add_source' @click='insertCustomSource'>新建活动</el-button>
         <el-table
             :data="activityLists"
-            stripe
             border
             style="width: 100%;text-align: center;flex:1;overflow: auto;"
-            header-row-class-name='header_row_style'>
+            header-row-class-name='header_row_style'
+            :row-class-name="setRowClassNameHandle">
             <el-table-column
                 type="index"
                 :index="1"
                 label='序号'
-                width='100'
-                >
+                width='100'>
             </el-table-column>
             <el-table-column
                 prop="id"
                 label="id"
-                v-if='false'
-                >
+                v-if='false'>
             </el-table-column>
             <el-table-column
                 prop="title"
                 label="活动主题"
-                min-width='130px'
-                >
+                min-width='130px'>
             </el-table-column>
             <el-table-column
                 prop='content'
                 label="活动内容"
-                min-width='180px'
-                >
+                min-width='180px'>
             </el-table-column>
             <el-table-column
                 prop="start_time"
@@ -52,9 +48,9 @@
                 min-width='150px'>
             </el-table-column>
             <el-table-column
-              label="操作"
-              fixed="right"
-              width="120">
+                label="操作"
+                fixed="right"
+                width="120">
                 <template slot-scope="scope">
                     <el-button
                     @click.native.prevent="handleEdit(scope.row)"
@@ -133,6 +129,11 @@
                     });
                 }
             },
+            setRowClassNameHandle(data){
+                if(data.row && data.row.disabled === 'true'){//激活
+                    return 'activeRowName';
+                }
+            },
             insertCustomSource(){//新增记录
                 this.currentrow = {};
                 this.activityDialogVisible = true;
@@ -175,7 +176,7 @@
     }
 </script>
 <style scoped>
-    .customerSource_container{
+    .customerActivity_container{
         padding: 20px 30px;
     }
     .add_source{

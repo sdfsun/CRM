@@ -155,7 +155,6 @@ body{
     border-radius: 10px;
     width: 763px;
     min-width: 763px;
-    min-height: 500px;
 }
 /*去除输入框校验成功的border样式*/
 .el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
@@ -276,10 +275,18 @@ body{
     z-index: 999;
 }
 .communicationAndBasicDialog .el-tabs--border-card > .el-tabs__content{
-    padding: 30px 60px !important;
+    padding: 30px 0 !important;
 }
 .communicationAndBasicDialog .el_tabs_footer > .el-tabs__content .el-tab-pane{
     height: auto !important;
+}
+.communicationAndBasicDialog .el-tabs--border-card > .el-tabs__content .basicForm_container{
+    padding-left: 20px;
+    padding-right: 40px;
+}
+.communicationAndBasicDialog .el-tabs--border-card > .el-tabs__content .communicationEdit_container{
+    padding-left: 60px;
+    padding-right: 60px;
 }
 /*此时处于上拉状态*/
 .custom_container.up .el-tabs__item#tab-8:last-child i:before{
@@ -304,11 +311,18 @@ body{
     margin-left: 0 !important;
 }
 .basicForm_container .el-form-item label + .el-form-item__content{
-    margin-left: 80px !important;
+    margin-left: 110px !important;
 }
 /*基本信息弹框*/
 .custom_container .basicInfoDialog .el-form-item.is-success .el-input__inner{
     border-color: #dcdfe6;
+}
+.custom_container .basicInfoDialog .el-dialog,.communicationAndBasicDialog .el-dialog{
+    width: 1030px;
+    min-width: 1030px;
+}
+.custom_container .basicInfoDialog .el-dialog__body{
+    padding: 20px 40px 20px 20px;
 }
 .custom_container .budget_item .el-input__suffix,.custom_container .acreage_item .el-input__suffix{
     right: 13px;
@@ -877,7 +891,6 @@ body{
 .historyOrders-container .el-dialog{
     width: 720px;
     min-width: 720px;
-    height: 697px;
 }
 /*历史订单物流进度*/
 .historyOrders-container .el-step__head.is-wait,.historyOrders-container .el-step__head.is-process{
@@ -933,5 +946,42 @@ body{
     height: auto;
 }
 .historyOrders-container .el-collapse-item__header{
-    padding: 0 30px;
+    padding: 0 20px;
+}
+.transaction-tooltip.el-tooltip__popper{
+    width: auto;
+    text-align: center;
+    max-width: 85%;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+.transaction-tooltip.el-tooltip__popper{
+    background: transparent;
+    padding: 0;
+    border-color: #1876ef;
+    border-radius: 10px;
+}
+.transaction-tooltip.el-tooltip__popper .el-table{
+    border-radius: 10px;
+}
+.el-badge__content.is-fixed{
+    right: 20px;
+    max-width: 40px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+.transaction-tooltip.el-tooltip__popper[x-placement^="top"] .popper__arrow,
+.transaction-tooltip.el-tooltip__popper .popper__arrow::after{
+    border-top-color: #1876ef;
+}
+
+.customerActivity_container .activeRowName{
+    background-color: #FBDDA9;
+}
+.customerActivity_container .activeRowName.hover-row{
+    color: #F25406;
+}
+.customerActivity_container .activeRowName.hover-row td{
+    background-color: #FBDDA9;
 }

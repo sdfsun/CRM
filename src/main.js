@@ -50,6 +50,8 @@ new Vue({
 store.dispatch('setMemberRoleId','memberRoleId');
 //设置客户资源
 store.dispatch('setCustomSource','customSource');
+//设置客户状态
+store.dispatch('setCustomStatus','customStatus');
 //设置用户等级
 store.dispatch('setMemberRoles','memberRoles');
 //设置活动列表

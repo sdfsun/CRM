@@ -1,8 +1,8 @@
 <template>
     <section class="customerSource_container">
-        <el-button type="primary" icon='el-icon-plus' class='add_source' @click='insertCustomSource'>新建来源记录</el-button>
+        <el-button type="primary" icon='el-icon-plus' class='add_source' @click='insertCustomSource'>新建状态记录</el-button>
         <el-table
-            :data="sourceLists"
+            :data="statusLists"
             stripe
             border
             style="width: 100%;text-align: center;flex:1;overflow: auto;"
@@ -23,7 +23,7 @@
                         </el-table-column>
                         <el-table-column
                             prop="name"
-                            label="来源名称"
+                            label="状态名称"
                             min-width='120'>
                             <template slot-scope='scope'>
                             <span v-if='scope.row.editFlag'>
@@ -33,24 +33,24 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                            prop="source_order"
+                            prop="state_order"
                             label="排序"
                             min-width='120'>
                             <template slot-scope='scope'>
                             <span v-if='scope.row.editFlag'>
-                                <el-input  v-model="scope.row.source_order"></el-input>
+                                <el-input  v-model="scope.row.state_order"></el-input>
                             </span>
-                                <span v-else>{{scope.row.source_order}}</span>
+                                <span v-else>{{scope.row.state_order}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
                             prop="parent_id"
                             label="父级菜单"
-                            min-width='120'>
+                            min-width='150'>
                             <template slot-scope='scope'>
                                 <el-select v-model="scope.row.parent_id" placeholder="请选择父节点" clearable v-if='scope.row.editFlag'>
                                     <el-option
-                                        v-for="item in sourceLists"
+                                        v-for="item in statusLists"
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id">
@@ -106,7 +106,7 @@
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="来源名称"
+                label="状态名称"
                 min-width="120px">
                 <template slot-scope='scope'>
                     <span v-if='scope.row.editFlag'>
@@ -116,14 +116,14 @@
                 </template>
             </el-table-column>
             <el-table-column
-                    prop="source_order"
+                    prop="state_order"
                     label="排序"
                     min-width='120'>
                 <template slot-scope='scope'>
                     <span v-if='scope.row.editFlag'>
-                        <el-input  v-model="scope.row.source_order"></el-input>
+                        <el-input  v-model="scope.row.state_order"></el-input>
                     </span>
-                <span v-else>{{scope.row.source_order}}</span>
+                <span v-else>{{scope.row.state_order}}</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -173,14 +173,14 @@
 </template>
 <script>
     import {mapMutations} from 'vuex';
-    import {source_index,source_save} from '@/service/getData';
+    import {state_index,state_save} from '@/service/getData';
     import { setStore } from '@/utils/';
 
     export default{
-        name:'customerSource',
+        name:'customerStatus',
         data(){
             return{
-                sourceLists:[],
+                statusLists:[],
                 submitBtnStatus:false
             }
         },
@@ -189,12 +189,11 @@
         },
         methods:{
             ...mapMutations([
-                'SETCUSTOMSOURCE'
+                'SETCUSTOMSTATUS'
             ]),
-            setSourceDatas(data){
-                const that = this;
-                setStore("customSource",data);
-                this.SETCUSTOMSOURCE(data);
+            setStatusDatas(data){
+                setStore("customStatus",this.statusLists);
+                this.SETCUSTOMSTATUS(this.statusLists);
                 if(data){
                     data.forEach( function(el, index) {
                         el.is_open = el.is_open === 'true'?true:false;
@@ -208,15 +207,15 @@
                             el.menus = [];
                         }
                     });
-                    this.sourceLists = data;
+                    this.statusLists = data;
                 }else{
-                    this.sourceLists = [];
+                    this.statusLists = [];
                 }
             },
             async init(){
                 try {
                     let that = this;
-                    let res = await source_index();
+                    let res = await state_index();
                     if(res.error){
                         this.$message({
                             message: res.error,
@@ -229,7 +228,7 @@
                         }
                         return false;
                     }
-                    this.setSourceDatas(res.success);
+                    this.setStatusDatas(res.success);
                 } catch(e) {
                     this.$message({
                         message: e.message,
@@ -238,26 +237,19 @@
                 }
             },
             insertAuthority(index,parent_id) {//新增子级
-                try {
-                    this.sourceLists[index].menus.push({editFlag:true,is_open:true,parent_id:parent_id});
-                }catch (e) {
-                    this.$message({
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
+                this.statusLists[index].menus.push({editFlag:true,is_open:true,parent_id:parent_id})
             },
             insertCustomSource(){//新增父级记录
-                this.sourceLists.push({editFlag:true,is_open:true,parent_id:'0'});
+                this.statusLists.push({editFlag:true,is_open:true,parent_id:'0'});
             },
             handleEdit(pindex,cindex,type){//设置单元格可编辑
                 try {
                     if(type){//子菜单
-                        this.sourceLists[pindex].menus[cindex].editFlag = true;
-                        this.$set(this.sourceLists[pindex].menus,cindex,this.sourceLists[pindex].menus[cindex]);
+                        this.statusLists[pindex].menus[cindex].editFlag = true;
+                        this.$set(this.statusLists[pindex].menus,cindex,this.statusLists[pindex].menus[cindex]);
                     }else{//父菜单
-                        this.sourceLists[pindex].editFlag = true;
-                        this.$set(this.sourceLists,pindex,this.sourceLists[pindex]);
+                        this.statusLists[pindex].editFlag = true;
+                        this.$set(this.statusLists,pindex,this.statusLists[pindex]);
                     }
                 }catch (e) {
                     this.$message({
@@ -273,7 +265,7 @@
                     }
                     if(formData.name === ''){
                         this.$message({
-                            message: '来源名称不能为空',
+                            message: '状态名称不能为空',
                             type: 'error'
                         });
                         return false;
@@ -286,7 +278,7 @@
                         return false;
                     }
                     this.submitBtnStatus = true;
-                    const res = await source_save(formData);
+                    const res = await state_save(formData);
                     this.submitBtnStatus = false;
                     if(res.error){
                         this.$message({
@@ -304,7 +296,7 @@
                         message: res.success,
                         type: 'success'
                     });
-                    this.setSourceDatas(res.data);
+                    this.setStatusDatas(res.data);
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({
@@ -316,9 +308,9 @@
             handleDelete(pindex,cindex,type){//删除未保存的数据
                 try {
                     if(type){//子菜单
-                        this.sourceLists[pindex].menus.splice(cindex,1);
+                        this.statusLists[pindex].menus.splice(cindex,1);
                     }else{//父菜单
-                        this.sourceLists.splice(pindex,1);
+                        this.statusLists.splice(pindex,1);
                     }
                 }catch (e) {
                     this.$message({

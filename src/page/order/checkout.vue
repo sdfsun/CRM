@@ -12,7 +12,7 @@
                             :trigger-on-focus="false"
                             :hide-loading="true"
                             :popper-class="searchCrmResults.length>0?'':'hidePopup'"
-                            v-model="cumtomFormData.searchPhone"
+                            v-model="searchPhone"
                             :value="cumtomFormData.searchPhone"
                             :fetch-suggestions="searchCrmInfomation"
                             placeholder="请输入用户联系方式"
@@ -30,7 +30,12 @@
                         <el-button type="primary" class="getHistoryOrders" @click="resetOrderHandle">重新下单</el-button>
                     </el-col>
                 </el-row>
-                <p class="tips">{{tips}}</p>
+                <template v-if="cumtomFormData.searchPhone">
+                    <p class="tips" v-if="cumtomFormData.information_id">该号码为CRM用户</p>
+                    <p class="tips" v-else-if="member_id">该号码为商城用户</p>
+                    <p class="tips" v-else>该号码既不是CRM用户，也不是商城用户</p>
+                </template>
+                <p class="tips" v-else>*请先输入客户联系方式判断是否为CRM用户，再行下单</p>
             </div>
             <div class="custom-info">
                 <el-row :gutter="20" v-if="cumtomFormData.information_id">
@@ -108,7 +113,7 @@
                                 <i class="crmiconfont icon-ic_folder_close" style="margin-right: 7px;"></i>添加
                             </template>
                             <template v-else>
-                                上传附件
+                                订单附件
                             </template>
                         </el-button>
                     </el-col>
@@ -164,7 +169,7 @@
                     label="产品名称"
                     min-width='180px'
                     class-name="alignCenterColumn"
-                    :show-overflow-tooltip='true'>
+                    show-overflow-tooltip>
                     <template slot-scope='scope'>
                         <el-input  v-model="scope.row.product_name"  v-if="scope.row.is_stand == 1"></el-input>
                         <span v-else>{{scope.row.product_name}}</span>
@@ -187,9 +192,23 @@
                     label="定制需求"
                     min-width='140px'
                     class-name="alignCenterColumn"
-                    :show-overflow-tooltip='true'>
+                    show-overflow-tooltip>
                     <template slot-scope='scope'>
-                        <el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>
+                        <el-tooltip class="item" effect="dark" :content="scope.row.orderDRemark" placement="top-start" :disabled="!scope.row.orderDRemark">
+                            <el-button style="padding: 0;border: none;">
+                                <el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>
+                            </el-button>
+                        </el-tooltip>
+                        <!--<template v-if="scope.row.orderDRemark">-->
+                            <!--<el-tooltip class="item" effect="dark" :content="scope.row.orderDRemark" placement="top-start">-->
+                                <!--<el-button style="padding: 0;border: none;">-->
+                                    <!--<el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>-->
+                                <!--</el-button>-->
+                            <!--</el-tooltip>-->
+                        <!--</template>-->
+                        <!--<template v-else>-->
+                            <!--<el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>-->
+                        <!--</template>-->
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -354,6 +373,16 @@
                             prop='orderCount'
                             label="数量"
                             min-width='90px'>
+                        </el-table-column>
+                        <el-table-column
+                            prop='orderprice'
+                            label="商品均摊价"
+                            min-width='130px'>
+                        </el-table-column>
+                        <el-table-column
+                            prop='sapPrice'
+                            label="商品入SAP单价"
+                            min-width='130px'>
                         </el-table-column>
                         <el-table-column
                             prop='orderDRemark'
@@ -534,7 +563,7 @@
                             label="是否定制"
                             min-width='80px'>
                             <template slot-scope="scope">
-                                <span>{{scope.row.is_custom == 'true' ? '是' : '否'}}</span>
+                                <span>{{scope.row.is_stand == '1' ? '是' : '否'}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -677,7 +706,7 @@
         name:'checkout',
         data(){
             return{
-                tips:'*请先输入客户联系方式判断是否为CRM用户，再行下单',
+                searchPhone:'',
                 areaOptions:region,
                 uploadDialogVisible:false,
                 uploadReadonlyFlag:false,
@@ -823,17 +852,17 @@
                         this.searchCb = cb;
                     }
                     if(typeof queryString !== 'string'){//回车事件 或 点击事件
-                        if(!this.cumtomFormData.searchPhone){
+                        if(!this.searchPhone){
                             return false;
                         }
-                        if(!phoneRegx.test(this.cumtomFormData.searchPhone)){
+                        if(!phoneRegx.test(this.searchPhone)){
                             this.$message({
                                 message: '请输入正确的手机格式',
                                 type: 'error'
                             });
                             return false;
                         }
-                        const res = await post_login(this.cumtomFormData.searchPhone);
+                        const res = await post_login({'mobile':this.searchPhone});
                         if(res.error){
                             this.$message({
                                 message: res.error,
@@ -846,21 +875,17 @@
                             }
                             return false;
                         }
-                        if(res.success.information && res.success.information.length == 1){//一个账户
+                        if(res.success.information && res.success.information.length == 1){//一个账户 CRM或商城账户
                             //赋值
-                            this.UPDATECUSTOMINFO(res.success.information[0]);
-                            if(res.success.information[0] && res.success.information[0].id){//CRM用户
-                                this.tips = '该号码为CRM用户';
-                            }else{
-                                this.tips = '该号码为商城用户';
-                            }
+                            let tempData = res.success.information[0];
+                            tempData.searchPhone = this.searchPhone;
+                            this.UPDATECUSTOMINFO(tempData);
                             this.areaChangeHandle();
                         }else if(res.success.information.length >1){//多个crm账户
                             this.searchCrmResults = res.success.information;
                             this.searchCb(this.searchCrmResults);
-                        }else{
-                            this.tips = '该号码既不是CRM用户，也不是商城用户';
-                            this.UPDATECUSTOMINFO({});
+                        }else{//商城账户 没地址信息
+                            this.UPDATECUSTOMINFO({searchPhone : this.searchPhone});
                             this.areaChangeHandle();
                         }
                         this.SETMEMBERID(res.success.member_id);
@@ -875,7 +900,6 @@
             handleSelect(item){//选择CRM账户
                 try {
                     this.UPDATECUSTOMINFO(item);
-                    this.tips = '该号码为CRM用户';
                     this.searchCrmResults = [];
                     this.areaChangeHandle();
                 }catch(e){
@@ -931,7 +955,12 @@
                     if(item.is_stand == 1 && item.canal == 'ziti'){
                         item.canal = this.method;
                     }
-                    this.UPDATEGOODDATA({index:index,goodData:item});
+                    if(!item.is_standSelected && item.price != item.bprice){//取消定制 且价格改变过，则需要重置价格
+                        item.price = item.bprice;
+                        this.priceChangeHandle(index,item);
+                    }else{
+                        this.UPDATEGOODDATA({index:index,goodData:item});
+                    }
                 }catch (e) {
                     this.$message({
                         message: e.message,
@@ -1266,6 +1295,7 @@
                     if(type == 'page'){
                         formData.showLoad = '3';
                     }
+                    formData.trans_status = 'true';//去掉作废订单
                     const res = await order_detail(this.pageForm.page,15,formData);
                     if(res.error){
                         this.$message({
@@ -2335,7 +2365,8 @@
         height: 0;
         border-left: 46px solid transparent;
         border-top: 46px solid transparent;
-        border-right: 46px solid;
+        border-right: 46px solid #F25406;
+        display: none;
     }
     .payOrderDialog li .el-icon-check:before{
         content: "\E611";
@@ -2382,7 +2413,7 @@
         border: 3px solid #F25406;
     }
     .payOrderDialog li.active .el-icon-check{
-        border-right-color: #F25406;
+        display: block;
     }
     .payOrderDialog .payOrder-btns{
         background: #f1f1f1;

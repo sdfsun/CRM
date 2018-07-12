@@ -41,6 +41,7 @@
         methods:{
             ...mapMutations([
                 'SETCUSTOMSOURCE',
+                'SETCUSTOMSTATUS',
                 'SETMEMBERROLES',
                 'SETMEMBERROLEID',
                 'SETACTIVITYS',
@@ -80,6 +81,10 @@
                                     setStore("customSource",res.data.source);
                                     this.SETCUSTOMSOURCE(res.data.source);
                                 }
+                                if(res.data.customer_state){
+                                    setStore("customStatus",res.data.customer_state);
+                                    this.SETCUSTOMSTATUS(res.data.customer_state);
+                                }
                                 //设置用户等级
                                 if(res.data.member_role){
                                     setStore("memberRoles",res.data.member_role);
@@ -105,10 +110,19 @@
                                     this.SETMENUS(res.data.menus);
 
                                     //设置跳转路径
-                                    let goPath = res.data.menus[0].menus[0].path;
-                                    setTimeout(function(){
-                                        that.$router.push(goPath);
-                                    },3000);
+                                    let menus = res.data.menus[0];
+                                    if(!menus || menus.length == 0){
+                                        this.$message({
+                                            message: '当前账户角色没有登录权限，请先联系管理员分配权限再登录',
+                                            type: 'error'
+                                        });
+                                        return false;
+                                    }else{
+                                        let goPath = menus.menus[0].path;
+                                        setTimeout(function(){
+                                            that.$router.push(goPath);
+                                        },3000);
+                                    }
                                 }
                             }
                         }).catch(error=>{

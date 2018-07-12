@@ -113,8 +113,10 @@
             <el-tag v-for='item in outlineTags' :key='item' @click.native='tagHandle(item)'>{{item}}</el-tag>
         </div>
         <div class="btns">
-            <el-button type="primary" @click="onSubmit('communicateForm','1')" class='submit_btn'>保存记录</el-button>
-            <el-button type="primary" @click="onSubmit('communicateForm','2')" class='submit_btn'>客户拒绝</el-button>
+            <el-button type="primary" @click="onSubmit('communicateForm','0')" class='submit_btn'>电话未通</el-button>
+            <el-button type="primary" @click="onSubmit('communicateForm','1')" class='submit_btn'>下单结案</el-button>
+            <el-button type="primary" @click="onSubmit('communicateForm','3')" class='submit_btn'>客户拒绝</el-button>
+            <el-button type="primary" @click="onSubmit('communicateForm','2')" class='submit_btn'>保存记录</el-button>
         </div>
     </section>
 </template>
@@ -155,7 +157,7 @@
                     outline:'',//沟通概要
                     estimate_times:''//预计回访时间
                 },
-                outlineTags:['打了无人接听','打通了客户没空','有接电话无需测量'],
+                outlineTags:['打通了客户没空','有接电话无需测量'],
                 assignDesignerLists:[],//可指派设计师
                 submitBtnStatus:false,//保存按钮是否可点击
                 communicateFormRules:{//规则校验
@@ -277,9 +279,13 @@
                 let that = this;
                 let tempFormData = {};
                 tempFormData.information_id = this.informationItem.id;
-                tempFormData.information_type = type;
-                tempFormData.information = this.communicateBasicFormDatas.id?this.communicateBasicFormDatas:this.informationItem;
-                tempFormData.communicate = this.communicateForm;
+                tempFormData.current_state = type;
+                if(this.communicateBasicFormDatas.id){
+                    tempFormData.information = Object.assign({},this.communicateBasicFormDatas);
+                }else{
+                    tempFormData.information = Object.assign({},this.informationItem);
+                }
+                tempFormData.communicate = Object.assign({},this.communicateForm);
                 if(tempFormData.information.area){
                     if(typeof tempFormData.information.area === 'string' && tempFormData.information.area !== ''){//地区
                         let areaTempArr = tempFormData.information.area.split(" ");
@@ -289,6 +295,15 @@
                     tempFormData.information.area=[];
                 }
                 tempFormData.information.estimate_times = this.communicateForm.estimate_times;
+                //重置客户来源，客户状态
+                if(tempFormData.information.source){
+                    const len = tempFormData.information.source.length;
+                    tempFormData.information.source = tempFormData.information.source[len-1];
+                }
+                if(tempFormData.information.status){
+                    const len2 = tempFormData.information.status.length;
+                    tempFormData.information.status = tempFormData.information.status[len2-1];
+                }
                 communicate_save(tempFormData).then(res=>{
                     this.submitBtnStatus = false;
                     if(res.error){
@@ -336,7 +351,7 @@
                             }else{
                                 this.communicateForm.duration  = tempDuration;
                             }
-                            if(type === '2'){//客户拒绝
+                            if(type === '3'){//客户拒绝
                                 this.$confirm('是否确认客户拒绝？', '提示', {
                                     confirmButtonText: '确定',
                                     cancelButtonText: '取消',

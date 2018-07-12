@@ -71,7 +71,9 @@
             <span class="txt txt-4">收货人地区</span>
             <span class="txt txt-5">可用余额</span>
             <span class="txt txt-5">已支付</span>
-            <span class="txt txt-5">未支付</span>
+            <span class="txt txt-5">欠款</span>
+            <span class="txt txt-5">订单状态</span>
+            <span class="txt txt-5">是否定制</span>
         </div>
         <el-collapse accordion class="orderListsContent" v-model="historyActiveIndex" ref="orderListsContent">
             <el-collapse-item :name="index" v-for="(item,index) in historyOrderDatas" :key="index">
@@ -86,6 +88,9 @@
                         <span class="txt txt-5">{{item.cumtomFormData.sum_money}}</span>
                         <span class="txt txt-5">{{item.finPay}}</span>
                         <span class="txt txt-5" style="color: #F25406;">{{item.uFinPay}}</span>
+                        <span class="txt txt-5" v-if="item.cumtomFormData.information_id">{{item.status === 'active' ? '未推送' : item.status === 'finish' ? '已推送' : '作废'}}</span>
+                        <span class="txt txt-5" v-else>{{item.status === 'active' ? '未支付' : item.status === 'finish' ? '已支付' : '作废'}}</span>
+                        <span class="txt txt-5">{{item.is_custom === 'true' ? '是' : '否'}}</span>
                     </div>
                     <div class="header-right">
                         <span class="txt choose-color" style="margin-right: 0;">展开<i class="crmiconfont icon-zhankai" style="font-size: 12px;margin-left: 5px;"></i></span>
@@ -126,7 +131,7 @@
                                 label="是否定制"
                                 min-width='80px'>
                                 <template slot-scope="scope">
-                                    <span>{{scope.row.is_custom == 'true' ? '是' : '否'}}</span>
+                                    <span>{{scope.row.is_stand == '1' ? '是' : '否'}}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -174,8 +179,10 @@
                         </el-table>
                         <div class="footer-btns">
                             <el-button type="primary" @click="orderDeadHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active'">作废</el-button>
-                            <el-button type="primary" @click="orderArrearsHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active' && item.uFinPay > 0 && memberRoleId.is_arrears === 'true'">同意</el-button>
-                            <el-button type="primary" @click="orderSupplement(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active' && item.uFinPay > 0 && item.cumtomFormData.sum_money > item.uFinPay">补款</el-button>
+                            <template v-if="item.cumtomFormData.information_id">
+                                <el-button type="primary" @click="orderArrearsHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active' && item.uFinPay > 0 && memberRoleId.is_arrears === 'true'">同意</el-button>
+                                <el-button type="primary" @click="orderSupplement(item.orderid)" class='submit_btn supple_btn' v-if="item.status !== 'dead' && item.uFinPay > 0 && item.cumtomFormData.sum_money > item.uFinPay">补款</el-button>
+                            </template>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="订单信息">
@@ -183,14 +190,14 @@
                             <li>
                                 <p class="txt"><span class="t0">创建人工号：</span><span class="t1">{{item.usercode}}</span></p>
                                 <p class="txt"><span class="t0">下单时间：</span><span class="t1">{{item.createtime}}</span></p>
-                                <p class="txt"><span class="t0">CRM订单号：</span><span class="t1">{{item.orderid}}</span></p>
+                                <p class="txt" v-if="item.status === 'active'"><span class="t0">CRM订单号：</span><span class="t1">{{item.orderid}}</span></p>
                                 <p class="txt" v-if="item.order_id"><span class="t0">销售单号：</span><span class="t1">{{item.order_id}}</span></p>
                                 <p class="txt" v-if="item.tailor_id"><span class="t0">自提单号：</span><span class="t1">{{item.tailor_id}}</span></p>
                                 <p class="txt"><span class="t0">仓库交货时间：</span><span class="t1">{{item.cumtomFormData.sendProDate}}</span></p>
                                 <p class="txt" v-if="item.status == 'finish'"><span class="t0">配送方式：</span><span class="t1">{{item.method}}</span></p>
                                 <p class="txt"><span class="t0">付款方式：</span>
                                     <span class="t1">{{item.payment == 'wxf2fpay' ? '微信支付' : item.payment == 'alif2fpay' ? '支付宝支付' :
-                                        item.payment == 'pos' ? 'pos机支付' : item.payment == 'cash' ? '现金机支付' : '对公转账'}}</span>
+                                        item.payment == 'pos' ? 'pos机支付' : item.payment == 'cash' ? '现金支付' : '对公转账'}}</span>
                                 </p>
                             </li>
                             <li>
@@ -213,23 +220,31 @@
                         </ul>
                     </el-tab-pane>
                     <el-tab-pane label="订单进度">
-                        <ul class="orderInfo orderProgress">
-                            <li>
-                                <p class="txt"><span class="t0">2018-06-01  13:44</span><span class="t1">订单创建成功</span></p>
-                                <p class="txt"><span class="t0">2018-06-02  09:23</span><span class="t1">订单已经备货</span></p>
-                                <p class="txt">
-                                    <span class="t0">2018-06-02  09:23</span>
-                                    <span class="t1">订单全部商品发货完成，物流单号：
-                                        <span style="color: #1876EF;">中通快递123456789123121</span>
-                                        <a href="javascript:void(0);" @click="showProgressInfo">（可点击跟踪物流信息）</a>
-                                    </span>
+                        <div class="orderInfo orderProgress">
+                            <template v-for="progress in item.progress">
+                                <p class="txt" v-if="progress.ship_status == '0'">
+                                    <span class="t0">{{progress.operate_time}}</span>
+                                    <span class="t1">{{progress.content}}</span>
                                 </p>
-                                <p class="txt"><span class="t0">2018-06-02  09:23</span><span class="t1">订单完成</span></p>
-                            </li>
-                        </ul>
+                                <p class="txt" v-else>
+                                    订单
+                                    <el-tooltip placement="top">
+                                        <div slot="content">
+                                            <template v-for="pro in progress.content.t5">
+                                                {{pro}}
+                                                <br />
+                                            </template>
+                                        </div>
+                                        <el-button class="t2">{{progress.content.t0}}</el-button>
+                                    </el-tooltip>
+                                    {{progress.content.t1}}，
+                                    物流公司：<a :href="progress.content.t3" target="_blank"><span class="t2">{{progress.content.t2}}</span>（可点击进入物流公司网站跟踪配送），</a>
+                                    物流单号：<a href="javascript:void(0);" class="t2" @click="showProgressInfo(progress.content.t4)">{{progress.content.t4}}</a>
+                                </p>
+                            </template>
+                         </div>
                     </el-tab-pane>
                 </el-tabs>
-
             </el-collapse-item>
         </el-collapse>
         <!--分页-->
@@ -246,12 +261,9 @@
         <!--物流信息-->
         <el-dialog title="物流信息" :visible.sync="progressDialogVisible" >
             <el-steps direction="vertical" :active="1" >
-                <el-step title='2018-06-01 13:44:00' description="这是一段很长很长很长的描述性文字"></el-step>
-                <el-step title='2018-06-01 13:44:00' description="这是一段很长很长很长的描述性文字"></el-step>
-                <el-step title='2018-06-01 13:44:00' description="这是一段很长很长很长的描述性文字"></el-step>
-                <el-step title='2018-06-01 13:44:00' description="这是一段很长很长很长的描述性文字"></el-step>
-                <el-step title='2018-06-01 13:44:00' description="这是一段很长很长很长的描述性文字"></el-step>
-                <el-step title='2018-06-01 13:44:00' description="这是一段很长很长很长的描述性文字"></el-step>
+                <template v-for="item in logicDatas">
+                    <el-step :title='item.time' :description="item.context"></el-step>
+                </template>
             </el-steps>
         </el-dialog>
         <!--图片弹框-->
@@ -281,7 +293,7 @@
     </div>
 </template>
 <script>
-    import {order_detail,order_supplement,order_arrears,order_dead} from '@/service/getData';
+    import {order_detail,order_supplement,order_arrears,order_dead,order_logistic} from '@/service/getData';
     import {getUploadIcon} from '@/utils/index';
     import {mapMutations,mapState} from 'vuex';
     export  default {
@@ -298,6 +310,7 @@
                     transaction_id:'',//订单号
                     uFinPay:''
                 },
+                logicDatas:[],
                 historyActiveIndex:'',
                 pagination:{
                     page:1,//当前页数
@@ -316,6 +329,11 @@
             const height = this.$refs['orderListsContent'].$el.offsetHeight-80;
             const size = parseInt(height/49);
             this.pagination.pageSize = size;
+            const order_id = this.$route.query.order_id;
+            if(order_id){//从客户订单管理过来的
+                this.searchForm.transaction_id = order_id;
+                this.searchFormDatas();
+            }
         },
         computed:{
             ...mapState([
@@ -356,8 +374,36 @@
                 this.pagination.page = val;
                 this.searchFormDatas();
             },
-            showProgressInfo(){//查询订单物流进度
-                this.progressDialogVisible = true;
+            async showProgressInfo(logistic_no){//查询订单物流进度
+                try {
+                    if(!logistic_no){
+                        this.$message({
+                            message: '物流单号有误',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    const res = await order_logistic(logistic_no);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin === 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    this.logicDatas = res.success;
+                    this.progressDialogVisible = true;
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             },
             handlePictureCardPreview(file) {//图片预览
                 try {
@@ -603,12 +649,12 @@
     }
     .orderListsContent{
         flex: 1;
-        overflow: hidden;
+        overflow-y: auto;
         white-space: nowrap;
         border-bottom: none;
     }
     .searchForm{
-        padding: 20px 30px 0;
+        padding: 20px 20px 0;
     }
     .el-date-editor.el-input,.el-button{
         width: 100%;
@@ -648,17 +694,23 @@
         color: #4D4D4D;
         flex: 1;
     }
-    .orderProgress li{
-        width: 100%;
-    }
     .orderProgress .t0{
-        width: 100px;
+        width: auto;
         text-align: center;
         margin-right: 13px;
     }
     .orderProgress a{
         text-decoration: none;
         color: #4D4D4D;
+    }
+    .orderProgress .t2{
+        color: #1876EF;
+    }
+    .orderProgress .el-tooltip{
+        width: auto;
+        border: none;
+        line-height: 22px;
+        padding: 0;
     }
     .pagination-footer{
         height: 80px;
@@ -681,7 +733,7 @@
         height: 36px;
         line-height: 36px;
         background: #f4f4f4;
-        padding: 0 10px 0 61px;
+        padding: 0 10px 0 51px;
     }
     .pagination-footer .submit_btn{
         width: 120px;

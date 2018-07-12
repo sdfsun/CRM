@@ -9,23 +9,9 @@ export default{
         const customSources = JSON.parse(getStore(name));
         commit('SETCUSTOMSOURCE',customSources);
     },
-    updateCustomSource({state,commit},result){//更新客户来源
-        let customSources = [];
-        if(state.customSource && state.customSource.length>0){
-            customSources = state.customSource.slice();
-            const index = state.customSource.findIndex(function(item, index, arr) {
-                return item.id === result.id;
-            });
-            if(index !== -1){//编辑
-                customSources[index] = result;
-            }else{//新增
-                customSources.push(result);
-            }
-        }else{
-            customSources.push(result);
-        }
-        setStore("customSource",customSources);
-        commit('SETCUSTOMSOURCE',customSources);
+    setCustomStatus({commit},name){//设置客户来源
+        const customStatus = JSON.parse(getStore(name));
+        commit('SETCUSTOMSTATUS',customStatus);
     },
     setMemberRoles({commit},name){//设置用户等级
         const memberRoles = JSON.parse(getStore(name));

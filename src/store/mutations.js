@@ -28,5 +28,9 @@ export default {
     //设置菜单权限
     [types.SETMENUS](state,data){
         state.menus = data;
+    },
+    //设置客户状态
+    [types.SETCUSTOMSTATUS](state,customStatus){
+        state.customStatus = customStatus;
     }
 }

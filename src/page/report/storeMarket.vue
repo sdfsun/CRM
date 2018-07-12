@@ -250,6 +250,7 @@
         color: #1a1a1a;
         font-weight: normal;
         text-align: left;
+        line-height: 30px;
     }
     .market-wrapper{
         margin-bottom: 20px;

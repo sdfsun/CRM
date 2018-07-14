@@ -71,6 +71,11 @@
                 min-width='200px'
                 :show-overflow-tooltip='true'>
             </el-table-column>
+            <el-table-column
+                prop="current_state_name"
+                label="客户状态"
+                min-width='100px'>
+            </el-table-column>
         </el-table>
         <div class="btns">
             <el-button type="primary" icon='el-icon-plus' @click='addCommunicationRecord'>新增沟通记录</el-button>

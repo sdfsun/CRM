@@ -140,7 +140,7 @@
                     :data="cartGoods"
                     stripe
                     highlight-current-row
-                    class='checkoutTableInfo'
+                    class='checkoutTableInfo checkoutTableInfo-wrapper'
                     header-row-class-name='header_row_style'>
                 <el-table-column
                     type="index"
@@ -2057,6 +2057,7 @@
     .biaotoufujian{
         width: 140px;
         border-radius: 0;
+        padding: 5px 20px;
     }
     .custom-info {
         padding: 20px 50px 4px 20px;

@@ -113,9 +113,11 @@
             <el-tag v-for='item in outlineTags' :key='item' @click.native='tagHandle(item)'>{{item}}</el-tag>
         </div>
         <div class="btns">
-            <el-button type="primary" @click="onSubmit('communicateForm','0')" class='submit_btn'>电话未通</el-button>
-            <el-button type="primary" @click="onSubmit('communicateForm','1')" class='submit_btn'>下单结案</el-button>
-            <el-button type="primary" @click="onSubmit('communicateForm','3')" class='submit_btn'>客户拒绝</el-button>
+            <template v-if="!communicateForm.id">
+                <el-button type="primary" @click="onSubmit('communicateForm','0')" class='submit_btn'>电话未通</el-button>
+                <el-button type="primary" @click="onSubmit('communicateForm','1')" class='submit_btn'>下单结案</el-button>
+                <el-button type="primary" @click="onSubmit('communicateForm','3')" class='submit_btn'>客户拒绝</el-button>
+            </template>
             <el-button type="primary" @click="onSubmit('communicateForm','2')" class='submit_btn'>保存记录</el-button>
         </div>
     </section>

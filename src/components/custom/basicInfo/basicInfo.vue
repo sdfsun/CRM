@@ -125,13 +125,135 @@
                 <span class="txt_1">客户备注：</span>
                 <span class="txt_2">{{basicInfoRecord.remarks}}</span>
             </li>
+            <li class="special_assign" v-if="basicInfoRecord.status && basicInfoRecord.status[basicInfoRecord.status.length-1]<10">
+                <span class="txt_1">特殊指派设计师：</span>
+                <span class="txt_2">
+                    <el-button type="primary" @click='special_assign'>指派设计师</el-button>
+                </span>
+            </li>
         </ul>
+        <!--特殊指派设计师-->
+        <el-dialog title="指派设计师" :visible.sync="specialAssignDialogVisible" class="specialAssignDialog">
+            <el-form ref="assignForm" :model="assignForm" labelWidth="70px" :rules="assignFormRules">
+                <el-form-item prop='member_id' label="设计师">
+                    <el-select v-model="assignForm.member_id" clearable placeholder="设计师">
+                        <el-option
+                            v-for="item in designers"
+                            :key="item.member_id"
+                            :label="item.name"
+                            :value="item.member_id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item prop='status' label="客户状态">
+                    <el-cascader
+                        placeholder='请选择客户状态'
+                        :options="customStatus"
+                        v-model="assignForm.status"
+                        :props="statusDefaultProps"
+                        clearable>
+                    </el-cascader>
+                </el-form-item>
+                <div class="btns">
+                    <el-button type="primary" @click='submitForm' class="special_assign_btn">保存</el-button>
+                </div>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 <script>
+    import {special_assign} from '@/service/getData';
+    import {mapState} from 'vuex';
+
     export default{
         name:'basicInfo',
-        props:['basicInfoRecord']
+        props:['basicInfoRecord'],
+        data(){
+            return{
+                specialAssignDialogVisible:false,
+                assignForm:{
+                    member_id:"",//设计师
+                    status:[]//客户状态
+                },
+                statusDefaultProps:{
+                    value:'id',
+                    label:'name',
+                    children:'menus'
+                },
+                assignFormRules:{
+                    member_id: [
+                        { required: true, message: '请选择设计师', trigger: 'change' }
+                    ],
+                    status: [
+                        { required: true, message: '请选择客户状态', trigger: 'change' }
+                    ]
+                }
+            }
+        },
+        computed:{
+            ...mapState([
+                'customStatus',
+                'designers'
+            ])
+        },
+        methods:{
+            special_assign(){
+                this.specialAssignDialogVisible = true;
+            },
+            submitForm(){
+                try {
+                    const that = this;
+                    this.$refs['assignForm'].validate((valid) => {
+                        if (valid) {
+                            if(!this.basicInfoRecord.id){
+                                this.$message({
+                                    message: '客户信息有误，请刷新页面重试',
+                                    type: 'error'
+                                });
+                                return false;
+                            }
+                            let tempFormData = Object.assign({},this.assignForm);
+                            //重置客户状态
+                            if(tempFormData.status){
+                                const len2 = tempFormData.status.length;
+                                tempFormData.status = tempFormData.status[len2-1];
+                            }
+                            tempFormData.information_id = this.basicInfoRecord.id;
+                            special_assign(tempFormData).then(res=>{
+                                if(res.error){
+                                    this.$message({
+                                        message: res.error,
+                                        type: 'error'
+                                    });
+                                    if(res.nologin === 1){//未登录
+                                        setTimeout(()=>{
+                                            that.$router.push('/');
+                                        },3000);
+                                    }
+                                    return false;
+                                }
+                                this.$message({
+                                    message:res.success,
+                                    type:'success'
+                                });
+                                this.specialAssignDialogVisible = false;
+                                this.$emit('updateCustomBasicInfo',res.data);
+                            }).catch(error=>{
+                                this.$message({
+                                    message: error.message,
+                                    type: 'error'
+                                });
+                            });
+                        }
+                    });
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            }
+        }
     }
 </script>
 <style scoped>
@@ -183,5 +305,15 @@
         display: inline-block;
         vertical-align: middle;
         margin-left: 5px;
+    }
+    .special_assign .txt_1{
+        line-height:36px;
+    }
+    .btns{
+        text-align: center;
+        margin-top: 40px;
+    }
+    .special_assign_btn{
+        width: 120px;
     }
 </style>

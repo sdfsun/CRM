@@ -1,5 +1,5 @@
 <template>
-    <section class="report_container">
+    <section class="report_container storeMarket-container">
         <el-form ref="search_form" :model="searchForm" class='search_form'>
             <el-row :gutter="20">
                 <el-col :span="7">

@@ -7,12 +7,13 @@
                     <el-button type="primary" @click='logExportExcel'>导出</el-button>
                 </el-col>
                 <el-col :span='19' style='text-align: right;padding-right: 0;'>
-                    <template v-if='state_count.length>0' v-for="item in state_count">
-                        <el-badge :value="item.num" class="badge-item">
-                            <el-button size="small" @click="searchFormDatas(item.id,'badge')" :class="{active:id==item.id}">{{item.name}}</el-button>
+                    <template v-if='state_count.length>0'>
+                        <el-badge :value="item.num" class="badge-item" v-for="item in state_count" :key='item.id'>
+                            <el-button size="small" @click="searchFormDatas(item.id,'badge')" :class="{active:id == 'reception' ? item.id == searchForm.special : id == item.id}">{{item.name}}</el-button>
                         </el-badge>
                     </template>
-                    <el-button type="primary" class="totalNum">总数：{{totalNum}}</el-button>
+                    <el-button type="primary" v-if='memberRoleId.is_special == "true" && id == "0"' @click="deleteInformationHandle">删除</el-button>
+                    <p class="totalNum-wrapper">总数：<span>{{totalNum}}</span></p>
                 </el-col>
             </el-row>
             <el-form ref="search_form" :model="searchForm" class='search_form'>
@@ -33,6 +34,7 @@
                     <el-col :span='5' v-if='id === "0" || id === "reception"'>
                         <el-form-item class='search_form_item' prop='status'>
                             <el-cascader
+                                placeholder='客户状态'
                                 :options="customStatus"
                                 v-model="searchForm.status"
                                 :props="statusDefaultProps"
@@ -66,7 +68,7 @@
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="4" v-if='eTimesHandle()'>
+                    <el-col :span="4" v-show='eTimesHandle'>
                         <el-form-item class='search_form_item' prop='e_times'>
                             <el-select v-model="searchForm.e_times" clearable placeholder="预计回访时间" @change='searchFormDatas("times")'>
                                 <el-option
@@ -173,7 +175,7 @@
         </el-table>
         <el-tabs type="border-card" class='el_tabs_footer' v-model="activeName" @tab-click='up_down_tabs'>
             <el-tab-pane label="基本信息" name='1' style='overflow:auto;'>
-                <basicInfo :basicInfoRecord='customInfoArray[0]'></basicInfo>
+                <basicInfo :basicInfoRecord='customInfoArray[0]' v-on:updateCustomBasicInfo='updateCustomBasicInfomation'></basicInfo>
             </el-tab-pane>
             <el-tab-pane label="沟通记录" name='2'>
                 <communicationRecord :communicateRecords='customInfoArray[1]' :infomation='currentRow' v-on:updateCustomRelationRecords='updateCustomRelationRecordItem'></communicationRecord>
@@ -217,7 +219,7 @@
     import programme from '@/components/custom/programme/programme';
     import transaction from '@/components/custom/transaction/transaction';
     import complaint from '@/components/custom/complaint/complaint';
-    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,order_detail,complaints} from '@/service/getData';
+    import { getCustomLists,customer_detail,communicate,measures,receivableItems,programmes,order_detail,complaints,delete_information} from '@/service/getData';
     
     export default{
         name:'custom',
@@ -237,7 +239,8 @@
                     port:'',
                     s_times:'',
                     e_times:'',
-                    usercode:''//导购名称
+                    usercode:'',//导购名称
+                    special:''//针对我沟通过的客户特殊处理
                 },
                 customLists: [],//客户列表
                 totalNum:0,//客户列表总数
@@ -304,7 +307,8 @@
                     HAS_DATA:true,
                     isOn:true,
                     elWraper:null
-                }
+                },
+                eTimesHandle:false//是否显示预计回访时间
             }
         },
         computed:{
@@ -324,6 +328,7 @@
             this.$refs['search_form'].resetFields();
             this.searchForm.searchName = '';
             this.searchForm.s_times = '';
+            this.searchForm.special = '';
             this.page = 1;
             this.pageForm.HAS_DATA = true;
             this.pageForm.isOn = true;
@@ -344,25 +349,6 @@
                 this.pageForm.isOn = true;
                 this.pageForm.elWraper.scrollTop = 0;
                 this.init();
-            },
-            eTimesHandle(){//是否显示预计回访时间
-                try {
-                    let stateCounts = [];
-                    this.state_count.forEach(function(item){
-                        stateCounts.push(item.id);
-                    });
-                    if(this.id === "1" || this.id === "reception" || stateCounts.join(",").indexOf(this.id) !== -1){
-                        return true;
-                    }else{
-                        return false;
-                    }
-                } catch(e) {
-                    this.$message({
-                        showClose: true,
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
             },
             async init(type,formData){//获取客户信息列表
                 const that = this;
@@ -392,10 +378,19 @@
                         return false;
                     }
                     if(type === 'mounted'){
+                        let stateCounts = [];
+                        res.state_count.forEach(function(item){
+                            stateCounts.push(item.id);
+                        });
+                        if(this.id === "1" || this.id === "reception" || stateCounts.join(",").indexOf(this.id) !== -1){
+                            this.eTimesHandle = true;
+                        }else {
+                            this.eTimesHandle = false;
+                        }
                         this.scrollCustomBasicLists();
                     }
                     this.totalNum = res.data ? res.data : 0;
-                    this.state_count = res.state_count ?res.state_count : [];
+                    this.state_count = res.state_count ? res.state_count : [];
                     if(res.success && res.success.length>0){
                         if(this.page === 1){
                             this.customLists = res.success;
@@ -476,7 +471,11 @@
                         }
                     }
                     if(badge && badge === 'badge'){//
-                        this.id = type;
+                        if(this.id === 'reception'){//我沟通的客户
+                            this.searchForm.special = type;
+                        }else{
+                            this.id = type;
+                        }
                     }
                     const len = tempSearchForm.status.length;
                     tempSearchForm.status = tempSearchForm.status[len-1];
@@ -774,8 +773,94 @@
                     });
                 }
             },
+            updateCustomBasicInfomation(callbackData){//特殊指派 更改客户基本信息
+                try{
+                    const index = this.customLists.findIndex(function(item, index, arr) {
+                        return item.id === callbackData.id;
+                    });
+                    //重置基本信息中的status
+                    this.$set(this.currentRow,'status',callbackData.status);
+                    this.$set(this.customInfoArray[0],'status',callbackData.status);
+                    this.$set(this.customLists[index],'status',callbackData.status);
+                    this.$set(this.customInfoArray[0],'status_name',callbackData.status_name);
+                    this.$set(this.customLists[index],'status_name',callbackData.status_name);
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
             async logExportExcel(){//导出excel
-                window.location.href='/crm-logExport-'+this.id+'.html?content='+this.searchForm.content+'&status='+this.searchForm.status+'&time='+this.searchForm.time+'&searchName='+this.searchForm.searchName+'&member_id='+this.searchForm.member_id+'&port='+this.searchForm.port;
+                window.location.href='/crm-logExport-'+this.id+'.html?content='+this.searchForm.content+'&status='+this.searchForm.status+'&time='+this.searchForm.time+'&searchName='+this.searchForm.searchName+'&member_id='+this.searchForm.member_id+'&port='+this.searchForm.port+'&s_times='+this.searchForm.s_times+'&e_times='+this.searchForm.e_times+'&usercode='+this.searchForm.usercode+'&special='+this.searchForm.special;
+            },
+            async deleteInfomation(information_id){
+                try {
+                    const that = this;
+                    const res = await delete_information(information_id);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin == 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                    const index = this.customLists.findIndex(function(item, index, arr) {
+                        return item.id === information_id;
+                    });
+                    this.customLists.splice(index,1);
+                    this.activeName = '';
+                    this.status = 'down';
+                    this.currentRow = {};
+                    this.customInfoArray = [{},[],[],[],[],[],[]];//重置
+                    this.isGetDataArray = new Array(7).fill("");//重置
+                    this.$message({
+                        message: res.success,
+                        type: 'success'
+                    });
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            deleteInformationHandle(){//删除客户基本信息
+                const that = this;
+                if(Object.keys(this.currentRow).length === 0){
+                    this.$message({
+                        message:'请先选中需要删除的客户！',
+                        type:'error'
+                    });
+                    return false;
+                }
+                if(!this.currentRow.id){
+                    this.$message({
+                        message:'客户信息有误，请刷新页面重试！',
+                        type:'error'
+                    });
+                    return false;
+                }
+                this.$confirm('确定删除该客户信息吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.deleteInfomation(this.currentRow.id);
+                }).catch((e) => {
+                    if(e == 'cancel'){
+                        return false;
+                    }
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                });
             }
         },
         components:{
@@ -862,5 +947,16 @@
     .badge-item .el-button.active{
         background: #FFF6EE;
         color: #F25406;
+    }
+    .totalNum-wrapper{
+        font-size: 14px;
+        color: #4D4D4D;
+        line-height: 36px;
+        display: inline-block;
+        padding-left: 20px;
+    }
+    .totalNum-wrapper span{
+        font-size: 16px;
+        color: #1876EF;
     }
 </style>

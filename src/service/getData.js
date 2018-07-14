@@ -230,3 +230,11 @@ export const state_index = () => axios.post('/crm-state_index.html');
 
 //保存客户状态
 export const state_save = (formData) => axios.post('/crm-state_save.html',formData);
+
+//特殊指派
+export const special_assign = (formData) => axios.post('/crm-special_assign.html',formData);
+
+//删除客户信息
+export const delete_information = (information_id) => axios.post('/crm-delete_information.html',{
+    information_id
+});

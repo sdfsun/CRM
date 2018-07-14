@@ -669,6 +669,7 @@
         line-height: 22px;
         color: #919191;
         padding: 11px 15px;
+        border-top: 1px solid #e0e0e0;
     }
     .orderInfo li{
         float: left;

@@ -158,7 +158,8 @@
             <el-table-column
                 prop='source_name'
                 label="客户来源"
-                min-width='80px'>
+                min-width='80px'
+                show-overflow-tooltip>
             </el-table-column>
             <el-table-column
                 prop='createtime'
@@ -169,7 +170,7 @@
                 prop='outline'
                 label="沟通概要"
                 min-width='80px'
-                :show-overflow-tooltip='true'
+                show-overflow-tooltip
                 v-if='id === "reception"'>
             </el-table-column>
         </el-table>

@@ -78,6 +78,9 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item prop='month' label='所属月份'>
+                    <el-input v-model="presentForm.month" placeholder='请输入所属月份'></el-input>
+                </el-form-item>
                 <el-form-item label="是否失效" prop='disabled'>
                     <el-switch
                         v-model="presentForm.disabled"
@@ -125,6 +128,7 @@
                     name:'',//名称
                     store:'',//库存
                     org_id:'',//所属门店
+                    month:'',//所属月份
                     disabled:'false'//是否失效
                 },
                 presentFormRules:{

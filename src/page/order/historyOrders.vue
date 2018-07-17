@@ -124,7 +124,7 @@
                                 prop="product_name"
                                 label="产品名称"
                                 min-width='120px'
-                                :show-overflow-tooltip='true'>
+                                show-overflow-tooltip>
                             </el-table-column>
                             <el-table-column
                                 prop="is_custom"
@@ -138,7 +138,7 @@
                                 prop='orderDRemark'
                                 label="定制需求"
                                 min-width='120px'
-                                :show-overflow-tooltip='true'>
+                                show-overflow-tooltip>
                             </el-table-column>
                             <el-table-column
                                 prop='send_time'

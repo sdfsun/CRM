@@ -14,7 +14,7 @@
             <el-row :gutter="10">
                 <el-col :span="7">
                     <el-form-item prop='measure_name'>
-                        <el-input  v-model="measurementForm.measure_name" placeholder='测量人名称' readonly='true'></el-input>
+                        <el-input  v-model="measurementForm.measure_name" placeholder='测量人名称' readonly></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">

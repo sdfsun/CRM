@@ -69,7 +69,7 @@
                 prop="outline"
                 label="沟通概要"
                 min-width='200px'
-                :show-overflow-tooltip='true'>
+                show-overflow-tooltip>
             </el-table-column>
             <el-table-column
                 prop="current_state_name"

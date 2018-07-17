@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="designer_box" v-for="item in tableData">
+        <div class="designer_box" v-for="(item,key) in tableData">
             <div class="designer_hd">
-                <div class="d_col">{{item.zubie}}</div>
+                <div class="d_col">{{key}}</div>
                 <div class="d_col">小组当月接尺数：<span>{{item.month_sum}}</span></div>
                 <div class="d_col">小组总接尺数：<span>{{item.sum}}</span></div>
             </div>
@@ -58,6 +58,7 @@ export default{
     methods: {
         async init(){
             try {
+                const that = this;
                 let res = await getDesignerLists();
                 if(res.error){
                     this.$message({
@@ -66,15 +67,11 @@ export default{
                     });
                     if(res.nologin === 1){//未登录
                         setTimeout(()=>{
-                            this.$router.push('/');
+                            that.$router.push('/');
                         },3000);
                     }
                 }else{
-                    let key;
-                    for (key in res.success) {
-                        this.$set(res.success[key],'zubie',key);
-                        this.tableData.push(res.success[key]);
-                    }
+                    this.tableData = res.success;
                 }
             } catch(e) {
                 this.$message({

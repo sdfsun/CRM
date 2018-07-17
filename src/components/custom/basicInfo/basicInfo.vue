@@ -6,6 +6,7 @@
                 <span class="txt_1">姓名：</span>
                 <div class="txt_2">
                     <span style="display:inline-block;">{{basicInfoRecord.name}}</span>
+                    <span class="repeat_num" v-if="basicInfoRecord.repeat_num > 0">R</span>
                     <el-rate v-model="basicInfoRecord.star_level" disabled></el-rate>
                 </div>
             </li>
@@ -315,5 +316,14 @@
     }
     .special_assign_btn{
         width: 120px;
+    }
+    .repeat_num{
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: #F25406;
+        line-height: 14px;
+        text-align: center;
+        color: #fff;
     }
 </style>

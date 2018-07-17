@@ -4,7 +4,7 @@
             <el-row :gutter="60">
                 <el-col :span="12">
                     <el-form-item prop='name' label='收款人'>
-                        <el-input  v-model="receivablesForm.name" placeholder='收款人名称' readonly='true'></el-input>
+                        <el-input  v-model="receivablesForm.name" placeholder='收款人名称' readonly></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -31,8 +31,8 @@
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label='装修预算'>
-                        <el-input :value='informationItem.budget+"万"' placeholder='装修预算' readonly='true' v-if='informationItem.budget'></el-input>
-                        <el-input value='' placeholder='装修预算' readonly='true' v-else></el-input>
+                        <el-input :value='informationItem.budget+"万"' placeholder='装修预算' readonly v-if='informationItem.budget'></el-input>
+                        <el-input value='' placeholder='装修预算' readonly v-else></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -51,7 +51,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label='应收尾款'>
-                            <el-input v-model="receivablesForm.total_amount" placeholder='应收尾款' readonly='true'></el-input>
+                            <el-input v-model="receivablesForm.total_amount" placeholder='应收尾款' readonly></el-input>
                         </el-form-item>
                     </el-col>
                 </template>

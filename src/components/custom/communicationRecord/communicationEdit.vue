@@ -4,7 +4,7 @@
             <el-row :gutter="8">
                 <el-col :span="7">
                     <el-form-item prop='mode'>
-                        <el-select v-model="communicateForm.mode" placeholder="沟通方式" clearable>
+                        <el-select v-model="communicateForm.mode" placeholder="沟通方式" clearable @change="modeChangeHandle">
                             <el-option label="店里沟通" value="店里沟通"></el-option>
                             <el-option label="电话沟通" value="电话沟通"></el-option>
                             <el-option label="微信沟通" value="微信沟通"></el-option>
@@ -90,7 +90,7 @@
                 </el-col>
                 <el-col :span="8">
                     <el-form-item prop='name'>
-                        <el-input readonly='true' v-model="communicateForm.name"></el-input>
+                        <el-input readonly v-model="communicateForm.name"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -131,19 +131,6 @@
         name:'communicationEdit',
         props:['informationItem','editInfos','communicateBasicFormDatas'],
         data(){
-            let checkMode = (rule,val,callback) => {
-                if( val === null || val === ''){
-                    callback(new Error('请选择沟通方式'));
-                    return false;
-                }
-                if(val !== '' && val === '电话沟通' && !this.communicateForm.contact_time){
-                    this.communicateForm.contact_time = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
-                    this.$refs['concactTimeItem'].clearValidate();
-                    callback();
-                    return false;
-                }
-                callback();
-            };
             return{
                 information_id:this.informationItem.id,//客户id
                 communicateForm:{
@@ -164,7 +151,7 @@
                 submitBtnStatus:false,//保存按钮是否可点击
                 communicateFormRules:{//规则校验
                     mode: [
-                        { validator: checkMode}
+                        { required: true, message: '请选择沟通方式', trigger: 'change'}
                     ],
                     contact_time: [
                         {  required: true, message: '请选择沟通开始时间', trigger: 'change' }
@@ -205,6 +192,19 @@
                 delete this.communicateForm['id'];
                 delete this.communicateForm['createtime'];
                 delete this.communicateForm['update_time'];
+            },
+            modeChangeHandle(val){//沟通方式改变触发
+                try{
+                    if(val !== '' && val === '电话沟通' && !this.communicateForm.contact_time){
+                        this.communicateForm.contact_time = formatDate(new Date(),'yyyy-MM-dd hh:mm:ss');
+                        this.$refs['concactTimeItem'].clearValidate();
+                    }
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             },
             scaleTimeHandleChange(val){//预约量尺时间改变时触发
                 this.communicateForm.member_id = '';
@@ -379,11 +379,18 @@
                 });
             },
             closeCommunicateInfoDialog(formName,result){//关闭弹框
-                this.$refs[formName].resetFields();//重置表单数据
-                if(this.editInfos && this.editInfos.id){//编辑
-                    this.$emit('closeCustomCommunicateInfoDialog',{data:result,type:'edit'});
-                }else{//新增
-                    this.$emit('closeCustomCommunicateInfoDialog',{data:result,type:'add'});
+                try {
+                    if(this.editInfos && this.editInfos.id){//编辑
+                        this.$emit('closeCustomCommunicateInfoDialog',{data:result,type:'edit'});
+                    }else{//新增
+                        this.$emit('closeCustomCommunicateInfoDialog',{data:result,type:'add'});
+                    }
+                    this.$refs[formName].resetFields();//重置表单数据
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
             }
         }

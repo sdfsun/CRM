@@ -153,7 +153,7 @@
                     label="空间"
                     min-width='120px'
                     class-name="alignCenterColumn"
-                    :show-overflow-tooltip='true'>
+                    show-overflow-tooltip>
                     <template slot-scope='scope'>
                         <el-input  v-model="scope.row.space"  @change="proAtributeChangeHandle(scope.row)"></el-input>
                     </template>
@@ -162,7 +162,7 @@
                     prop="bn"
                     label="产品型号"
                     min-width='110px'
-                    :show-overflow-tooltip='true'>
+                    show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                     prop="product_name"
@@ -342,13 +342,13 @@
                             prop="saleCode"
                             label="产品型号"
                             min-width='100px'
-                            :show-overflow-tooltip='true'>
+                            show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                             prop="materialDesc"
                             label="产品名称"
                             min-width='160px'
-                            :show-overflow-tooltip='true'>
+                            show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                             prop="is_custom"
@@ -388,7 +388,7 @@
                             prop='orderDRemark'
                             label="定制需求"
                             min-width='140px'
-                            :show-overflow-tooltip='true'>
+                            show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                             prop='fileStr'
@@ -544,19 +544,19 @@
                             prop="space"
                             label="空间"
                             min-width='80px'
-                            :show-overflow-tooltip='true'>
+                            show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                             prop="bn"
                             label="产品型号"
                             min-width='80px'
-                            :show-overflow-tooltip='true'>
+                            show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                             prop="product_name"
                             label="产品名称"
                             min-width='120px'
-                            :show-overflow-tooltip='true'>
+                            show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                             prop="is_custom"
@@ -570,7 +570,7 @@
                             prop='orderDRemark'
                             label="定制需求"
                             min-width='130px'
-                            :show-overflow-tooltip='true'>
+                            show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column
                             prop='send_time'
@@ -1641,7 +1641,7 @@
                             });
                             return false;
                         }
-                        if(formData.area && formData.area.length <= 0){
+                        if(!formData.area){
                             this.$message({
                                 message: '收货人地区不能为空',
                                 type: 'error'

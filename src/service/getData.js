@@ -238,3 +238,9 @@ export const special_assign = (formData) => axios.post('/crm-special_assign.html
 export const delete_information = (information_id) => axios.post('/crm-delete_information.html',{
     information_id
 });
+
+//新增或编辑客户信息时 校验电话或手机号是否已存在当前CRM客户中
+export const check_mobile = (mobile) => axios.post('/crm-check_mobile.html',{
+    mobile,
+    showLoad:'3'
+});

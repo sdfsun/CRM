@@ -9,12 +9,12 @@
                 </el-col>
                 <el-col :span="8">
                     <el-form-item label="电话" prop='tel' ref='telItem'>
-                        <el-input v-model="basicForm.tel" placeholder='请输入电话' clearable></el-input>
+                        <el-input v-model="basicForm.tel" placeholder='请输入电话' clearable @change='checkMobileHandle'></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
                     <el-form-item label="手机" prop='mobile' ref='mobileItem' >
-                        <el-input v-model.number="basicForm.mobile" maxlength='11' placeholder='请输入手机' clearable></el-input>
+                        <el-input v-model.number="basicForm.mobile" maxlength='11' placeholder='请输入手机' clearable @change='checkMobileHandle'></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -270,7 +270,7 @@
     const isPhone = /^1[3456789]\d{9}$/;
     const isEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
     import { region } from '@/service/region';
-    import { customer_save } from '@/service/getData';
+    import { customer_save,check_mobile } from '@/service/getData';
     import { mapState } from 'vuex';
 
     export default{
@@ -537,6 +537,32 @@
                 delete this.basicForm['createtime'];
                 delete this.basicForm['update_time'];
                 delete this.basicForm['org_id'];
+            },
+            async checkMobileHandle(val){//新增客户信息时 电话或手机改变时校验是否为CRM用户
+                try{
+                    const that = this;
+                    if(this.basicForm.id || !val){//编辑 或 空值 不校验
+                        return false;
+                    }
+                    const res = await check_mobile(val);
+                    if(res.error){
+                        this.$message({
+                            message: res.error,
+                            type: 'error'
+                        });
+                        if(res.nologin == 1){//未登录
+                            setTimeout(()=>{
+                                that.$router.push('/');
+                            },3000);
+                        }
+                        return false;
+                    }
+                }catch (e) {
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             },
             houseHandleChange(house){//房屋类型回调
                 console.log(this.basicForm.source)

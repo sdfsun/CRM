@@ -54,14 +54,14 @@
                 prop="information"
                 label="量尺信息"
                 min-width='200px'
-                :show-overflow-tooltip='true'
+                show-overflow-tooltip
                 >
             </el-table-column>
             <el-table-column
                 prop="feedback"
                 label="信息回馈"
                 min-width='200px'
-                :show-overflow-tooltip='true'>
+                show-overflow-tooltip>
             </el-table-column>
         </el-table>
         <div class="btns">

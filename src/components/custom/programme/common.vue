@@ -4,7 +4,7 @@
             <el-row :gutter="10">
                 <el-col :span="13">
                     <el-input  v-model="dataForm.name" placeholder='模块名称' v-if='type !== "2"' clearable></el-input>
-                    <el-input  v-model="dataForm.name" readonly='true' placeholder='模块名称' v-else></el-input>
+                    <el-input  v-model="dataForm.name" readonly placeholder='模块名称' v-else></el-input>
                 </el-col>
                 <el-col :span="9">
                     <el-button type="primary" @click="deleteModel" v-if='type !== "2"'>删除模块</el-button>

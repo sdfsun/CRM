@@ -191,12 +191,12 @@
             ...mapMutations([
                 'SETCUSTOMSOURCE'
             ]),
-            setSourceDatas(data){
-                const that = this;
-                setStore("customSource",data);
-                this.SETCUSTOMSOURCE(data);
-                if(data){
-                    data.forEach( function(el, index) {
+            setSourceDatas(suc,res){
+                const tempDatas = res.slice(0);
+                setStore("customSource",tempDatas);
+                this.SETCUSTOMSOURCE(tempDatas);
+                if(suc){
+                    suc.forEach( function(el, index) {
                         el.is_open = el.is_open === 'true'?true:false;
                         el.editFlag = false;
                         if(el.menus && el.menus.length>0){
@@ -208,7 +208,7 @@
                             el.menus = [];
                         }
                     });
-                    this.sourceLists = data;
+                    this.sourceLists = suc;
                 }else{
                     this.sourceLists = [];
                 }
@@ -229,7 +229,7 @@
                         }
                         return false;
                     }
-                    this.setSourceDatas(res.success);
+                    this.setSourceDatas(res.success,res.dataSources);
                 } catch(e) {
                     this.$message({
                         message: e.message,
@@ -304,7 +304,7 @@
                         message: res.success,
                         type: 'success'
                     });
-                    this.setSourceDatas(res.data);
+                    this.setSourceDatas(res.data,res.dataSources);
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({

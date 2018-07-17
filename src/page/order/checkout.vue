@@ -289,7 +289,7 @@
                     min-width='100px'>
                     <template slot-scope="scope">
                         <a href="javascript:void(0);" class="operation-btn" @click="deleteGoodHandle(scope.$index,scope.row)"><i class="crmiconfont icon-shanchu"></i></a>
-                        <a href="javascript:void(0);" v-if='scope.row.install_flag == "false"' class="operation-btn" :class="{disabled:scope.row.gifs_flag == 'true'}" @click="markGiftHandle(scope.$index,scope.row)"><i class="crmiconfont icon-zengpin" style="font-size: 18px;"></i></a>
+                        <a href="javascript:void(0);" v-if='scope.row.install_flag == "false"' class="operation-btn operation-btn-gift" :class="{disabled:scope.row.gifs_flag == 'true'}" @click="markGiftHandle(scope.$index,scope.row)"><i class="crmiconfont icon-zengpin" style="font-size: 18px;"></i></a>
                     </template>
                 </el-table-column>
             </el-table>

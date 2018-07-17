@@ -191,11 +191,12 @@
             ...mapMutations([
                 'SETCUSTOMSTATUS'
             ]),
-            setStatusDatas(data){
-                setStore("customStatus",this.statusLists);
-                this.SETCUSTOMSTATUS(this.statusLists);
-                if(data){
-                    data.forEach( function(el, index) {
+            setStatusDatas(suc,res){
+                let tempDatas = res.slice(0);
+                setStore("customStatus",tempDatas);
+                this.SETCUSTOMSTATUS(tempDatas);
+                if(suc){
+                    suc.forEach( function(el, index) {
                         el.is_open = el.is_open === 'true'?true:false;
                         el.editFlag = false;
                         if(el.menus && el.menus.length>0){
@@ -207,7 +208,7 @@
                             el.menus = [];
                         }
                     });
-                    this.statusLists = data;
+                    this.statusLists = suc;
                 }else{
                     this.statusLists = [];
                 }
@@ -228,7 +229,7 @@
                         }
                         return false;
                     }
-                    this.setStatusDatas(res.success);
+                    this.setStatusDatas(res.success,res.dataStates);
                 } catch(e) {
                     this.$message({
                         message: e.message,
@@ -296,7 +297,7 @@
                         message: res.success,
                         type: 'success'
                     });
-                    this.setStatusDatas(res.data);
+                    this.setStatusDatas(res.data,res.dataStates);
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({

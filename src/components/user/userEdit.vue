@@ -33,6 +33,9 @@
                     </el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item prop='dept' label='所属部门'>
+                <el-input  v-model="userForm.dept" placeholder='请输入所属部门' clearable></el-input>
+            </el-form-item>
             <el-form-item label="用户状态" prop='status'>
                 <el-switch
                     v-model="userForm.status"
@@ -64,6 +67,7 @@
                     mobile:'',//手机号码
                     status:'1',//是否启用
                     org_id:'5',//所属门店
+                    dept:''
                 },
                 orgs:[
                     {

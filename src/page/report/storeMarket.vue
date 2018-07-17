@@ -32,8 +32,8 @@
                 </el-col>
             </el-row>
         </el-form>
-        <div class="market-wrapper" v-for="(item,index) in reportLists">
-            <h2 class="title">{{index}}</h2>
+        <div class="market-wrapper" v-for="(item,key) in reportLists">
+            <h2 class="title">{{key}}</h2>
             <el-table
                 ref='reportListsTable'
                 :data="item"

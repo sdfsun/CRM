@@ -53,7 +53,7 @@ export default {
         }else{
             state.cumtomFormData.area = data.area.split(" ");
         }
-        state.cumtomFormData.information_id = data.id;
+        state.cumtomFormData.information_id = data.id ? data.id : "";
         state.cumtomFormData.acceptOrdPhone = data.mobile;
         state.cumtomFormData.acceptOrdMan = data.name;
         state.cumtomFormData.sum_money = data.sum_money;
@@ -120,7 +120,7 @@ export default {
         }
     },
     [types.SETMEMBERID](state,data) {//设置商城用户member_id
-        state.member_id = data;
+        state.member_id = data ? data : "";
     },
     [types.SETBUYINSTALLFLAG](state,data) {//设置是否可购买安装服务
         state.buyInstallFlag = data ? 'true' : 'false';

@@ -5,7 +5,6 @@
             :data="statusLists"
             stripe
             border
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
             header-row-class-name='header_row_style'>
             <el-table-column type="expand">
                 <template slot-scope="props">
@@ -13,7 +12,6 @@
                         :data="props.row.menus"
                         stripe
                         border
-                        style="width: 100%;text-align: center;flex:1;overflow: auto;border-bottom: 1px solid #ebeef5;"
                         header-row-class-name='header_row_style'>
                         <el-table-column
                             type="index"

@@ -4,7 +4,6 @@
         <el-table
             :data="activityLists"
             border
-            style="width: 100%;text-align: center;flex:1;overflow: auto;"
             header-row-class-name='header_row_style'
             :row-class-name="setRowClassNameHandle">
             <el-table-column

@@ -356,9 +356,9 @@
                 try {
                     let tempFormData = Object.assign({},this.searchForm);
                     if(type === 'page'){//分页
-                        this.searchForm.showLoad = type;
+                        tempFormData.showLoad = type;
                     }else{
-                        delete this.searchForm['showLoad'];
+                        delete tempFormData['showLoad'];
                     }
                     if(type === 'status'){
                         tempFormData.status = formData.status;

@@ -4,7 +4,6 @@
             :data="receivablesRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange"
             @cell-click='cellClickHandle'>

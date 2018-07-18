@@ -4,7 +4,6 @@
             :data="programmeRecords"
             stripe
             highlight-current-row
-            style="width: 100%;text-align: center;flex:1;"
             header-row-class-name='header_row_style'
             @current-change="handleCurrentChange">
             <el-table-column
@@ -38,20 +37,22 @@
                 label="是否最终定案">
             </el-table-column>
             <el-table-column
-              label="操作"
-              width="160">
+                label="操作"
+                width="160">
                 <template slot-scope="scope">
                     <el-button
                     @click.native.prevent="handleSave(scope.row.id,'false')"
                     type="text"
                     size="medium"
-                    v-if='statusData<10'>
+                    class="verdict-btn"
+                    v-if="infomation.status && infomation.status[infomation.status.length-1]<17">
                         初次定案
                     </el-button>
                     <el-button
                     @click.native.prevent="handleSave(scope.row.id,'true')"
                     type="text"
-                    size="medium">
+                    size="medium"
+                    class="verdict-btn">
                         最终定案
                     </el-button>
                 </template>
@@ -224,5 +225,8 @@
     }
     .image_carousel_item{
         width: 100%;
+    }
+    .verdict-btn{
+        padding: 0;
     }
 </style>

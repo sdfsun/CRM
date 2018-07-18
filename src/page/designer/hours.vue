@@ -20,8 +20,8 @@
                             <div class="h_hd">日程列表</div>
                             <div class="h_ct">
                                 <el-table
-                                  :data="tableData"
-                                  style="width: 100%">
+                                    :data="tableData"
+                                    style="width: 100%">
                                     <el-table-column
                                         prop="login_account"
                                         label="工号"

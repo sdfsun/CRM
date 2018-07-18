@@ -762,9 +762,9 @@
                         }
                     });
                     //重置基本信息中的status
-                    this.$set(this.currentRow,'status',callbackData.data.information_status);
-                    this.$set(this.customInfoArray[0],'status',callbackData.data.information_status);
-                    that.$set(that.customLists[index2],'status',callbackData.data.information_status);
+                    this.$set(this.currentRow,'status',callbackData.data.status);
+                    this.$set(this.customInfoArray[0],'status',callbackData.data.status);
+                    that.$set(that.customLists[index2],'status',callbackData.data.status);
                     that.$set(that.customInfoArray[0],'status_name',callbackData.data.status_name);
                     that.$set(that.customLists[index2],'status_name',callbackData.data.status_name);
                 } catch(e) {

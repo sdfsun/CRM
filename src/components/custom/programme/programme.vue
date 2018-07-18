@@ -67,7 +67,6 @@
             <programmeEdit :informationItem='infomation' :editInfos='editActiveRow' ref='programmeEdit'  v-on:closeCustomProgrammeInfoDialog='updateProgrammeRecord'></programmeEdit>
         </el-dialog>
     </div>
-    </div>
 </template>
 <script>
     import programmeEdit from '@/components/custom/programme/programmeEdit';
@@ -84,11 +83,6 @@
                 image_url:'',
                 editActiveRow:{},//当前需要编辑的行
                 currentrow:null
-            }
-        },
-        computed:{
-            statusData:function(){
-                return Number(this.infomation.status) ? Number(this.infomation.status) : 0;
             }
         },
         methods:{

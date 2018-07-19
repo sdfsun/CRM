@@ -189,8 +189,8 @@
             ...mapMutations([
                 'SETCUSTOMSTATUS'
             ]),
-            setStatusDatas(suc,res){
-                let tempDatas = res.slice(0);
+            setStatusDatas(suc){
+                let tempDatas = JSON.parse(JSON.stringify(suc));
                 setStore("customStatus",tempDatas);
                 this.SETCUSTOMSTATUS(tempDatas);
                 if(suc){
@@ -228,7 +228,7 @@
                         }
                         return false;
                     }
-                    this.setStatusDatas(res.success,res.dataStates);
+                    this.setStatusDatas(res.success);
                 } catch(e) {
                     this.$message({
                         showClose:true,
@@ -302,7 +302,7 @@
                         message: res.success,
                         type: 'success'
                     });
-                    this.setStatusDatas(res.data,res.dataStates);
+                    this.setStatusDatas(res.data);
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({

@@ -189,8 +189,8 @@
             ...mapMutations([
                 'SETCUSTOMSOURCE'
             ]),
-            setSourceDatas(suc,res){
-                const tempDatas = res.slice(0);
+            setSourceDatas(suc){
+                const tempDatas = JSON.parse(JSON.stringify(suc));
                 setStore("customSource",tempDatas);
                 this.SETCUSTOMSOURCE(tempDatas);
                 if(suc){
@@ -228,7 +228,7 @@
                         }
                         return false;
                     }
-                    this.setSourceDatas(res.success,res.dataSources);
+                    this.setSourceDatas(res.success);
                 } catch(e) {
                     this.$message({
                         showClose:true,
@@ -310,7 +310,7 @@
                         message: res.success,
                         type: 'success'
                     });
-                    this.setSourceDatas(res.data,res.dataSources);
+                    this.setSourceDatas(res.data);
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({

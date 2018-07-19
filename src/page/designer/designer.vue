@@ -62,6 +62,7 @@ export default{
                 let res = await getDesignerLists();
                 if(res.error){
                     this.$message({
+                        showClose:true,
                         message: res.error,
                         type: 'error'
                     });

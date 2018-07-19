@@ -206,6 +206,7 @@
                     const res = await incomeSearch(this.searchForm);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -221,6 +222,7 @@
                 } catch(e) {
                     this.searchBtnStatus = false;
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

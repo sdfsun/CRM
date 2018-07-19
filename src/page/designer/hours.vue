@@ -95,6 +95,7 @@ export default {
                 let res = await getVisitInit();
                 if(res.error){
                     this.$message({
+                        showClose:true,
                         message: res.error,
                         type: 'error'
                     });
@@ -140,6 +141,7 @@ export default {
             let result = await postVisitSave({'visit':this.singleDate});
             if(result.success){
                 this.$message({
+                    showClose:true,
                     message: '恭喜你，' + result.success,
                     type: 'success'
                 });
@@ -153,6 +155,7 @@ export default {
                 }
             }else{
                 this.$message({
+                    showClose:true,
                     message: result.error,
                     type: 'error'
                 });
@@ -163,6 +166,7 @@ export default {
             this.tableData = result.success;
             if(result.error){
                 this.$message({
+                    showClose:true,
                     message: result.error,
                     type: 'error'
                 });

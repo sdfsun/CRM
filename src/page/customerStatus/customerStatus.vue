@@ -217,6 +217,7 @@
                     let res = await state_index();
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -230,6 +231,7 @@
                     this.setStatusDatas(res.success,res.dataStates);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -252,6 +254,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -264,6 +267,7 @@
                     }
                     if(formData.name === ''){
                         this.$message({
+                            showClose:true,
                             message: '状态名称不能为空',
                             type: 'error'
                         });
@@ -271,6 +275,7 @@
                     }
                     if(formData.parent_id === ''){
                         this.$message({
+                            showClose:true,
                             message: '父级菜单不能为空',
                             type: 'error'
                         });
@@ -281,6 +286,7 @@
                     this.submitBtnStatus = false;
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -292,6 +298,7 @@
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message: res.success,
                         type: 'success'
                     });
@@ -299,6 +306,7 @@
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -313,6 +321,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

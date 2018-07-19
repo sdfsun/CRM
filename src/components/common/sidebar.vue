@@ -56,6 +56,7 @@
                     const res  = await unset_member();
                     if(res.success){
                         this.$message({
+                            showClose:true,
                             message:res.success,
                             type:'success'
                         });
@@ -68,6 +69,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

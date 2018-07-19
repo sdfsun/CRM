@@ -368,6 +368,7 @@
                     const res = await getCustomLists(this.id,this.page,tempFormData);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -446,6 +447,7 @@
                     });
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -483,6 +485,7 @@
                     this.init('status',tempSearchForm);
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -492,6 +495,7 @@
                 try {
                     if(Object.keys(this.currentRow).length === 0){
                         this.$message({
+                            showClose:true,
                             message:'请先选中一行客户信息！',
                             type:'error'
                         });
@@ -541,6 +545,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -596,6 +601,7 @@
                         this.isGetDataArray[num] = "1";
                         if(result.error){
                             this.$message({
+                                showClose:true,
                                 message: result.error,
                                 type: 'error'
                             });
@@ -620,6 +626,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -655,6 +662,7 @@
             editCustomBasicInfo(){//编辑客户基本信息
                 if(Object.keys(this.currentRow).length === 0){
                     this.$message({
+                        showClose:true,
                         message:'请先选中需要编辑的客户信息记录！',
                         type:'error'
                     });
@@ -728,6 +736,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -769,6 +778,7 @@
                     that.$set(that.customLists[index2],'status_name',callbackData.data.status_name);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -787,6 +797,7 @@
                     this.$set(this.customLists[index],'status_name',callbackData.status_name);
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -801,6 +812,7 @@
                     const res = await delete_information(information_id);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -821,11 +833,13 @@
                     this.customInfoArray = [{},[],[],[],[],[],[]];//重置
                     this.isGetDataArray = new Array(7).fill("");//重置
                     this.$message({
+                        showClose:true,
                         message: res.success,
                         type: 'success'
                     });
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -835,6 +849,7 @@
                 const that = this;
                 if(Object.keys(this.currentRow).length === 0){
                     this.$message({
+                        showClose:true,
                         message:'请先选中需要删除的客户！',
                         type:'error'
                     });
@@ -842,6 +857,7 @@
                 }
                 if(!this.currentRow.id){
                     this.$message({
+                        showClose:true,
                         message:'客户信息有误，请刷新页面重试！',
                         type:'error'
                     });
@@ -858,6 +874,7 @@
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

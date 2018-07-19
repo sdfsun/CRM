@@ -350,6 +350,7 @@
                     const res = await order_detail(this.pagination.page,this.pagination.pageSize,this.searchForm);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -365,6 +366,7 @@
                     this.pagination.totalNum = res.counts;
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -378,6 +380,7 @@
                 try {
                     if(!logistic_no){
                         this.$message({
+                            showClose:true,
                             message: '物流单号有误',
                             type: 'error'
                         });
@@ -386,6 +389,7 @@
                     const res = await order_logistic(logistic_no);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -400,6 +404,7 @@
                     this.progressDialogVisible = true;
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -457,6 +462,7 @@
 
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -466,6 +472,7 @@
                 const that = this;
                 if(that.historyActiveIndex === ''){
                     that.$message({
+                        showClose:true,
                         message: '请先选择需要提取的订单',
                         type: 'error'
                     });
@@ -478,6 +485,7 @@
                 }).then(() => {
                     that.EXTRACTORDERSETDATA(that.historyOrderDatas[that.historyActiveIndex]);
                     that.$message({
+                        showClose:true,
                         message: '提取成功',
                         type: 'success'
                     });
@@ -487,6 +495,7 @@
                         return false;
                     }
                     that.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -503,6 +512,7 @@
                 }).then(() => {
                     if(!transaction_id){
                         that.$message({
+                            showClose:true,
                             message: '请先选择需要补款的订单',
                             type: 'error'
                         });
@@ -511,6 +521,7 @@
                     order_supplement(transaction_id).then(res=>{
                         if(res.error){
                             that.$message({
+                                showClose:true,
                                 message: res.error,
                                 type: 'error'
                             });
@@ -522,6 +533,7 @@
                             return false;
                         }
                         that.$message({
+                            showClose:true,
                             message: res.success,
                             type: 'success'
                         });
@@ -540,6 +552,7 @@
                         return false;
                     }
                     that.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -556,6 +569,7 @@
                 }).then(() => {
                     if(!transaction_id){
                         that.$message({
+                            showClose:true,
                             message: '请先选择需要审批的订单',
                             type: 'error'
                         });
@@ -564,6 +578,7 @@
                     order_arrears(transaction_id).then(res=>{
                         if(res.error){
                             that.$message({
+                                showClose:true,
                                 message: res.error,
                                 type: 'error'
                             });
@@ -575,6 +590,7 @@
                             return false;
                         }
                         that.$message({
+                            showClose:true,
                             message: res.success,
                             type: 'success'
                         });
@@ -588,6 +604,7 @@
                         return false;
                     }
                     that.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -602,6 +619,7 @@
                 }).then(() => {
                     if(!transaction_id){
                         that.$message({
+                            showClose:true,
                             message: '请先选择需要作废的订单',
                             type: 'error'
                         });
@@ -610,6 +628,7 @@
                     order_dead(transaction_id).then(res=>{
                         if(res.error){
                             that.$message({
+                                showClose:true,
                                 message: res.error,
                                 type: 'error'
                             });
@@ -621,6 +640,7 @@
                             return false;
                         }
                         that.$message({
+                            showClose:true,
                             message: res.success,
                             type: 'success'
                         });
@@ -633,6 +653,7 @@
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

@@ -44,6 +44,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -61,6 +62,7 @@
                             this.submitPasdBtnStatus = false;
                             if(res.error){
                                 this.$message({
+                                    showClose:true,
                                     message: res.error,
                                     type: 'error'
                                 });
@@ -72,6 +74,7 @@
                                 return false;
                             }
                             this.$message({
+                                showClose:true,
                                 message:res.success+",请重新登录",
                                 type:'success'
                             });
@@ -81,6 +84,7 @@
                         }).catch(error=>{
                             this.submitPasdBtnStatus = false;
                             this.$message({
+                                showClose:true,
                                 message: error.message,
                                 type: 'error'
                             });

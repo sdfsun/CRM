@@ -1,3 +1,5 @@
+import {getDateStr} from '@/utils/index';
+
 export default {
     addGoods({state,commit,dispatch},res){//添加产品到购物车
         const cartGoods =  state.goods;
@@ -12,6 +14,7 @@ export default {
         if(!res.send_time && state.cumtomFormData.sendProDate){
             res.send_time = state.cumtomFormData.sendProDate;
         }
+        res.send_time_sys = res.send_time;
         if(cartGoods.length > 0){
             const index = cartGoods.findIndex((item=>{
                 return item.product_id === res.product_id;
@@ -76,11 +79,43 @@ export default {
         commit('SETORDERMETHOD',method);//设置订单的配送方式
         commit('RESETGOODMETHOD');//重置产品的配送方式
     },
-    setBuyInstallFlag({state,commit}){//设置是否可购买安装服务
-        const buyInstallFlag = state.goods.some(item=>{
-            return item.install === 'true';//是否有安装服务
+    setBuyInstallFlag({state,commit},type){//设置是否可购买安装服务 设置是否有定制品
+        if(!type){
+            const buyInstallFlag = state.goods.some(item=>{
+                return item.install === 'true';//是否有安装服务
+            });
+            commit('SETBUYINSTALLFLAG',buyInstallFlag);//设置是否可购买安装服务
+        }
+        const isStandFlag = state.goods.some(item=>{
+            return item.is_stand == 1 ;//是否有定制品
         });
-        commit('SETBUYINSTALLFLAG',buyInstallFlag);//重置产品的配送方式
+        let standSendTime = "",updateGoodsSendTimes = [];//仓库完成日期
+        if(isStandFlag){//有定制品 且仓库完成日期为空 则获取45天后的日期为仓库完成日期
+            if(!state.cumtomFormData.sendProDate){
+                standSendTime = getDateStr(45);
+            }
+            updateGoodsSendTimes = state.goods.map((item)=>{
+                if(!item.send_time){
+                    item.send_time = item.send_time_sys;
+                }
+                return item;
+            });
+        }else{//没有定制品，判断标准品中是否有交期时间 有则获取最晚的时候赋值给仓库完成时间 再清空标准品的交期时间
+            let sendTimes = [];
+            updateGoodsSendTimes = state.goods.map((item)=>{
+                if(item.send_time){
+                    sendTimes.push(item.send_time);
+                    item.send_time = "";
+                }
+                return item;
+            });
+            if(sendTimes.length > 0){
+                sendTimes.sort();
+                standSendTime = sendTimes[sendTimes.length-1];
+            }
+        }
+        commit('SETISSTANDFLAG',{isStandFlag:isStandFlag,standSendTime:standSendTime});//设置是否有定制品
+        commit('ADDSERVICES',updateGoodsSendTimes);//重置标准品的交期时间
     },
     addService({state,commit,dispatch},lists) {//添加安装服务
         //先删除购物车里的安装服务

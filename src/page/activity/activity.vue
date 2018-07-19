@@ -98,6 +98,7 @@
                     let res = await activitys();
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -123,6 +124,7 @@
                     this.SETACTIVITYS(tempLists);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

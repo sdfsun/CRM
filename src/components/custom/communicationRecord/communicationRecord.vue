@@ -150,6 +150,7 @@
             editCommunicationRecord(){//编辑沟通记录
                 if(!this.currentrow){
                     this.$message({
+                        showClose:true,
                         message:'请先选中需要编辑的沟通记录！',
                         type:'error'
                     });

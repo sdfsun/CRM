@@ -99,6 +99,7 @@
                 if(!this.currentrow){
                     let msg = type==='2'?'查看':'编辑';
                     this.$message({
+                        showClose:true,
                         message:'请先选中需要'+msg+'的方案记录！',
                         type:'error'
                     });
@@ -108,6 +109,7 @@
                     const res = await programme_detail(this.currentrow.id);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -157,6 +159,7 @@
                     },300);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -178,18 +181,21 @@
                     const res = await confirm_scheme(id,final);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message:res.success,
                         type:'success'
                     });
                     this.$emit('updateCustomProgrammeRecords',{id:id,final:final,data:res.data});
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

@@ -93,6 +93,7 @@
                             this.submitBtnStatus = false;
                             if(res.error){
                                 this.$message({
+                                    showClose:true,
                                     message: res.error,
                                     type: 'error'
                                 });
@@ -104,12 +105,14 @@
                                 return false;
                             }
                             this.$message({
+                                showClose:true,
                                 message:res.success,
                                 type:'success'
                             });
                             that.closeTransactionInfoDialog("complaintForm",res.data);
                         }).catch(error=>{
                             this.$message({
+                                showClose:true,
                                 message: error.message,
                                 type: 'error'
                             });

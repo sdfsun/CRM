@@ -90,6 +90,7 @@ export default {
             state.checkoutSwitch = 0;//结算页开关 0为显示第一页 1位显示第二页
             state.checkoutDetailInfo = {};//结算页第二页明细
             state.orderid = '';//订单号
+            state.isStandFlag = 'false';//设置是否有定制单
         }
         state.cumtomFormData ={
             acceptOrdMan:'',//收货人
@@ -125,7 +126,13 @@ export default {
     [types.SETBUYINSTALLFLAG](state,data) {//设置是否可购买安装服务
         state.buyInstallFlag = data ? 'true' : 'false';
     },
-    [types.ADDSERVICES](state,data) {//添加安装服务，重置购物车
+    [types.SETISSTANDFLAG](state,data) {//设置是否有定制单并设置仓库完成时间
+        state.isStandFlag = data.isStandFlag ? 'true' : 'false';
+        if(data.isStandFlag && !state.cumtomFormData.sendProDate || !data.isStandFlag){
+            state.cumtomFormData.sendProDate = data.standSendTime;
+        }
+    },
+    [types.ADDSERVICES](state,data) {//添加安装服务，重置购物车 或者重置标准品的交期时间
         state.goods = data;
     },
     [types.UPDATECHECKOUTSWITCH](state,data) {//更新结算页切换按钮
@@ -152,6 +159,7 @@ export default {
         state.member_id = data.member_id;//商城用户id
         state.checkoutSwitch = 0;//结算页开关 0为显示第一页 1位显示第二页
         state.checkoutDetailInfo = {};//结算页第二页明细
+        state.isStandFlag = 'false';//设置是否有定制单 需要后端配合
         if(data.invoice){//发票
             state.invoice = data.invoice;
         }else{

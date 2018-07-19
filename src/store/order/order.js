@@ -40,7 +40,8 @@ export default {
             invoice_file:'',//电子发票文件
             vat_invoice:'false',//是否开增值税发票
             invoice_mark:''//发票备注
-        }
+        },
+        isStandFlag:false//设置是否有定制单
     },
     mutations:mutations,
     actions:actions

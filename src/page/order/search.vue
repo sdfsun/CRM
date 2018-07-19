@@ -152,6 +152,7 @@
                     const res = await goods_custom();
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -167,6 +168,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -176,6 +178,7 @@
                 if(!this.bval){
                     this.searchResults = [];
                     this.$message({
+                        showClose:true,
                         message: '请先输入产品型号或名称',
                         type: 'error'
                     });
@@ -186,6 +189,7 @@
                     const res = await search_goods(this.bval);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -201,6 +205,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -220,6 +225,7 @@
                     },2000);
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -235,6 +241,7 @@
                     }).then(() => {
                         that.addGoods(Object.assign({},item));
                         that.$message({
+                            showClose:true,
                             message: '添加成功',
                             type: 'success'
                         });
@@ -247,12 +254,14 @@
                             return false;
                         }
                         that.$message({
+                            showClose:true,
                             message: e.message,
                             type: 'error'
                         });
                     });
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -269,12 +278,14 @@
                     }else{
                         this.addGoods(Object.assign({},item));
                         this.$message({
+                            showClose:true,
                             message: '添加成功',
                             type: 'success'
                         });
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -288,6 +299,7 @@
                     const res = await add_new(goods_id,product_id);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -320,6 +332,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -336,6 +349,7 @@
                     }else{
                         this.addGoods(tempProSpecDatas);
                         this.$message({
+                            showClose:true,
                             message: '添加成功',
                             type: 'success'
                         });
@@ -343,6 +357,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

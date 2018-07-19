@@ -176,6 +176,7 @@
                     const res = await post_login(formData);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -196,6 +197,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -228,6 +230,7 @@
                 try {
                     if(!this.currentrow){
                         this.$message({
+                            showClose:true,
                             message:'请先选中需要编辑的交易记录！',
                             type:'error'
                         });
@@ -236,6 +239,7 @@
                     const orderid = this.currentrow.orderid;
                     if(!orderid){
                         this.$message({
+                            showClose:true,
                             message:'订单号有误！',
                             type:'error'
                         });
@@ -249,6 +253,7 @@
                     });
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

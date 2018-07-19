@@ -201,6 +201,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -228,6 +229,7 @@
                     const res = await stylist(this.informationItem.id,this.communicateForm.scale_time);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -256,6 +258,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -310,6 +313,7 @@
                     this.submitBtnStatus = false;
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -321,6 +325,7 @@
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message:res.success,
                         type:'success'
                     });
@@ -328,6 +333,7 @@
                 }).catch(error=>{
                     this.submitBtnStatus = false;
                     this.$message({
+                        showClose:true,
                         message: error.message,
                         type: 'error'
                     });
@@ -345,6 +351,7 @@
                             let tempDuration = getDuration(this.communicateForm.contact_time,this.communicateForm.end_time);
                             if(tempDuration < 0){
                                 this.$message({
+                                    showClose:true,
                                     message:'沟通结束时间不能小于沟通开始时间',
                                     type:'error'
                                 });
@@ -371,6 +378,7 @@
                         } catch(e) {
                             this.submitBtnStatus = false;
                             this.$message({
+                                showClose:true,
                                 message: e.message,
                                 type: 'error'
                             });
@@ -388,6 +396,7 @@
                     this.$refs[formName].resetFields();//重置表单数据
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

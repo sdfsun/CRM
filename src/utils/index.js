@@ -7,7 +7,7 @@ export const setStore = (name, content) => {
         content = JSON.stringify(content);
     }
     localStorage.setItem(name, content);
-}
+};
 
 /**
  * 获取localStorage
@@ -15,7 +15,7 @@ export const setStore = (name, content) => {
 export const getStore = name => {
     if (!name) return;
     return localStorage.getItem(name);
-}
+};
 
 
 /**
@@ -35,7 +35,7 @@ export const getDuration = (startDate,endDate) => {
     let result_m = Math.floor(ms/60%60);//分
     let result_s = Math.floor(ms%60);//秒
     return result_h+"时"+result_m+"分"+result_s+"秒";
-}
+};
 
 /**
  * 格式化时间
@@ -58,7 +58,8 @@ export const formatDate = (date,format) => {
            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
     }
     return format;
-}
+};
+
 /**
  * 返回上传图片类型对应的icon
  */
@@ -79,4 +80,16 @@ export const getUploadIcon = (fileName) =>{
         iconUrl = 'https://pic.solux.cn/PC/crm/ppt.png';
     }
     return iconUrl;
-}
+};
+
+/**
+ * 获取几天后，几天前的日期
+ */
+export const getDateStr = (AddDayCount) => {
+    let dd = new Date();
+    dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
+    let y = dd.getFullYear();
+    let m = (dd.getMonth()+1)<10?"0"+(dd.getMonth()+1):(dd.getMonth()+1);//获取当前月份的日期，不足10补0
+    let d = dd.getDate()<10?"0"+dd.getDate():dd.getDate();//获取当前几号，不足10补0
+    return y+"-"+m+"-"+d;
+};

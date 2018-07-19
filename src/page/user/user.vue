@@ -113,6 +113,7 @@
                     let res = await member();
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -140,6 +141,7 @@
                     this.SETDESIGNERS(tempDesigners);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -190,6 +192,7 @@
                             this.submitPasdBtnStatus = false;
                             if(res.error){
                                 this.$message({
+                                    showClose:true,
                                     message: res.error,
                                     type: 'error'
                                 });
@@ -201,6 +204,7 @@
                                 return false;
                             }
                             this.$message({
+                                showClose:true,
                                 message:res.success,
                                 type:'success'
                             });
@@ -208,6 +212,7 @@
                         }).catch(error=>{
                             this.submitPasdBtnStatus = false;
                             this.$message({
+                                showClose:true,
                                 message: error.message,
                                 type: 'error'
                             });

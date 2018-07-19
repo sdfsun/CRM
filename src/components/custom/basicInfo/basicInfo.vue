@@ -208,6 +208,7 @@
                         if (valid) {
                             if(!this.basicInfoRecord.id){
                                 this.$message({
+                                    showClose:true,
                                     message: '客户信息有误，请刷新页面重试',
                                     type: 'error'
                                 });
@@ -223,6 +224,7 @@
                             special_assign(tempFormData).then(res=>{
                                 if(res.error){
                                     this.$message({
+                                        showClose:true,
                                         message: res.error,
                                         type: 'error'
                                     });
@@ -234,6 +236,7 @@
                                     return false;
                                 }
                                 this.$message({
+                                    showClose:true,
                                     message:res.success,
                                     type:'success'
                                 });
@@ -241,6 +244,7 @@
                                 this.$emit('updateCustomBasicInfo',res.data);
                             }).catch(error=>{
                                 this.$message({
+                                    showClose:true,
                                     message: error.message,
                                     type: 'error'
                                 });
@@ -249,6 +253,7 @@
                     });
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

@@ -77,6 +77,7 @@
             editComplaintRecord(){//编辑投诉记录
                 if(!this.currentrow){
                     this.$message({
+                        showClose:true,
                         message:'请先选中需要编辑的投诉记录！',
                         type:'error'
                     });

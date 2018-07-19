@@ -61,12 +61,14 @@
                             this.loginBtnStatus = false;
                             if(res.error){
                                 this.$message({
+                                    showClose:true,
                                     message: res.error,
                                     type: 'error'
                                 });
                                 return false;
                             }
                             this.$message({
+                                showClose:true,
                                 message:res.success,
                                 type:'success'
                             });
@@ -113,6 +115,7 @@
                                     let menus = res.data.menus[0];
                                     if(!menus || menus.length == 0){
                                         this.$message({
+                                            showClose:true,
                                             message: '当前账户角色没有登录权限，请先联系管理员分配权限再登录',
                                             type: 'error'
                                         });
@@ -128,6 +131,7 @@
                         }).catch(error=>{
                             this.loginBtnStatus = false;
                             this.$message({
+                                showClose:true,
                                 message: error.message,
                                 type: 'error'
                             });

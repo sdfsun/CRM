@@ -199,16 +199,6 @@
                                 <el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>
                             </el-button>
                         </el-tooltip>
-                        <!--<template v-if="scope.row.orderDRemark">-->
-                            <!--<el-tooltip class="item" effect="dark" :content="scope.row.orderDRemark" placement="top-start">-->
-                                <!--<el-button style="padding: 0;border: none;">-->
-                                    <!--<el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>-->
-                                <!--</el-button>-->
-                            <!--</el-tooltip>-->
-                        <!--</template>-->
-                        <!--<template v-else>-->
-                            <!--<el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>-->
-                        <!--</template>-->
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -221,7 +211,8 @@
                             type="date"
                             placeholder="交期时间"
                             value-format='yyyy-MM-dd'
-                            @change="proAtributeChangeHandle(scope.row)">
+                            :disabled="isStandFlag == 'false'"
+                            @change="proSendTimeChangeHandle(scope.$index,scope.row)">
                         </el-date-picker>
                     </template>
                 </el-table-column>
@@ -363,6 +354,14 @@
                             prop='sendProDate'
                             label="交期"
                             min-width='110px'>
+                        </el-table-column>
+                        <el-table-column
+                            prop='takeProMethod'
+                            label="配送方式"
+                            min-width='80px'>
+                            <template slot-scope="scope">
+                                <span>{{scope.row.takeProMethod == 'wuliu' ? '物流' : scope.row.takeProMethod == 'kuaidi' ? '快递' : '自提'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column
                             prop='price'
@@ -813,7 +812,8 @@
                 checkoutDetailInfo:state => state.order.checkoutDetailInfo,
                 buyInstallFlag:state => state.order.buyInstallFlag,
                 invoice:state => state.order.invoice,
-                member_id:state => state.order.member_id
+                member_id:state => state.order.member_id,
+                isStandFlag:state => state.order.isStandFlag
             }),
             cumtomFormData:{
                 get:function () {
@@ -857,6 +857,7 @@
                         }
                         if(!phoneRegx.test(this.searchPhone)){
                             this.$message({
+                                showClose:true,
                                 message: '请输入正确的手机格式',
                                 type: 'error'
                             });
@@ -865,6 +866,7 @@
                         const res = await post_login({'mobile':this.searchPhone});
                         if(res.error){
                             this.$message({
+                                showClose:true,
                                 message: res.error,
                                 type: 'error'
                             });
@@ -892,6 +894,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -904,6 +907,7 @@
                     this.areaChangeHandle();
                 }catch(e){
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -944,6 +948,19 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            proSendTimeChangeHandle(index,item){//产品交期修改
+                try{
+                    item.send_time_sys = item.send_time;
+                    this.UPDATEGOODDATA({index:index,goodData:item});
+                }catch (e) {
+                    this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -961,8 +978,10 @@
                     }else{
                         this.UPDATEGOODDATA({index:index,goodData:item});
                     }
+                    this.setBuyInstallFlag('1');//设置是否有定制产品
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -973,6 +992,7 @@
                     this.updateGood({'index':index,'res':item});
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -999,6 +1019,7 @@
                     that.setOrderTotalMoney();//重新计算总金额  如果配送方式都为自提的话，那运费既为0
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1016,6 +1037,7 @@
                     this.setOrderTotalMoney();//重置总价格
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1040,6 +1062,7 @@
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1058,6 +1081,7 @@
                     this.setOrderTotalMoney();//重置总价格
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1079,6 +1103,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1131,6 +1156,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1140,6 +1166,7 @@
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isLt2M) {
                     this.$message({
+                        showClose:true,
                         message:'上传头像图片大小不能超过 2MB!',
                         type:'error'
                     });
@@ -1193,6 +1220,7 @@
                     this.uploadDialogVisible = true;
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1214,12 +1242,14 @@
                         this.UPDATEGOODDATA({index:this.goodIndex,goodData:item});
                     }
                     this.$message({
+                        showClose:true,
                         message: '保存成功',
                         type: 'success'
                     });
                     this.uploadDialogVisible = false;
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1238,6 +1268,7 @@
                     this.UPDATEDISCOUNT(val);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1260,6 +1291,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1275,6 +1307,7 @@
                     this.historyActiveIndex = '';
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1299,6 +1332,7 @@
                     const res = await order_detail(this.pageForm.page,15,formData);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -1333,6 +1367,7 @@
                         this.pageForm.HAS_DATA = false;
                         if(type == 'mounted'){
                             this.$message({
+                                showClose:true,
                                 message: '暂没有历史订单数据',
                                 type: 'error'
                             });
@@ -1340,6 +1375,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1362,6 +1398,7 @@
                     });
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1374,6 +1411,7 @@
                 try {
                     if(this.historyActiveIndex === ''){
                         this.$message({
+                            showClose:true,
                             message: '请先选择需要提取的订单',
                             type: 'error'
                         });
@@ -1384,6 +1422,7 @@
                         this.discountTemp = this.discount;
                         this.historyOrdersDialogVisible = false;
                         this.$message({
+                            showClose:true,
                             message: '提取成功',
                             type: 'success'
                         });
@@ -1392,6 +1431,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1407,6 +1447,7 @@
                     });
                     if(services.length > 0){
                         this.$message({
+                            showClose:true,
                             message: '地区改变，请重新购买安装服务',
                             type: 'error'
                         });
@@ -1414,6 +1455,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1431,6 +1473,7 @@
                         });
                         if(installPros.length <= 0){
                             this.$message({
+                                showClose:true,
                                 message: '没有可购买的安装服务',
                                 type: 'error'
                             });
@@ -1443,6 +1486,7 @@
                         }
                         if(!area){
                             this.$message({
+                                showClose:true,
                                 message: '请先选择收货人地区',
                                 type: 'error'
                             });
@@ -1453,6 +1497,7 @@
                         const res = await service(formData);
                         if(res.error){
                             this.$message({
+                                showClose:true,
                                 message: res.error,
                                 type: 'error'
                             });
@@ -1482,6 +1527,7 @@
                             this.serviceDialogVisible = true;
                         }else{
                             this.$message({
+                                showClose:true,
                                 message: '该地区不支持安装服务',
                                 type: 'error'
                             });
@@ -1489,6 +1535,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1512,6 +1559,7 @@
                     })
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1547,12 +1595,14 @@
                     });
                     this.addService(services);
                     this.$message({
+                        showClose:true,
                         message: '保存成功',
                         type: 'success'
                     });
                     this.serviceDialogVisible = false;
                 }catch(e){
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1594,6 +1644,7 @@
                         });
                         if(goodItem){
                             this.$message({
+                                showClose:true,
                                 message: goodItem.product_name+'定制商品必须上传相关的定制信息附件',
                                 type: 'error'
                             });
@@ -1606,6 +1657,7 @@
                         //有定制单但是为非crm客户
                         if(isStand && !formData.information_id){
                             this.$message({
+                                showClose:true,
                                 message: '定制单只能基于CRM客户信息下单',
                                 type: 'error'
                             });
@@ -1614,6 +1666,7 @@
                         //有定制单但是未填写仓库完成时间
                         if(isStand && !formData.sendProDate){
                             this.$message({
+                                showClose:true,
                                 message: '定制单要选择仓库生产完成日期',
                                 type: 'error'
                             });
@@ -1622,6 +1675,7 @@
                         //收货相关信息
                         if(!formData.acceptOrdMan){
                             this.$message({
+                                showClose:true,
                                 message: '收货人不能为空',
                                 type: 'error'
                             });
@@ -1629,6 +1683,7 @@
                         }
                         if(!formData.acceptOrdPhone){
                             this.$message({
+                                showClose:true,
                                 message: '收货人手机号不能为空',
                                 type: 'error'
                             });
@@ -1636,6 +1691,7 @@
                         }
                         if(!phoneRegx.test(formData.acceptOrdPhone)){
                             this.$message({
+                                showClose:true,
                                 message: '收货人手机号格式不正确',
                                 type: 'error'
                             });
@@ -1643,6 +1699,7 @@
                         }
                         if(!formData.area){
                             this.$message({
+                                showClose:true,
                                 message: '收货人地区不能为空',
                                 type: 'error'
                             });
@@ -1650,6 +1707,7 @@
                         }
                         if(!formData.addr){
                             this.$message({
+                                showClose:true,
                                 message: '收货人详细地址不能为空',
                                 type: 'error'
                             });
@@ -1660,6 +1718,7 @@
                         formData.info.forEach(function(item){
                             if(!item.space){
                                 that.$message({
+                                    showClose:true,
                                     message: item.product_name+'的所属空间不能为空',
                                     type: 'error'
                                 });
@@ -1689,6 +1748,7 @@
                                     return false;
                                 }
                                 this.$message({
+                                    showClose:true,
                                     message: error.message,
                                     type: 'error'
                                 });
@@ -1698,12 +1758,14 @@
                         }
                     }else{
                         this.$message({
+                            showClose:true,
                             message: '请先添加产品',
                             type: 'error'
                         });
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1715,6 +1777,7 @@
                     const res = await pre_order(formData);
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -1726,12 +1789,14 @@
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message: '保存成功',
                         type: 'success'
                     });
                     this.UPDATECHECKOUTDETAILINFO(res.success);
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1742,6 +1807,7 @@
                     this.UPDATECHECKOUTSWITCH(0);
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1755,12 +1821,14 @@
                             try {
                                 that.UPDATEINVOICEDATA(that.invoiceForm);
                                 that.$message({
+                                    showClose:true,
                                     message: '保存成功',
                                     type: 'success'
                                 });
                                 that.invoiceDialogVisible = type;
                             }catch (e) {
                                 that.$message({
+                                    showClose:true,
                                     message: e.message,
                                     type: 'error'
                                 });
@@ -1779,40 +1847,58 @@
                 this.$refs['invoiceForm'].resetFields();
             },
             async pushOrderHandle(){//推送订单
-                try {
-                    const that = this;
-                    if(!this.checkoutDetailInfo.transaction_id){
-                        this.$message({
-                            message: '订单数据有误，请刷新重试',
-                            type: 'error'
-                        });
-                        return false;
-                    }
-                    const res = await push_order(this.checkoutDetailInfo.transaction_id);
-                    if(res.error){
-                        this.$message({
-                            message: res.error,
-                            type: 'error'
-                        });
-                        if(res.nologin == 1){//未登录
-                            setTimeout(()=>{
-                                that.$router.push('/');
-                            },3000);
-                        }
-                        return false;
-                    }
+                const that = this;
+                if(!this.checkoutDetailInfo.transaction_id){
                     this.$message({
-                        message: res.success,
-                        type: 'success'
+                        showClose:true,
+                        message: '订单数据有误，请刷新重试',
+                        type: 'error'
                     });
-                    this.RESETCHECKOUTDATA();//重置结算页数据
-                    this.discountTemp = 0;
-                }catch (e) {
+                    return false;
+                }
+                this.$confirm('即将推送订单信息到OSAP/E3系统，请您确认是否继续操作？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    push_order(that.checkoutDetailInfo.transaction_id).then(res=>{
+                        if(res.error){
+                            this.$message({
+                                showClose:true,
+                                message: res.error,
+                                type: 'error'
+                            });
+                            if(res.nologin == 1){//未登录
+                                setTimeout(()=>{
+                                    that.$router.push('/');
+                                },3000);
+                            }
+                            return false;
+                        }
+                        that.$message({
+                            showClose:true,
+                            message: res.success,
+                            type: 'success'
+                        });
+                        that.RESETCHECKOUTDATA();//重置结算页数据
+                        that.discountTemp = 0;
+                    }).catch(err=>{
+                        this.$message({
+                            showClose:true,
+                            message: err.message,
+                            type: 'error'
+                        });
+                    });
+                }).catch((e) => {
+                    if(e == 'cancel'){
+                        return false;
+                    }
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
-                }
+                });
             },
             resetOrderHandle(type){//重新下单
                 try {
@@ -1829,6 +1915,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1858,6 +1945,7 @@
                     const that = this;
                     if(!this.checkoutDetailInfo.transaction_id){
                         this.$message({
+                            showClose:true,
                             message: '订单数据有误，请刷新重试',
                             type: 'error'
                         });
@@ -1867,6 +1955,7 @@
                     this.payOrderForm.message = res.data.msg;
                     if(res.status == "failed"){
                         this.$message({
+                            showClose:true,
                             message: res.data.msg,
                             type: 'error'
                         });
@@ -1875,6 +1964,7 @@
                     }
                     if(res.status == "success"){//成功
                         this.$message({
+                            showClose:true,
                             message: '支付成功！',
                             type: 'success'
                         });
@@ -1886,6 +1976,7 @@
                             const res2 = await pay_new(payment_id,payment);
                             if(res2.error){
                                 this.$message({
+                                    showClose:true,
                                     message: res2.error,
                                     type: 'error'
                                 });
@@ -1900,6 +1991,7 @@
                     }
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -1913,6 +2005,7 @@
                             let payment = this.payOrderForm.payment;
                             if(!payment){
                                 this.$message({
+                                    showClose:true,
                                     message: '请先选择支付方式',
                                     type: 'error'
                                 });
@@ -1921,6 +2014,7 @@
                             let formData = {};
                             if(!this.checkoutDetailInfo.transaction_id){
                                 this.$message({
+                                    showClose:true,
                                     message: '订单数据有误，请刷新重试',
                                     type: 'error'
                                 });
@@ -1934,6 +2028,7 @@
                             const res = await ajax_pay(formData);
                             if(res.error){
                                 this.$message({
+                                    showClose:true,
                                     message: res.error,
                                     type: 'error'
                                 });
@@ -1955,6 +2050,7 @@
                                 },5000);
                             }else{//现金，pos，对公转账
                                 this.$message({
+                                    showClose:true,
                                     message: '支付成功',
                                     type: 'success'
                                 });
@@ -1963,6 +2059,7 @@
                         }
                     }catch (e) {
                         this.$message({
+                            showClose:true,
                             message: e.message,
                             type: 'error'
                         });
@@ -1980,6 +2077,7 @@
                 }).then(() => {
                     if(!that.checkoutDetailInfo.transaction_id){
                         that.$message({
+                            showClose:true,
                             message: '订单数据有误，请刷新重试',
                             type: 'error'
                         });
@@ -1988,6 +2086,7 @@
                     order_dead(that.checkoutDetailInfo.transaction_id).then(res=>{
                         if(res.error){
                             that.$message({
+                                showClose:true,
                                 message: res.error,
                                 type: 'error'
                             });
@@ -1999,16 +2098,24 @@
                             return false;
                         }
                         that.$message({
+                            showClose:true,
                             message: res.success,
                             type: 'success'
                         });
                         that.resetOrderHandle('order');
+                    }).catch(err=>{
+                        this.$message({
+                            showClose:true,
+                            message: err.message,
+                            type: 'error'
+                        });
                     });
                 }).catch((e) => {
                     if(e == 'cancel'){
                         return false;
                     }
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

@@ -114,6 +114,7 @@
                     this.receivablesDialogVisible = true;
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -122,6 +123,7 @@
             editreceivablesRecord(){//编辑收款记录
                 if(!this.currentrow){
                     this.$message({
+                        showClose:true,
                         message:'请先选中需要编辑的收款记录！',
                         type:'error'
                     });

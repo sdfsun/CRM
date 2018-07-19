@@ -187,6 +187,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -204,6 +205,7 @@
                     this.$refs['carouselItems'].setActiveItem(file.url);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -224,6 +226,7 @@
                 // }
                 if (!isLt2M) {
                     this.$message({
+                        showClose:true,
                         message:'上传头像图片大小不能超过 2MB!',
                         type:'error'
                     });
@@ -244,6 +247,7 @@
                             let tempDuration = getDuration(this.activityForm.start_time,this.activityForm.end_time);
                             if(tempDuration < 0){
                                 this.$message({
+                                    showClose:true,
                                     message:'活动结束时间不能小于活动开始时间',
                                     type:'error'
                                 });
@@ -254,6 +258,7 @@
                                 this.submitBtnStatus = false;
                                 if(res.error){
                                     this.$message({
+                                        showClose:true,
                                         message: res.error,
                                         type: 'error'
                                     });
@@ -265,6 +270,7 @@
                                     return false;
                                 }
                                 this.$message({
+                                    showClose:true,
                                     message:res.success,
                                     type:'success'
                                 });
@@ -275,6 +281,7 @@
                             }).catch(error=>{
                                 this.submitBtnStatus = false;
                                 this.$message({
+                                    showClose:true,
                                     message: error.message,
                                     type: 'error'
                                 });
@@ -282,6 +289,7 @@
                         }
                     } catch(e) {
                         this.$message({
+                            showClose:true,
                             message: e.message,
                             type: 'error'
                         });

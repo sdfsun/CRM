@@ -149,6 +149,7 @@
                     let res = await member_role();
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -182,6 +183,7 @@
                     this.SETMEMBERROLES(tempLists);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -201,6 +203,7 @@
                     }
                     if(!formData.name || formData.name === ''){
                         this.$message({
+                            showClose:true,
                             message: '等级名称不能为空',
                             type: 'error'
                         });
@@ -208,6 +211,7 @@
                     }
                     if(!formData.lv_code || formData.lv_code === ''){
                         this.$message({
+                            showClose:true,
                             message: '等级代码不能为空',
                             type: 'error'
                         });
@@ -218,6 +222,7 @@
                     this.submitBtnStatus = false;
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -230,6 +235,7 @@
                     }
                     if(res.success){
                         this.$message({
+                            showClose:true,
                             message:res.success,
                             type:'success'
                         });
@@ -245,6 +251,7 @@
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -272,6 +279,7 @@
                     this.submitBtnStatus = false;
                     if(res.error){
                         this.$message({
+                            showClose:true,
                             message: res.error,
                             type: 'error'
                         });
@@ -284,6 +292,7 @@
                     }
                     if(res.success){
                         this.$message({
+                            showClose:true,
                             message:res.success,
                             type:'success'
                         });
@@ -295,6 +304,7 @@
                 } catch(e) {
                     this.submitBtnStatus = false;
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

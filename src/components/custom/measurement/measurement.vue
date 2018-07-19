@@ -120,6 +120,7 @@
                 try {
                     if(!this.currentrow){
                         this.$message({
+                            showClose:true,
                             message:'请先选中需要编辑的测量记录！',
                             type:'error'
                         });
@@ -145,6 +146,7 @@
                     this.measurementDialogVisible = true;
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });

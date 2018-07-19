@@ -65,6 +65,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -97,6 +98,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -117,6 +119,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -131,6 +134,7 @@
                 // }
                 if (!isLt2M) {
                     this.$message({
+                        showClose:true,
                         message:'上传头像图片大小不能超过 2MB!',
                         type:'error'
                     });

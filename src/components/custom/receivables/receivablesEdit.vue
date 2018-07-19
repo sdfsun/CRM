@@ -316,6 +316,7 @@
                 }
             } catch(e) {
                 this.$message({
+                    showClose:true,
                     message: e.message,
                     type: 'error'
                 });
@@ -339,6 +340,7 @@
                     this.activityHandle(this.receivablesForm.activity_id);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -370,6 +372,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -386,6 +389,7 @@
                     this.$refs['carouselItems'].setActiveItem(file.url);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -399,6 +403,7 @@
                     this.receivablesForm.imageLists = fileList;
                 }catch (e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -408,6 +413,7 @@
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isLt2M) {
                     this.$message({
+                        showClose:true,
                         message:'上传头像图片大小不能超过 2MB!',
                         type:'error'
                     });
@@ -437,6 +443,7 @@
                     }
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -453,6 +460,7 @@
                     this.$refs['carouselItems'].setActiveItem(file.url);
                 } catch(e) {
                     this.$message({
+                        showClose:true,
                         message: e.message,
                         type: 'error'
                     });
@@ -475,6 +483,7 @@
                             this.submitBtnStatus = false;
                             if(res.error){
                                 this.$message({
+                                    showClose:true,
                                     message: res.error,
                                     type: 'error'
                                 });
@@ -486,12 +495,14 @@
                                 return false;
                             }
                             this.$message({
+                                showClose:true,
                                 message:res.success,
                                 type:'success'
                             });
                             that.closeReceivablesInfoDialog("receivablesForm",res.data);
                         }).catch(error=>{
                             this.$message({
+                                showClose:true,
                                 message: error.message,
                                 type: 'error'
                             });

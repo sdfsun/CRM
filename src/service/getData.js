@@ -36,7 +36,8 @@ export const programmes = (information_id) => axios.post('/crm-programme.html',{
 
 //获取客户的具体方案明细
 export const programme_detail = (id) => axios.post('/crm-programme_detail.html',{
-    id
+    id,
+    showLoad:'3'
 });
 
 //获取客户的交易记录

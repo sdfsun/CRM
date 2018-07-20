@@ -82,7 +82,8 @@
                 programmeImageDialogVisible:false,
                 image_url:'',
                 editActiveRow:{},//当前需要编辑的行
-                currentrow:null
+                currentrow:null,
+                submitingBtnStatus:false
             }
         },
         methods:{
@@ -96,6 +97,9 @@
             },
             async editprogrammeRecord(type){//编辑方案记录
                 let that = this;
+                if(this.submitingBtnStatus){
+                    return false;
+                }
                 if(!this.currentrow){
                     let msg = type==='2'?'查看':'编辑';
                     this.$message({
@@ -106,7 +110,9 @@
                     return false;
                 }
                 try {
+                    this.submitingBtnStatus = true;
                     const res = await programme_detail(this.currentrow.id);
+                    this.submitingBtnStatus = false;
                     if(res.error){
                         this.$message({
                             showClose:true,
@@ -158,6 +164,7 @@
                         that.programmeDialogVisible = true;
                     },300);
                 } catch(e) {
+                    this.submitingBtnStatus = false;
                     this.$message({
                         showClose:true,
                         message: e.message,

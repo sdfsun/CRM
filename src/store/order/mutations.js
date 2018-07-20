@@ -128,9 +128,7 @@ export default {
     },
     [types.SETISSTANDFLAG](state,data) {//设置是否有定制单并设置仓库完成时间
         state.isStandFlag = data.isStandFlag ? 'true' : 'false';
-        if(data.isStandFlag && !state.cumtomFormData.sendProDate || !data.isStandFlag){
-            state.cumtomFormData.sendProDate = data.standSendTime;
-        }
+        state.cumtomFormData.sendProDate = data.standSendTime;
     },
     [types.ADDSERVICES](state,data) {//添加安装服务，重置购物车 或者重置标准品的交期时间
         state.goods = data;
@@ -159,7 +157,7 @@ export default {
         state.member_id = data.member_id;//商城用户id
         state.checkoutSwitch = 0;//结算页开关 0为显示第一页 1位显示第二页
         state.checkoutDetailInfo = {};//结算页第二页明细
-        state.isStandFlag = 'false';//设置是否有定制单 需要后端配合
+        state.isStandFlag = data.is_custom;//设置是否有定制单 需要后端配合
         if(data.invoice){//发票
             state.invoice = data.invoice;
         }else{

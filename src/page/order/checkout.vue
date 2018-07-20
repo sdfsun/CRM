@@ -98,8 +98,7 @@
                             placeholder="交期时间"
                             value-format='yyyy-MM-dd'
                             clearable
-                            style="flex: 1;"
-                            @change="sendProDateChangeHandle">
+                            style="flex: 1;">
                         </el-date-picker>
                     </el-col>
                     <el-col :span="6">
@@ -211,8 +210,7 @@
                             type="date"
                             placeholder="交期时间"
                             value-format='yyyy-MM-dd'
-                            :disabled="isStandFlag == 'false'"
-                            @change="proSendTimeChangeHandle(scope.$index,scope.row)">
+                            :disabled="isStandFlag == 'false'">
                         </el-date-picker>
                     </template>
                 </el-table-column>
@@ -225,7 +223,7 @@
                         <template v-else>
                             <el-select v-model="scope.row.canal" placeholder="请选择" v-if="scope.row.channel == 'store'" @change="canalChangeHandle(scope.$index,scope.row)">
                                 <el-option key="ziti" label="自提" value="ziti"></el-option>
-                                <el-option :key="method" :label="method == 'kuaidi'?'快递':'物流'" :value="method"></el-option>
+                                <el-option :key="method" :label="method == 'kuaidi'?'快递':'物流'" :value="method" v-if="scope.row.marketable == 'true'"></el-option>
                             </el-select>
                             <el-select v-model="scope.row.canal" placeholder="请选择" v-else>
                                 <el-option :key="scope.row.canal" :label="scope.row.canal == 'kuaidi'?'快递':'物流'" :value="scope.row.canal"></el-option>
@@ -459,9 +457,8 @@
                 </div>
                 <div class="t-right">
                     <el-button type="primary" @click="goBackCheckoutHandle" class='submit_btn'>返回</el-button>
-                    <el-button type="primary" @click="pushOrderHandle" class='submit_btn' :disabled="checkoutDetailInfo.uFinPay > 0 ? true : false" v-if="checkoutDetailInfo.information_id">推送订单</el-button>
-                    <el-button type="primary" @click="payOrderHandle('3')" class='submit_btn' v-else>支付</el-button>
-                    <el-button type="primary" @click="resetOrderHandle" class='submit_btn' v-if="checkoutDetailInfo.uFinPay > 0">重新下单</el-button>
+                    <el-button type="primary" @click="payOrderHandle('3')" class='submit_btn' v-if="!checkoutDetailInfo.information_id">支付</el-button>
+                    <el-button type="primary" @click="resetOrderHandle" class='submit_btn'>重新下单</el-button>
                 </div>
             </div>
         </div>
@@ -485,7 +482,7 @@
                 </el-upload>
             </div>
             <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-                <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
+                <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex' trigger="click">
                     <el-carousel-item v-for="(item,index) in uploadImageLists" :key="index" :name='item.url'>
                         <img :src="item.url" class="image_carousel_item">
                     </el-carousel-item>
@@ -954,18 +951,6 @@
                     });
                 }
             },
-            proSendTimeChangeHandle(index,item){//产品交期修改
-                try{
-                    item.send_time_sys = item.send_time;
-                    this.UPDATEGOODDATA({index:index,goodData:item});
-                }catch (e) {
-                    this.$message({
-                        showClose:true,
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
-            },
             updateGoodDataHandle(index,item){//是否定制 如果自提产品，选择了定制，则默认修改配送方式为快递或物流
                 try {
                     item.is_stand = item.is_standSelected ? 1 : 0;
@@ -1132,13 +1117,15 @@
                         });
                         this.initialIndex = index;
                         this.dialogVisible = true;
-                        this.$refs['carouselItems'].setActiveItem(file.url);
+                        this.$nextTick(()=>{
+                            this.$refs['carouselItems'].setActiveItem(file.url);
+                        });
                     }
                 } catch(e) {
-                    // this.$message({
-                    //     message: e.message,
-                    //     type: 'error'
-                    // });
+                    this.$message({
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
             },
             handleSuccess(response, file, fileList){//上传成功
@@ -1266,29 +1253,6 @@
                         return false;
                     }
                     this.UPDATEDISCOUNT(val);
-                } catch(e) {
-                    this.$message({
-                        showClose:true,
-                        message: e.message,
-                        type: 'error'
-                    });
-                }
-            },
-            sendProDateChangeHandle(val){//仓库完成时间更改
-                try {
-                    if(val){
-                        let goods = this.cartGoods;
-                        const flag = goods.some(function (item) {
-                           return !item.send_time;
-                        });
-                        if(flag){
-                            goods.forEach(function (item, index) {
-                                if(!item.send_time){
-                                    item.send_time = val;
-                                }
-                            });
-                        }
-                    }
                 } catch(e) {
                     this.$message({
                         showClose:true,
@@ -1846,60 +1810,6 @@
             resetInvoiceDialog(){//重置结算页发票数据
                 this.$refs['invoiceForm'].resetFields();
             },
-            async pushOrderHandle(){//推送订单
-                const that = this;
-                if(!this.checkoutDetailInfo.transaction_id){
-                    this.$message({
-                        showClose:true,
-                        message: '订单数据有误，请刷新重试',
-                        type: 'error'
-                    });
-                    return false;
-                }
-                this.$confirm('即将推送订单信息到OSAP/E3系统，请您确认是否继续操作？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    push_order(that.checkoutDetailInfo.transaction_id).then(res=>{
-                        if(res.error){
-                            this.$message({
-                                showClose:true,
-                                message: res.error,
-                                type: 'error'
-                            });
-                            if(res.nologin == 1){//未登录
-                                setTimeout(()=>{
-                                    that.$router.push('/');
-                                },3000);
-                            }
-                            return false;
-                        }
-                        that.$message({
-                            showClose:true,
-                            message: res.success,
-                            type: 'success'
-                        });
-                        that.RESETCHECKOUTDATA();//重置结算页数据
-                        that.discountTemp = 0;
-                    }).catch(err=>{
-                        this.$message({
-                            showClose:true,
-                            message: err.message,
-                            type: 'error'
-                        });
-                    });
-                }).catch((e) => {
-                    if(e == 'cancel'){
-                        return false;
-                    }
-                    this.$message({
-                        showClose:true,
-                        message: e.message,
-                        type: 'error'
-                    });
-                });
-            },
             resetOrderHandle(type){//重新下单
                 try {
                     if(type === 'logoutCustom'){
@@ -2255,7 +2165,7 @@
         display: inline-block;
         height: 36px;
         line-height: 36px;
-        border: 1px solid #D6D7DC;
+        border: 1px solid #b0b1b9;
         padding-left: 10px;
         box-sizing: border-box;
     }

@@ -73,13 +73,12 @@
             <measurementEdit :informationItem='infomation' :editInfos='editActiveRow' ref='measurementEdit'  v-on:closeCustomMeasurementInfoDialog='updateMeasurementRecord'></measurementEdit>
         </el-dialog>
         <el-dialog title="量尺图片" :visible.sync="measurementImageDialogVisible">
-            <el-carousel height="400px" :autoplay='false'>
+            <el-carousel height="400px" ref='carouselItems' :autoplay='false' trigger="click">
                 <el-carousel-item v-for="(item,index) in images" :key="index">
                     <img :src="item" class="image_carousel_item">
                 </el-carousel-item>
             </el-carousel>
         </el-dialog>
-    </div>
     </div>
 </template>
 <script>
@@ -168,6 +167,9 @@
                     if(row.image_id){
                         this.measurementImageDialogVisible = true;
                         this.images = Object.assign({}, row.image_id);
+                        this.$nextTick(()=>{
+                            this.$refs['carouselItems'].setActiveItem(0);
+                        });
                     }
                 }
             }

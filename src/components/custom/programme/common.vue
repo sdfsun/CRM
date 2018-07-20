@@ -27,7 +27,7 @@
                 <i class="el-icon-plus"></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-                <el-carousel height="400px" :autoplay='false'  ref='carouselItems' :initial-index='initialIndex'>
+                <el-carousel height="400px" :autoplay='false'  ref='carouselItems' :initial-index='initialIndex' trigger="click">
                     <el-carousel-item v-for="(item,index) in dataForm.imageLists" :key="index" :name='item.url'>
                         <img :src="item.url" class="image_carousel_item">
                     </el-carousel-item>
@@ -94,7 +94,9 @@
                         });
                         this.initialIndex = index;
                         this.dialogVisible = true;
-                        this.$refs['carouselItems'].setActiveItem(file.url);
+                        this.$nextTick(()=>{
+                            this.$refs['carouselItems'].setActiveItem(file.url);
+                        });
                     }
                 } catch(e) {
                     this.$message({

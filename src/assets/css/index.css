@@ -711,7 +711,7 @@ body{
     vertical-align: middle;
 }
 .orderCheckout-container .checkoutTableInfo .operation-btn-gift{
-    color: #cfcfcf;
+    color: #a8a8a8;
 }
 .orderCheckout-container .checkoutTableInfo .operation-btn-gift.disabled{
     color: #F25406;
@@ -1017,7 +1017,8 @@ body{
     left: 6px;
 }
 .orderCheckout-container .custom-info .el-input,.orderCheckout-container .custom-info .el-input__inner,.orderCheckout-container .custom-info .el-input__icon,
-.orderCheckout-container .custom-info .el-cascader__label,.orderCheckout-container .custom-info .el-cascader{
+.orderCheckout-container .custom-info .el-cascader__label,.orderCheckout-container .custom-info .el-cascader,
+.orderCheckout-container .custom-info .el-input__suffix{
     height: 30px;
     line-height: 30px;
 }

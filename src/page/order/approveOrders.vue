@@ -178,11 +178,8 @@
                             </el-table-column>
                         </el-table>
                         <div class="footer-btns">
-                            <el-button type="primary" @click="orderDeadHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active'">作废</el-button>
-                            <template v-if="item.cumtomFormData.information_id">
-                                <el-button type="primary" @click="orderArrearsHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active' && item.uFinPay > 0 && memberRoleId.is_arrears === 'true'">同意</el-button>
-                                <el-button type="primary" @click="orderSupplement(item.orderid)" class='submit_btn supple_btn' v-if="item.status !== 'dead' && item.uFinPay > 0 && item.cumtomFormData.sum_money > item.uFinPay">补款</el-button>
-                            </template>
+                            <el-button type="primary" @click="orderArrearsHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active' && item.uFinPay > 0 && memberRoleId.is_arrears === 'true'">同意</el-button>
+                            <el-button type="primary" @click="pushOrderHandle" class='submit_btn' :disabled="item.uFinPay > 0 ? true : false">推送订单</el-button>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="订单信息">
@@ -256,7 +253,6 @@
                 :total="pagination.totalNum"
                 @current-change="currentPageChangeHandle">
             </el-pagination>
-            <el-button type="primary" @click="extractOrder" class='submit_btn'  :disabled="historyOrderDatas[historyActiveIndex] ? historyOrderDatas[historyActiveIndex].status !== 'active' ? true : false : false">提取订单</el-button>
         </div>
         <!--物流信息-->
         <el-dialog title="物流信息" :visible.sync="progressDialogVisible" >
@@ -290,14 +286,25 @@
                 </el-carousel>
             </el-dialog>
         </el-dialog>
+        <!--填写推送驳回原因-->
+        <el-dialog title="推送驳回" :visible.sync="rejectFormDialogVisible" class="specialAssignDialog">
+            <el-form ref="rejectForm" :model="rejectForm" labelWidth="70px" :rules="rejectFormRules">
+                <el-form-item prop='reason' label="驳回原因">
+                    <el-input  placeholder="请输入驳回原因" clearable v-model="rejectForm.reason"></el-input>
+                </el-form-item>
+                <div class="btns">
+                    <el-button type="primary" @click='submitRejectForm'>保存</el-button>
+                </div>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 <script>
-    import {order_detail,order_supplement,order_arrears,order_dead,order_logistic} from '@/service/getData';
+    import {order_detail,order_arrears,order_logistic} from '@/service/getData';
     import {getUploadIcon} from '@/utils/index';
     import {mapMutations,mapState} from 'vuex';
     export  default {
-        name:'historyOrderDatas',
+        name:'approveOrders',
         data(){
             return{
                 historyOrderDatas:[],
@@ -322,7 +329,16 @@
                 uploadImageLists:[],
                 image_id:[],
                 initialIndex:0,
-                dialogVisible:false
+                dialogVisible:false,
+                rejectFormDialogVisible:false,//推送驳回弹框
+                rejectForm:{
+                    reason:""
+                },
+                rejectFormRules:{
+                    reason: [
+                        { required: true, message: '请输入驳回原因', trigger: 'blur' }
+                    ]
+                }
             }
         },
         mounted(){
@@ -470,99 +486,7 @@
                     });
                 }
             },
-            extractOrder(){//历史订单提取
-                const that = this;
-                if(that.historyActiveIndex === ''){
-                    that.$message({
-                        showClose:true,
-                        message: '请先选择需要提取的订单',
-                        type: 'error'
-                    });
-                    return false;
-                }
-                this.$confirm('确定提取订单吗？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    that.EXTRACTORDERSETDATA(that.historyOrderDatas[that.historyActiveIndex]);
-                    that.$message({
-                        showClose:true,
-                        message: '提取成功',
-                        type: 'success'
-                    });
-                    that.$router.push('/checkout');
-                }).catch((e) => {
-                    if(e == 'cancel'){
-                        return false;
-                    }
-                    that.$message({
-                        showClose:true,
-                        message: e.message,
-                        type: 'error'
-                    });
-                });
-            },
-            orderSupplement(transaction_id){//欠款订单补款
-                // event.preventDefault();//阻止事件默认行为
-                // event.stopPropagation();//阻止事件冒泡
-                const that = this;
-                this.$confirm('确定补款该订单吗？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    if(!transaction_id){
-                        that.$message({
-                            showClose:true,
-                            message: '请先选择需要补款的订单',
-                            type: 'error'
-                        });
-                        return false;
-                    }
-                    order_supplement(transaction_id).then(res=>{
-                        if(res.error){
-                            that.$message({
-                                showClose:true,
-                                message: res.error,
-                                type: 'error'
-                            });
-                            if(res.nologin == 1){//未登录
-                                setTimeout(()=>{
-                                    that.$router.push('/');
-                                },3000);
-                            }
-                            return false;
-                        }
-                        that.$message({
-                            showClose:true,
-                            message: res.success,
-                            type: 'success'
-                        });
-                        // let item = that.historyOrderDatas[index];
-                        // let sum = Number(item.sum_money - item.uFinPay).toFixed(2);
-                        // item.cumtomFormData.sum_money = sum;
-                        // item.uFinPay = 0;
-                        // item.status = 'finish';
-                        // this.$set(that.historyOrderDatas,index,item);
-                        setTimeout(function () {
-                            that.searchFormDatas();
-                        },3000);
-                    });
-                }).catch((e) => {
-                    if(e == 'cancel'){
-                        return false;
-                    }
-                    that.$message({
-                        showClose:true,
-                        message: e.message,
-                        type: 'error'
-                    });
-                });
-            },
             orderArrearsHandle(transaction_id){//欠款订单同意审批
-                // event.preventDefault();//阻止事件默认行为
-                // event.stopPropagation();//阻止事件冒泡
                 const that = this;
                 this.$confirm('确定审批该订单吗？', '提示', {
                     confirmButtonText: '确定',
@@ -596,7 +520,6 @@
                             message: res.success,
                             type: 'success'
                         });
-                        // this.$set(that.historyOrderDatas[index],'status','finish');
                         setTimeout(function () {
                             that.searchFormDatas();
                         },3000);
@@ -612,24 +535,24 @@
                     });
                 });
             },
-            orderDeadHandle(transaction_id){//订单作废
+            async pushOrderHandle(){//推送订单
                 const that = this;
-                this.$confirm('确定作废订单吗？', '提示', {
+                if(!this.checkoutDetailInfo.transaction_id){
+                    this.$message({
+                        showClose:true,
+                        message: '订单数据有误，请刷新重试',
+                        type: 'error'
+                    });
+                    return false;
+                }
+                this.$confirm('即将推送订单信息到OSAP/E3系统，请您确认是否继续操作？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    if(!transaction_id){
-                        that.$message({
-                            showClose:true,
-                            message: '请先选择需要作废的订单',
-                            type: 'error'
-                        });
-                        return false;
-                    }
-                    order_dead(transaction_id).then(res=>{
+                    push_order(that.checkoutDetailInfo.transaction_id).then(res=>{
                         if(res.error){
-                            that.$message({
+                            this.$message({
                                 showClose:true,
                                 message: res.error,
                                 type: 'error'
@@ -646,9 +569,14 @@
                             message: res.success,
                             type: 'success'
                         });
-                        setTimeout(function () {
-                            that.searchFormDatas();
-                        },3000);
+                        that.RESETCHECKOUTDATA();//重置结算页数据
+                        that.discountTemp = 0;
+                    }).catch(err=>{
+                        this.$message({
+                            showClose:true,
+                            message: err.message,
+                            type: 'error'
+                        });
                     });
                 }).catch((e) => {
                     if(e == 'cancel'){
@@ -659,6 +587,40 @@
                         message: e.message,
                         type: 'error'
                     });
+                });
+            },
+            submitRejectForm(){//保存推送驳回原因
+                const that = this;
+                this.$refs['rejectForm'].validate((valid) => {
+                    if (valid) {
+                        order_arrears(this.rejectForm).then(res=>{
+                            if(res.error){
+                                this.$message({
+                                    showClose:true,
+                                    message: res.error,
+                                    type: 'error'
+                                });
+                                if(res.nologin === 1){//未登录
+                                    setTimeout(()=>{
+                                        that.$router.push('/');
+                                    },3000);
+                                }
+                                return false;
+                            }
+                            this.$message({
+                                showClose:true,
+                                message:res.success,
+                                type:'success'
+                            });
+                            this.rejectFormDialogVisible = false;
+                        }).catch(error=>{
+                            this.$message({
+                                showClose:true,
+                                message: error.message,
+                                type: 'error'
+                            });
+                        });
+                    }
                 });
             }
         }

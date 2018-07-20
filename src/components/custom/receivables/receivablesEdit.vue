@@ -131,7 +131,7 @@
                     <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-                    <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
+                    <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex' trigger="click">
                         <el-carousel-item v-for="(item,index) in receivablesForm.imageLists" :key="index" :name='item.url'>
                             <img :src="item.url" class="image_carousel_item">
                         </el-carousel-item>
@@ -177,7 +177,7 @@
                                     :on-preview="handlePictureCardPreview2">
                                 </el-upload>
                                 <el-dialog :visible.sync="dialogVisible2" :append-to-body='true'>
-                                    <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex'>
+                                    <el-carousel height="400px" :autoplay='false' ref='carouselItems2'  :initial-index='initialIndex2' trigger="click">
                                         <el-carousel-item v-for="(item,index) in activityItems[0].imageLists" :key="index" :name='item.url'>
                                             <img :src="item.url" class="image_carousel_item">
                                         </el-carousel-item>
@@ -273,6 +273,7 @@
                 activityItems:[],//活动列表信息
                 dialogVisible2:false,
                 initialIndex:0,
+                initialIndex2:0,
                 receivablesFormRules:{//规则校验
                     name: [
                         {  required: true, message: '请填写收款人名称', trigger: 'blur' }
@@ -386,7 +387,9 @@
                     });
                     this.initialIndex = index;
                     this.dialogVisible = true;
-                    this.$refs['carouselItems'].setActiveItem(file.url);
+                    this.$nextTick(()=>{
+                        this.$refs['carouselItems'].setActiveItem(file.url);
+                    });
                 } catch(e) {
                     this.$message({
                         showClose:true,
@@ -455,9 +458,11 @@
                     const index = tempLists.findIndex(function(item, index, arr) {
                         return item.url === file.url
                     });
-                    this.initialIndex = index;
+                    this.initialIndex2 = index;
                     this.dialogVisible2 = true;
-                    this.$refs['carouselItems'].setActiveItem(file.url);
+                    this.$nextTick(()=>{
+                        this.$refs['carouselItems2'].setActiveItem(file.url);
+                    });
                 } catch(e) {
                     this.$message({
                         showClose:true,

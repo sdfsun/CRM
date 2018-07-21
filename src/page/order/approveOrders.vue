@@ -223,6 +223,53 @@
                                     物流单号：<a href="javascript:void(0);" class="t2" @click="showProgressInfo(progress.content.t4)">{{progress.content.t4}}</a>
                                 </p>
                             </template>
+                            <!--查看具体的流程节点信息-->
+                            <p class="progressNodeInfos">具体的流程节点信息：</p>
+                            <el-table
+                                    :data="item.progress"
+                                    stripe
+                                    highlight-current-row
+                                    class='checkoutTableInfo'
+                                    header-row-class-name='header_row_style'>
+                                <el-table-column
+                                        type="index"
+                                        :index="1"
+                                        label='序号'
+                                        width='80'>
+                                </el-table-column>
+                                <el-table-column
+                                        prop='behavior'
+                                        label="状态说明"
+                                        min-width='120px'
+                                        show-overflow-tooltip>
+                                </el-table-column>
+                                <el-table-column
+                                        prop='operateUser'
+                                        label="处理人"
+                                        min-width='120px'>
+                                </el-table-column>
+                                <el-table-column
+                                        prop='receive_time'
+                                        label="接收时间"
+                                        min-width='140px'>
+                                </el-table-column>
+                                <el-table-column
+                                        prop='operate_time'
+                                        label="完成时间"
+                                        min-width='140px'>
+                                </el-table-column>
+                                <el-table-column
+                                        prop='duration'
+                                        label="耗时"
+                                        min-width='100px'>
+                                </el-table-column>
+                                <el-table-column
+                                        prop='content'
+                                        label="备注"
+                                        min-width='120px'
+                                        show-overflow-tooltip>
+                                </el-table-column>
+                            </el-table>
                          </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -777,5 +824,10 @@
         line-height: 50px;
         text-align: center;
     }
-
+    .progressNodeInfos{
+        color: #000;
+        font-size: 14px;
+        line-height: 32px;
+        margin-top: 10px;
+    }
 </style>

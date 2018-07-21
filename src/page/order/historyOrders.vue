@@ -245,7 +245,7 @@
                             <!--查看具体的流程节点信息-->
                             <p class="progressNodeInfos">具体的流程节点信息：</p>
                             <el-table
-                                :data="item.goods"
+                                :data="item.progress"
                                 stripe
                                 highlight-current-row
                                 class='checkoutTableInfo'
@@ -257,33 +257,33 @@
                                     width='80'>
                                 </el-table-column>
                                 <el-table-column
-                                    prop='状态说明'
+                                    prop='behavior'
                                     label="状态说明"
                                     min-width='120px'
                                     show-overflow-tooltip>
                                 </el-table-column>
                                 <el-table-column
-                                    prop='处理人'
+                                    prop='operateUser'
                                     label="处理人"
                                     min-width='120px'>
                                 </el-table-column>
                                 <el-table-column
-                                    prop='接收时间'
+                                    prop='receive_time'
                                     label="接收时间"
                                     min-width='140px'>
                                 </el-table-column>
                                 <el-table-column
-                                    prop='完成时间'
+                                    prop='operate_time'
                                     label="完成时间"
                                     min-width='140px'>
                                 </el-table-column>
                                 <el-table-column
-                                    prop='耗时'
+                                    prop='duration'
                                     label="耗时"
                                     min-width='100px'>
                                 </el-table-column>
                                 <el-table-column
-                                    prop='备注'
+                                    prop='content'
                                     label="备注"
                                     min-width='120px'
                                     show-overflow-tooltip>

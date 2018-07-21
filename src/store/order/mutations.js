@@ -16,7 +16,7 @@ export default {
             if(res.selectedZitiMethod){//购物车产品全都为自提
                 state.freight = 0;
             }else{
-                state.freight = tempMoney > 200 ? 0 : 12;
+                state.freight = tempMoney >= 200 ? 0 : 12;
             }
             state.totalMoney = Number(tempMoney) + Number(state.freight);
             let tempPayMoney = Number(Number(state.totalMoney)-Number(state.discount)).toFixed(2);

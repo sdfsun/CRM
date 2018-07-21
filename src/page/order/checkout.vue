@@ -457,7 +457,10 @@
                 </div>
                 <div class="t-right">
                     <el-button type="primary" @click="goBackCheckoutHandle" class='submit_btn'>返回</el-button>
-                    <el-button type="primary" @click="payOrderHandle('3')" class='submit_btn' v-if="!checkoutDetailInfo.information_id">支付</el-button>
+                    <template  v-if="checkoutDetailInfo.information_id">
+                        <el-button type="primary" @click="pushOrderHandle" class='submit_btn' v-if="checkoutDetailInfo.is_custom == 'false' && checkoutDetailInfo.uFinPay <= 0">推送订单</el-button>
+                    </template>
+                    <el-button type="primary" @click="payOrderHandle('3')" class='submit_btn' v-else>支付</el-button>
                     <el-button type="primary" @click="resetOrderHandle" class='submit_btn'>重新下单</el-button>
                 </div>
             </div>
@@ -694,7 +697,7 @@
     import { region } from '@/service/region';
     import {mapState,mapActions,mapMutations} from 'vuex';
     import {getUploadIcon} from '@/utils/index';
-    import {post_login,pre_order,service,order_detail,ajax_pay,query_new,pay_new,order_dead} from '@/service/getData';
+    import {post_login,pre_order,service,order_detail,ajax_pay,query_new,pay_new,order_dead,push_order} from '@/service/getData';
     const priceRegx = /(^[1-9]\d*(\.\d*)?$)|(^0(\.\d*)?$)/;//校验金额
     const phoneRegx = /^1[3456789]\d{9}$/;//校验手机
 
@@ -1852,6 +1855,60 @@
             },
             resetInvoiceDialog(){//重置结算页发票数据
                 this.$refs['invoiceForm'].resetFields();
+            },
+            async pushOrderHandle(){//推送订单
+                const that = this;
+                if(!this.checkoutDetailInfo.transaction_id){
+                    this.$message({
+                        showClose:true,
+                        message: '订单数据有误，请刷新重试',
+                        type: 'error'
+                    });
+                    return false;
+                }
+                this.$confirm('即将推送订单信息到OSAP/E3系统，请您确认是否继续操作？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    push_order(that.checkoutDetailInfo.transaction_id).then(res=>{
+                        if(res.error){
+                            this.$message({
+                                showClose:true,
+                                message: res.error,
+                                type: 'error'
+                            });
+                            if(res.nologin == 1){//未登录
+                                setTimeout(()=>{
+                                    that.$router.push('/');
+                                },3000);
+                            }
+                            return false;
+                        }
+                        that.$message({
+                            showClose:true,
+                            message: res.success,
+                            type: 'success'
+                        });
+                        that.RESETCHECKOUTDATA();//重置结算页数据
+                        that.discountTemp = 0;
+                    }).catch(err=>{
+                        this.$message({
+                            showClose:true,
+                            message: err.message,
+                            type: 'error'
+                        });
+                    });
+                }).catch((e) => {
+                    if(e == 'cancel'){
+                        return false;
+                    }
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                });
             },
             resetOrderHandle(type){//重新下单
                 try {

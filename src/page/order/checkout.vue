@@ -223,7 +223,7 @@
                         <template v-else>
                             <el-select v-model="scope.row.canal" placeholder="请选择" v-if="scope.row.channel == 'store'" @change="canalChangeHandle(scope.$index,scope.row)">
                                 <el-option key="ziti" label="自提" value="ziti"></el-option>
-                                <el-option :key="method" :label="method == 'kuaidi'?'快递':'物流'" :value="method" v-if="scope.row.marketable == 'true'"></el-option>
+                                <el-option :key="method" :label="method == 'kuaidi'?'快递':'物流'" :value="method" v-if="!scope.row.canal_special"></el-option>
                             </el-select>
                             <el-select v-model="scope.row.canal" placeholder="请选择" v-else>
                                 <el-option :key="scope.row.canal" :label="scope.row.canal == 'kuaidi'?'快递':'物流'" :value="scope.row.canal"></el-option>
@@ -694,7 +694,7 @@
     import { region } from '@/service/region';
     import {mapState,mapActions,mapMutations} from 'vuex';
     import {getUploadIcon} from '@/utils/index';
-    import {post_login,pre_order,service,push_order,order_detail,ajax_pay,query_new,pay_new,order_dead} from '@/service/getData';
+    import {post_login,pre_order,service,order_detail,ajax_pay,query_new,pay_new,order_dead} from '@/service/getData';
     const priceRegx = /(^[1-9]\d*(\.\d*)?$)|(^0(\.\d*)?$)/;//校验金额
     const phoneRegx = /^1[3456789]\d{9}$/;//校验手机
 
@@ -833,7 +833,8 @@
                 'UPDATECHECKOUTSWITCH',
                 'RESETCHECKOUTDATA',
                 'UPDATEINVOICEDATA',
-                'EXTRACTORDERSETDATA'
+                'EXTRACTORDERSETDATA',
+                'UPDATESENDPRODATE'
             ]),
             ...mapActions([
                 'updateGood',
@@ -880,6 +881,9 @@
                             tempData.searchPhone = this.searchPhone;
                             this.UPDATECUSTOMINFO(tempData);
                             this.areaChangeHandle();
+                            if(tempData.sendProDate){//有上个订单的交期时间
+                                this.setSendProDate(tempData.sendProDate);
+                            }
                         }else if(res.success.information.length >1){//多个crm账户
                             this.searchCrmResults = res.success.information;
                             this.searchCb(this.searchCrmResults);
@@ -897,11 +901,33 @@
                     });
                 }
             },
+            setSendProDate(val){//设置仓库完成时间
+                const that = this;
+                this.$confirm('是否带出上一单的交期日期：'+val, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.UPDATESENDPRODATE(val);
+                }).catch((e) => {
+                    if(e == 'cancel'){
+                        return false;
+                    }
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                });
+            },
             handleSelect(item){//选择CRM账户
                 try {
                     this.UPDATECUSTOMINFO(item);
                     this.searchCrmResults = [];
                     this.areaChangeHandle();
+                    if(item.sendProDate){//有上个订单的交期时间
+                        this.setSendProDate(item.sendProDate);
+                    }
                 }catch(e){
                     this.$message({
                         showClose:true,
@@ -1277,6 +1303,22 @@
                     });
                 }
             },
+            elementRemoveClass(){//元素移除类
+                let collapseEles = document.querySelectorAll('.el-collapse .is-active');
+                let collapseWraps = document.querySelectorAll('.el-collapse .el-collapse-item__wrap');
+                if(collapseEles.length>0){
+                    collapseEles.forEach((item)=>{
+                        if(item.className.indexOf("el-tabs__item") == -1){
+                            item.classList.remove('is-active');
+                        }
+                    });
+                }
+                if(collapseWraps.length>0){
+                    collapseWraps.forEach((item)=>{
+                        item.style.display = 'none';
+                    });
+                }
+            },
             async getHistoryOrders(type){//获取历史订单
                 try {
                     const that = this;
@@ -1318,6 +1360,7 @@
                         if(type == 'mounted'){
                             this.$nextTick(function () {
                                 if(this.historyOrdersDialogVisible){
+                                    this.elementRemoveClass();
                                     that.scrollHistoryOrdersLists();
                                 }
                             });

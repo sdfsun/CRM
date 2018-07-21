@@ -106,6 +106,9 @@
                 label="客户"
                 min-width='80px'
                 >
+                <template slot-scope="scope">
+                    <span class="repeat_num" v-if="scope.row.repeat_num > 0">R</span>{{scope.row.name}}
+                </template>
             </el-table-column>
             <el-table-column
                 prop="mobile"
@@ -976,5 +979,15 @@
     .totalNum-wrapper span{
         font-size: 16px;
         color: #1876EF;
+    }
+    .repeat_num{
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: #F25406;
+        line-height: 14px;
+        text-align: center;
+        color: #fff;
+        margin-right: 5px;
     }
 </style>

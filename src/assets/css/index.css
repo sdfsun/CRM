@@ -981,9 +981,12 @@ body{
     background-color: #FBDDA9;
 }
 /*客户基本信息 特殊指派设计师*/
-.specialAssignDialog .el-dialog{
+.specialAssignDialog .el-dialog,.rejectPushOrderDialog .el-dialog{
     width: 600px;
     min-width: 600px;
+}
+.rejectPushOrderDialog .el-dialog__body{
+    padding: 20px 60px;
 }
 .el-submenu .el-menu-item{
     min-width: auto;

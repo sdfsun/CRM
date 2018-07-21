@@ -245,3 +245,6 @@ export const check_mobile = (mobile) => axios.post('/crm-check_mobile.html',{
     mobile,
     showLoad:'3'
 });
+
+//推送订单驳回
+export const order_reject = (formData) => axios.post('/crm-order_reject.html',formData);

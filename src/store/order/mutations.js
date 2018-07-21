@@ -68,6 +68,9 @@ export default {
         // state.status_name = data.status_name;
         // state.tel = data.tel;
     },
+    [types.UPDATESENDPRODATE](state,data){//设置仓库完成时间
+        state.cumtomFormData.sendProDate = data;
+    },
     [types.UPDATECHECKOUTDETAILINFO](state,data){//更新结算页第二页数据
         state.checkoutSwitch = 1;
         state.checkoutDetailInfo = data;

@@ -39,25 +39,6 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
-                    <el-form-item label='是否欠款：' prop='uFinPay'>
-                        <el-radio-group v-model="searchForm.uFinPay">
-                            <el-radio label="true">是</el-radio>
-                            <el-radio label="false">否</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="10">
-                <el-col :span="4">
-                    <el-form-item prop='status'>
-                        <el-select v-model="searchForm.status" clearable placeholder="订单状态">
-                            <el-option key="active" label="未推送" value="active"></el-option>
-                            <el-option key="finish" label="已推送" value="finish"></el-option>
-                            <el-option key="dead" label="作废" value="dead"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
                 <el-col :span='2'>
                     <el-button type="primary"  @click='searchFormDatas'>查询</el-button>
                 </el-col>
@@ -178,8 +159,11 @@
                             </el-table-column>
                         </el-table>
                         <div class="footer-btns">
-                            <el-button type="primary" @click="orderArrearsHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active' && item.uFinPay > 0 && memberRoleId.is_arrears === 'true'">同意</el-button>
-                            <el-button type="primary" @click="pushOrderHandle" class='submit_btn' :disabled="item.uFinPay > 0 ? true : false">推送订单</el-button>
+                            <el-button type="primary" @click="orderArrearsHandle(item.orderid)" class='submit_btn' v-if="memberRoleId.is_arrears === 'true'">同意</el-button>
+                            <template v-if="memberRoleId.member_role_id == 'review'">
+                                <el-button type="primary" @click="pushOrderHandle(item.orderid)" class='submit_btn'>推送订单</el-button>
+                                <el-button type="primary" @click="rejectOrderHandle(item.orderid)" class='submit_btn'>驳回订单</el-button>
+                            </template>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="订单信息">
@@ -287,20 +271,20 @@
             </el-dialog>
         </el-dialog>
         <!--填写推送驳回原因-->
-        <el-dialog title="推送驳回" :visible.sync="rejectFormDialogVisible" class="specialAssignDialog">
-            <el-form ref="rejectForm" :model="rejectForm" labelWidth="70px" :rules="rejectFormRules">
+        <el-dialog title="推送驳回" :visible.sync="rejectFormDialogVisible" class="rejectPushOrderDialog" @close="resetRejectFormDialog">
+            <el-form ref="rejectForm" :model="rejectForm" labelWidth="80px" :rules="rejectFormRules">
                 <el-form-item prop='reason' label="驳回原因">
                     <el-input  placeholder="请输入驳回原因" clearable v-model="rejectForm.reason"></el-input>
                 </el-form-item>
                 <div class="btns">
-                    <el-button type="primary" @click='submitRejectForm'>保存</el-button>
+                    <el-button type="primary" @click='submitRejectForm' class="submit_btn">保存</el-button>
                 </div>
             </el-form>
         </el-dialog>
     </div>
 </template>
 <script>
-    import {order_detail,order_arrears,order_logistic} from '@/service/getData';
+    import {order_detail,order_arrears,order_logistic,push_order,order_reject} from '@/service/getData';
     import {getUploadIcon} from '@/utils/index';
     import {mapMutations,mapState} from 'vuex';
     export  default {
@@ -313,9 +297,8 @@
                     start_time:'',
                     end_time:'',
                     mobile:'',
-                    status:'',
                     transaction_id:'',//订单号
-                    uFinPay:''
+                    approveOrders:'true'//可审批的
                 },
                 logicDatas:[],
                 historyActiveIndex:'',
@@ -332,6 +315,7 @@
                 dialogVisible:false,
                 rejectFormDialogVisible:false,//推送驳回弹框
                 rejectForm:{
+                    transaction_id:'',
                     reason:""
                 },
                 rejectFormRules:{
@@ -345,11 +329,7 @@
             const height = this.$refs['orderListsContent'].$el.offsetHeight-80;
             const size = parseInt(height/49);
             this.pagination.pageSize = size;
-            const order_id = this.$route.query.order_id;
-            if(order_id){//从客户订单管理过来的
-                this.searchForm.transaction_id = order_id;
-                this.searchFormDatas();
-            }
+            this.searchFormDatas();
         },
         computed:{
             ...mapState([
@@ -360,6 +340,22 @@
             ...mapMutations([
                'EXTRACTORDERSETDATA'
             ]),
+            elementRemoveClass(){//元素移除类
+                let collapseEles = document.querySelectorAll('.el-collapse .is-active');
+                let collapseWraps = document.querySelectorAll('.el-collapse .el-collapse-item__wrap');
+                if(collapseEles.length>0){
+                    collapseEles.forEach((item)=>{
+                        if(item.className.indexOf("el-tabs__item") == -1){
+                            item.classList.remove('is-active');
+                        }
+                    });
+                }
+                if(collapseWraps.length>0){
+                    collapseWraps.forEach((item)=>{
+                        item.style.display = 'none';
+                    });
+                }
+            },
             async searchFormDatas(){//搜索历史订单数据
                 try {
                     const that = this;
@@ -380,6 +376,9 @@
                     this.historyActiveIndex = '';
                     this.historyOrderDatas = res.success;
                     this.pagination.totalNum = res.counts;
+                    this.$nextTick(()=>{
+                        this.elementRemoveClass();
+                    });
                 }catch (e) {
                     this.$message({
                         showClose:true,
@@ -535,9 +534,9 @@
                     });
                 });
             },
-            async pushOrderHandle(){//推送订单
+            async pushOrderHandle(transaction_id){//推送订单
                 const that = this;
-                if(!this.checkoutDetailInfo.transaction_id){
+                if(!transaction_id){
                     this.$message({
                         showClose:true,
                         message: '订单数据有误，请刷新重试',
@@ -550,7 +549,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    push_order(that.checkoutDetailInfo.transaction_id).then(res=>{
+                    push_order(transaction_id).then(res=>{
                         if(res.error){
                             this.$message({
                                 showClose:true,
@@ -569,8 +568,9 @@
                             message: res.success,
                             type: 'success'
                         });
-                        that.RESETCHECKOUTDATA();//重置结算页数据
-                        that.discountTemp = 0;
+                        setTimeout(function () {
+                            that.searchFormDatas();
+                        },3000);
                     }).catch(err=>{
                         this.$message({
                             showClose:true,
@@ -589,13 +589,43 @@
                     });
                 });
             },
+            rejectOrderHandle(transaction_id){//订单驳回
+                const that = this;
+                if(!transaction_id){
+                    this.$message({
+                        showClose:true,
+                        message: '订单数据有误，请刷新重试',
+                        type: 'error'
+                    });
+                    return false;
+                }
+                that.rejectForm.transaction_id = transaction_id;
+                that.rejectFormDialogVisible = true;
+                // this.$confirm('确定驳回该订单吗？', '提示', {
+                //     confirmButtonText: '确定',
+                //     cancelButtonText: '取消',
+                //     type: 'warning'
+                // }).then(() => {
+                //     that.rejectForm.transaction_id = transaction_id;
+                //     that.rejectFormDialogVisible = true;
+                // }).catch((e) => {
+                //     if(e == 'cancel'){
+                //         return false;
+                //     }
+                //     this.$message({
+                //         showClose:true,
+                //         message: e.message,
+                //         type: 'error'
+                //     });
+                // });
+            },
             submitRejectForm(){//保存推送驳回原因
                 const that = this;
                 this.$refs['rejectForm'].validate((valid) => {
                     if (valid) {
-                        order_arrears(this.rejectForm).then(res=>{
+                        order_reject(this.rejectForm).then(res=>{
                             if(res.error){
-                                this.$message({
+                                that.$message({
                                     showClose:true,
                                     message: res.error,
                                     type: 'error'
@@ -607,12 +637,15 @@
                                 }
                                 return false;
                             }
-                            this.$message({
+                            that.$message({
                                 showClose:true,
                                 message:res.success,
                                 type:'success'
                             });
-                            this.rejectFormDialogVisible = false;
+                            that.rejectFormDialogVisible = false;
+                            setTimeout(function () {
+                                that.searchFormDatas();
+                            },3000);
                         }).catch(error=>{
                             this.$message({
                                 showClose:true,
@@ -622,6 +655,9 @@
                         });
                     }
                 });
+            },
+            resetRejectFormDialog(){
+                this.$refs['rejectForm'].resetFields();
             }
         }
     }
@@ -721,19 +757,12 @@
         background: #f4f4f4;
         padding: 0 10px 0 51px;
     }
-    .pagination-footer .submit_btn{
+    .btns{
+        text-align: center;
+    }
+    .submit_btn{
         width: 120px;
         border-radius: 6px;
-        position: absolute;
-        right: 50px;
-        bottom: 20px;
-    }
-    .el-pagination{
-        padding-right: 200px;
-    }
-    .supple_btn{
-        width: 80px;
-        margin-right: 10px;
     }
     .header-right .txt{
         float: inherit !important;
@@ -748,4 +777,5 @@
         line-height: 50px;
         text-align: center;
     }
+
 </style>

@@ -29,7 +29,7 @@
                             <div class="item1">
                                 <p class="pro-price">￥{{item.price}}</p>
                                 <p class="pro-store" v-if="item.is_custom === 'false'">
-                                    <template v-if="item.canal === 'ziti'">
+                                    <template v-if="item.channel === 'store'">
                                         门店：{{item.org_store}}，线上：{{item.store}}
                                     </template>
                                     <template v-else>
@@ -39,16 +39,17 @@
                             </div>
                             <p class="pro-status">{{item.status}}</p>
                             <div class="item1">
-                                <template v-if="item.canal === 'ziti'">
+                                <template v-if="item.channel === 'store'">
                                     <el-input-number v-model="item.num" :min="1" :max='item.org_store' v-if="item.org_store>0"></el-input-number>
                                     <el-input-number v-model="item.num" :min="1" :max='item.store' v-else-if="item.store>0"></el-input-number>
                                     <el-input-number :value='0' :min="0" :max='0' v-else></el-input-number>
+                                    <el-button type="primary" class="addCart" @click="addCart(item)" :disabled="item.org_store<=0 && item.store<=0 && item.is_spec === 'false'">加入订单</el-button>
                                 </template>
                                 <template v-else>
                                     <el-input-number v-model="item.num" :min="1" :max='item.store' v-if="item.store>0"></el-input-number>
                                     <el-input-number :value='0' :min="0" :max='0'  v-else></el-input-number>
+                                    <el-button type="primary" class="addCart" @click="addCart(item)" :disabled="item.store<=0 && item.is_spec === 'false'">加入订单</el-button>
                                 </template>
-                                <el-button type="primary" class="addCart" @click="addCart(item)">加入订单</el-button>
                             </div>
                         </div>
                     </div>
@@ -68,7 +69,7 @@
                 </div>
                 <div class="spec-content">
                     <div class="s2">
-                        <template v-if="proSpecDatas.canal === 'ziti'">
+                        <template v-if="proSpecDatas.channel === 'store'">
                             <el-input-number v-model="proSpecDatas.num" :min="1" :max='proSpecDatas.org_store' v-if="proSpecDatas.org_store>0"></el-input-number>
                             <el-input-number v-model="proSpecDatas.num" :min="1" :max='proSpecDatas.store' v-else-if="proSpecDatas.store>0"></el-input-number>
                             <el-input-number :value='0' :min="0" :max='0' v-else></el-input-number>
@@ -87,7 +88,7 @@
                                 <ul>
                                     <template v-for='guige in specItem.sepc_list'>
                                         <template v-if='guige.select'>
-                                            <template v-if="proSpecDatas.canal === 'ziti'">
+                                            <template v-if="proSpecDatas.channel === 'store'">
                                                 <li :class='{active:guige.select,disabled:guige.store<=0 && guige.org_store<=0}'  @click='choose_spec(proSpecDatas.goods_id,guige.product_id)'>{{guige.spec_value}}</li>
                                             </template>
                                             <li :class='{active:guige.select,disabled:guige.store<=0}'  @click='choose_spec(proSpecDatas.goods_id,guige.product_id)' v-else>{{guige.spec_value}}</li>
@@ -99,7 +100,7 @@
                         </template>
                     </div>
                     <div class="s4">
-                        <template v-if="proSpecDatas.canal === 'ziti'">
+                        <template v-if="proSpecDatas.channel === 'store'">
                             <el-button type="primary" disabled v-if="proSpecDatas.org_store<=0 && proSpecDatas.store<=0 ">暂时缺货</el-button>
                             <el-button type="primary" @click="addProSpecCart" v-else>确定</el-button>
                         </template>
@@ -318,7 +319,7 @@
                             this.tempProSpecNum = this.proSpecDatas.num;
                         }
                         this.proSpecDatas = res.success.get_goods;
-                        if(this.proSpecDatas && this.proSpecDatas.canal === 'ziti'){
+                        if(this.proSpecDatas && this.proSpecDatas.channel === 'store'){
                             this.tempProSpecNum = this.tempProSpecNum > this.proSpecDatas.org_store ? this.proSpecDatas.org_store:
                                 this.proSpecDatas.org_store > 0 && this.tempProSpecNum === 0 ? 1 : this.tempProSpecNum;
                         }else{

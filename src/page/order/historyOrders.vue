@@ -180,7 +180,6 @@
                         <div class="footer-btns">
                             <el-button type="primary" @click="orderDeadHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active'">作废</el-button>
                             <template v-if="item.cumtomFormData.information_id">
-                                <el-button type="primary" @click="orderArrearsHandle(item.orderid)" class='submit_btn supple_btn' v-if="item.status === 'active' && item.uFinPay > 0 && memberRoleId.is_arrears === 'true'">同意</el-button>
                                 <el-button type="primary" @click="orderSupplement(item.orderid)" class='submit_btn supple_btn' v-if="item.status !== 'dead' && item.uFinPay > 0 && item.cumtomFormData.sum_money > item.uFinPay">补款</el-button>
                             </template>
                         </div>
@@ -242,6 +241,54 @@
                                     物流单号：<a href="javascript:void(0);" class="t2" @click="showProgressInfo(progress.content.t4)">{{progress.content.t4}}</a>
                                 </p>
                             </template>
+
+                            <!--查看具体的流程节点信息-->
+                            <p class="progressNodeInfos">具体的流程节点信息：</p>
+                            <el-table
+                                :data="item.goods"
+                                stripe
+                                highlight-current-row
+                                class='checkoutTableInfo'
+                                header-row-class-name='header_row_style'>
+                                <el-table-column
+                                    type="index"
+                                    :index="1"
+                                    label='序号'
+                                    width='80'>
+                                </el-table-column>
+                                <el-table-column
+                                    prop='状态说明'
+                                    label="状态说明"
+                                    min-width='120px'
+                                    show-overflow-tooltip>
+                                </el-table-column>
+                                <el-table-column
+                                    prop='处理人'
+                                    label="处理人"
+                                    min-width='120px'>
+                                </el-table-column>
+                                <el-table-column
+                                    prop='接收时间'
+                                    label="接收时间"
+                                    min-width='140px'>
+                                </el-table-column>
+                                <el-table-column
+                                    prop='完成时间'
+                                    label="完成时间"
+                                    min-width='140px'>
+                                </el-table-column>
+                                <el-table-column
+                                    prop='耗时'
+                                    label="耗时"
+                                    min-width='100px'>
+                                </el-table-column>
+                                <el-table-column
+                                    prop='备注'
+                                    label="备注"
+                                    min-width='120px'
+                                    show-overflow-tooltip>
+                                </el-table-column>
+                            </el-table>
                          </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -335,15 +382,26 @@
                 this.searchFormDatas();
             }
         },
-        computed:{
-            ...mapState([
-                'memberRoleId'
-            ])
-        },
         methods:{
             ...mapMutations([
                'EXTRACTORDERSETDATA'
             ]),
+            elementRemoveClass(){//元素移除类
+                let collapseEles = document.querySelectorAll('.el-collapse .is-active');
+                let collapseWraps = document.querySelectorAll('.el-collapse .el-collapse-item__wrap');
+                if(collapseEles.length>0){
+                    collapseEles.forEach((item)=>{
+                        if(item.className.indexOf("el-tabs__item") == -1){
+                            item.classList.remove('is-active');
+                        }
+                    });
+                }
+                if(collapseWraps.length>0){
+                    collapseWraps.forEach((item)=>{
+                        item.style.display = 'none';
+                    });
+                }
+            },
             async searchFormDatas(){//搜索历史订单数据
                 try {
                     const that = this;
@@ -364,6 +422,9 @@
                     this.historyActiveIndex = '';
                     this.historyOrderDatas = res.success;
                     this.pagination.totalNum = res.counts;
+                    this.$nextTick(()=>{
+                        this.elementRemoveClass();
+                    });
                 }catch (e) {
                     this.$message({
                         showClose:true,
@@ -785,5 +846,11 @@
     .orderListsContent .footer-btns{
         line-height: 50px;
         text-align: center;
+    }
+    .progressNodeInfos{
+        color: #000;
+        font-size: 14px;
+        line-height: 32px;
+        margin-top: 10px;
     }
 </style>

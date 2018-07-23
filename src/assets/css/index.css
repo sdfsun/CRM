@@ -480,6 +480,8 @@ body{
 }
 .el-tooltip__popper{
     width: 200px;
+    word-wrap:break-word;
+    word-break:break-all;
 }
 /*上传控件*/
 /*.el-upload-list__item-name{
@@ -1024,4 +1026,7 @@ body{
 .orderCheckout-container .custom-info .el-input__suffix{
     height: 30px;
     line-height: 30px;
+}
+.el-table .historyOrdersContentColumn .cell{
+    white-space: normal;
 }

@@ -220,30 +220,6 @@
                     </el-tab-pane>
                     <el-tab-pane label="订单进度">
                         <div class="orderInfo orderProgress">
-                            <template v-for="progress in item.progress">
-                                <p class="txt" v-if="progress.ship_status == '0'">
-                                    <span class="t0">{{progress.operate_time}}</span>
-                                    <span class="t1">{{progress.content}}</span>
-                                </p>
-                                <p class="txt" v-else>
-                                    订单
-                                    <el-tooltip placement="top">
-                                        <div slot="content">
-                                            <template v-for="pro in progress.content.t5">
-                                                {{pro}}
-                                                <br />
-                                            </template>
-                                        </div>
-                                        <el-button class="t2">{{progress.content.t0}}</el-button>
-                                    </el-tooltip>
-                                    {{progress.content.t1}}，
-                                    物流公司：<a :href="progress.content.t3" target="_blank"><span class="t2">{{progress.content.t2}}</span>（可点击进入物流公司网站跟踪配送），</a>
-                                    物流单号：<a href="javascript:void(0);" class="t2" @click="showProgressInfo(progress.content.t4)">{{progress.content.t4}}</a>
-                                </p>
-                            </template>
-
-                            <!--查看具体的流程节点信息-->
-                            <p class="progressNodeInfos">具体的流程节点信息：</p>
                             <el-table
                                 :data="item.progress"
                                 stripe
@@ -259,13 +235,13 @@
                                 <el-table-column
                                     prop='behavior'
                                     label="状态说明"
-                                    min-width='120px'
+                                    min-width='100px'
                                     show-overflow-tooltip>
                                 </el-table-column>
                                 <el-table-column
                                     prop='operateUser'
                                     label="处理人"
-                                    min-width='120px'>
+                                    min-width='110px'>
                                 </el-table-column>
                                 <el-table-column
                                     prop='receive_time'
@@ -285,8 +261,28 @@
                                 <el-table-column
                                     prop='content'
                                     label="备注"
-                                    min-width='120px'
-                                    show-overflow-tooltip>
+                                    min-width='180px'
+                                    class-name="historyOrdersContentColumn">
+                                    <template slot-scope="scope">
+                                        <p v-if="scope.row.ship_status == '0'">
+                                            {{scope.row.content}}
+                                        </p>
+                                        <div v-else>
+                                            订单
+                                            <el-tooltip placement="top">
+                                                <div slot="content">
+                                                    <template v-for="pro in scope.row.content.t5">
+                                                        {{pro}}
+                                                        <br />
+                                                    </template>
+                                                </div>
+                                                <el-button class="t2">{{scope.row.content.t0}}</el-button>
+                                            </el-tooltip>
+                                            {{scope.row.content.t1}}，
+                                            物流公司：<a :href="scope.row.content.t3" target="_blank"><span class="t2">{{scope.row.content.t2}}</span>（可点击进入物流公司网站跟踪配送），</a>
+                                            物流单号：<a href="javascript:void(0);" class="t2" @click="showProgressInfo(scope.row.content.t4)">{{scope.row.content.t4}}</a>
+                                        </div>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                          </div>

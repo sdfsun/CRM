@@ -135,12 +135,12 @@
                 </el-row>
             </div>
             <el-table
-                    ref='checkoutTableInfo'
-                    :data="cartGoods"
-                    stripe
-                    highlight-current-row
-                    class='checkoutTableInfo checkoutTableInfo-wrapper'
-                    header-row-class-name='header_row_style'>
+                ref='checkoutTableInfo'
+                :data="cartGoods"
+                stripe
+                highlight-current-row
+                class='checkoutTableInfo checkoutTableInfo-wrapper'
+                header-row-class-name='header_row_style'>
                 <el-table-column
                     type="index"
                     :index="1"
@@ -193,11 +193,7 @@
                     class-name="alignCenterColumn"
                     show-overflow-tooltip>
                     <template slot-scope='scope'>
-                        <el-tooltip class="item" effect="dark" :content="scope.row.orderDRemark" placement="top-start" :disabled="!scope.row.orderDRemark">
-                            <el-button style="padding: 0;border: none;">
-                                <el-input  v-model="scope.row.orderDRemark"  v-if="scope.row.install_flag == 'false'"></el-input>
-                            </el-button>
-                        </el-tooltip>
+                        <span @click="orderDRemarkClickHandle(scope.$index,scope.row)" class="orderDRemarkItem">{{scope.row.orderDRemark}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -691,6 +687,13 @@
                 <p class="payOrderTips">{{payOrderForm.message}}</p>
             </div>
         </el-dialog>
+        <!--填写结算页产品的定制需求-->
+        <el-dialog title="定制需求" :visible.sync="orderRemarkDialogVisible"  class='invoiceDialog' :close-on-click-modal='false'>
+            <el-input type="textarea" :autosize="{ minRows: 6}" v-model="orderDRemarkForm.orderDRemarkVal" placeholder='请输入定制需求' clearable></el-input>
+            <div class="orderRemark-btns">
+                <el-button type="primary" class='submit_btn' @click="orderRemarkSubmitHandle">保存</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -797,6 +800,12 @@
                     HAS_DATA:true,
                     isOn:true,
                     elWraper:null
+                },
+                orderRemarkDialogVisible:false,//定制需求弹框是否显示
+                orderDRemarkForm:{
+                    orderDRemarkVal:'',//弹框定制需求
+                    index:0,
+                    proInfo:{}
                 }
             }
         },
@@ -993,6 +1002,33 @@
                         this.UPDATEGOODDATA({index:index,goodData:item});
                     }
                     this.setBuyInstallFlag('1');//设置是否有定制产品
+                }catch (e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            orderDRemarkClickHandle(index,row){
+                this.orderDRemarkForm.index = index;
+                this.orderDRemarkForm.orderDRemarkVal = row.orderDRemark;
+                this.orderDRemarkForm.proInfo = Object.assign({},row);
+                this.orderRemarkDialogVisible = true;
+            },
+            orderRemarkSubmitHandle(){//保存定制需求
+                try{
+                    let item = Object.assign({},this.orderDRemarkForm.proInfo);
+                    item.orderDRemark = this.orderDRemarkForm.orderDRemarkVal;
+                    this.$set(this.cartGoods,this.orderDRemarkForm.index,item);
+                    this.orderRemarkDialogVisible = false;
+                    this.$nextTick(()=>{
+                        this.orderDRemarkForm = {
+                            orderDRemarkVal:'',//弹框定制需求
+                            index:0,
+                            proInfo:{}
+                        }
+                    });
                 }catch (e) {
                     this.$message({
                         showClose:true,
@@ -2572,5 +2608,20 @@
         background: #f4f4f4;
         line-height: 36px;
         height: 36px;
+    }
+    .orderRemark-btns{
+        text-align: center;
+        margin-top: 20px;
+    }
+    .orderDRemarkItem{
+        display: block;
+        line-height: 26px;
+        border: 1px solid #e0e0e0;
+        height: 26px;
+        background: #fff;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 </style>

@@ -1030,3 +1030,9 @@ body{
 .el-table .historyOrdersContentColumn .cell{
     white-space: normal;
 }
+.canalSourceDialog .el-dialog{
+    width: 86%;
+}
+.canalSourceDialog .el-dialog__body{
+    padding: 20px 0 40px;
+}

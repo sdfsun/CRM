@@ -338,7 +338,7 @@
             this.pageForm.isOn = true;
             this.pageForm.elWraper.scrollTop = 0;
             this.status = 'down';
-            this.init();
+            this.init('routeUpdate');
             next();
         },
         methods:{
@@ -382,7 +382,7 @@
                         }
                         return false;
                     }
-                    if(type === 'mounted'){
+                    if(type === 'mounted' || type === 'routeUpdate'){
                         let stateCounts = [];
                         res.state_count.forEach(function(item){
                             stateCounts.push(item.id);
@@ -392,7 +392,9 @@
                         }else {
                             this.eTimesHandle = false;
                         }
-                        this.scrollCustomBasicLists();
+                        if(type === 'mounted'){
+                            this.scrollCustomBasicLists();
+                        }
                     }
                     this.totalNum = res.data ? res.data : 0;
                     this.state_count = res.state_count ? res.state_count : [];

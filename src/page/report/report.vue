@@ -61,6 +61,9 @@
                 class-name='cell_0_label'
                 fixed='left'
                 >
+                <!--<template slot-scope="scope">-->
+                    <!--<span @click="showCannalSourceDatas">{{scope.row.name}}</span>-->
+                <!--</template>-->
             </el-table-column>
             <el-table-column
                 prop="cost"
@@ -176,6 +179,131 @@
                 </el-table-column>
             </el-table-column>
         </el-table>
+        <el-dialog title="渠道来源数据" :visible.sync="canalSourceDialogVisible" class="canalSourceDialog">
+            <el-table
+                ref='reportListsTable'
+                :data="reportLists"
+                highlight-current-row
+                show-summary
+                class='tableInfo'
+                header-row-class-name='header_row_style'>
+                <el-table-column
+                    prop="name"
+                    :label="cell_0_label"
+                    min-width='56px'
+                    class-name='cell_0_label'
+                    fixed='left'>
+                </el-table-column>
+                <el-table-column
+                    prop="cost"
+                    label="花费金额"
+                    min-width='76px'
+                    class-name='cell_1'>
+                </el-table-column>
+                <el-table-column
+                    prop="nums"
+                    label="留资数"
+                    min-width='52px'
+                    class-name='cell_1'>
+                </el-table-column>
+                <el-table-column
+                    prop='cost_avg'
+                    label="留资成本"
+                    min-width='76px'
+                    class-name='cell_1'>
+                </el-table-column>
+                <el-table-column
+                    prop="new_visit"
+                    label="导购回访数"
+                    min-width='56px'
+                    class-name='cell_1'>
+                </el-table-column>
+                <el-table-column label='预约成功' class-name='cell_2 cell_all'>
+                    <el-table-column
+                        prop="bespeak_num"
+                        label="到店数"
+                        min-width='52px'
+                        class-name='cell_2'>
+                    </el-table-column>
+                    <el-table-column
+                        prop="scale_num"
+                        label="量尺数"
+                        min-width='52px'
+                        class-name='cell_2'>
+                    </el-table-column>
+                    <el-table-column
+                        prop='make_num'
+                        label="成功数(包括量尺和到店)"
+                        min-width='78px'
+                        class-name='cell_2'>
+                    </el-table-column>
+                    <el-table-column
+                        prop='make_change'
+                        label="转化率"
+                        min-width='50px'
+                        class-name='cell_2'>
+                    </el-table-column>
+                    <el-table-column
+                        prop='make_cost'
+                        label="成本"
+                        min-width='76px'
+                        class-name='cell_2'>
+                    </el-table-column>
+                </el-table-column>
+                <el-table-column label='测量成功' class-name='cell_3 cell_all'>
+                    <el-table-column
+                        prop="scale_succ"
+                        label="量尺数"
+                        min-width='52px'
+                        class-name='cell_3'>
+                    </el-table-column>
+                    <el-table-column
+                        prop="scale_change"
+                        label="量尺率"
+                        min-width='50px'
+                        class-name='cell_3'>
+                    </el-table-column>
+                    <el-table-column
+                        prop="bespeak_succ"
+                        label="到店数(直接预约到店)"
+                        min-width='74px'
+                        class-name='cell_3'>
+                    </el-table-column>
+                    <el-table-column
+                        prop="bespeak_change"
+                        label="到店率(直接预约到店)"
+                        min-width='74px'
+                        class-name='cell_3'>
+                    </el-table-column>
+                    <el-table-column
+                        prop="bespeak_total"
+                        label="到店数(量尺到店)"
+                        min-width='62px'
+                        class-name='cell_3'>
+                    </el-table-column>
+                    <el-table-column
+                        prop="total_change"
+                        label="到店率(量尺后)"
+                        min-width='58px'
+                        class-name='cell_3 cell_15_label'>
+                    </el-table-column>
+                </el-table-column>
+                <el-table-column label='交定成功' class-name='cell_4 cell_all'>
+                    <el-table-column
+                        prop="deposit"
+                        label="定金金额"
+                        min-width='70px'
+                        class-name='cell_4'>
+                    </el-table-column>
+                    <el-table-column
+                        prop="money"
+                        label="余款金额"
+                        min-width='68px'
+                        class-name='cell_4'>
+                    </el-table-column>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
     </section>
 </template>
 <script>
@@ -192,7 +320,8 @@
                     start_time:'',
                     end_time:''
                 },
-                searchBtnStatus:false
+                searchBtnStatus:false,
+                canalSourceDialogVisible:false
             }
         },
         methods:{
@@ -229,7 +358,6 @@
                 }
             },
             async incomeExcel(){//导出excel
-                
                 window.location.href='/crm-income_excel.html?type='+this.searchForm.type+'&area='+this.searchForm.area+'&start_time='+this.searchForm.start_time+'&end_time='+this.searchForm.end_time;
             },
             contrastHandle(val){
@@ -250,6 +378,9 @@
                         // statements_def
                         break;
                 }
+            },
+            showCannalSourceDatas(){
+                this.canalSourceDialogVisible = true;
             }
         }
     }

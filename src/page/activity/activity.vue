@@ -69,7 +69,7 @@
     import {mapMutations,mapState} from 'vuex';
     import {activitys} from '@/service/getData';
     import activityEdit from '@/components/activity/activityEdit';
-    import { setStore } from '@/utils/';
+    import {setStore,getUploadIcon} from '@/utils/index';
 
     export default{
         name:'activity',
@@ -145,7 +145,12 @@
                     this.currentrow.image_id = this.currentrow.image_id.slice();
                     let imageLists = [];
                     this.currentrow.image_id.forEach( function(item, index) {
-                        imageLists.push({url:item});
+                        let retUrl = getUploadIcon(item);
+                        if(retUrl){
+                            imageLists.push({url:retUrl,image_id:item});
+                        }else{
+                            imageLists.push({url:item,image_id:item});
+                        }
                     });
                     this.currentrow.imageLists = imageLists.slice();
                 }else{

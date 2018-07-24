@@ -239,7 +239,9 @@
             },
             insertAuthority(index,parent_id) {//新增子级
                 try {
-                    this.sourceLists[index].menus.push({editFlag:true,is_open:true,parent_id:parent_id});
+                    if(this.sourceLists[index].menus){
+                        this.sourceLists[index].menus.push({editFlag:true,is_open:true,parent_id:parent_id});
+                    }
                 }catch (e) {
                     this.$message({
                         showClose:true,

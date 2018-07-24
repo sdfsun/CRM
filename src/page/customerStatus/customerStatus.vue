@@ -238,7 +238,9 @@
                 }
             },
             insertAuthority(index,parent_id) {//新增子级
-                this.statusLists[index].menus.push({editFlag:true,is_open:true,parent_id:parent_id})
+                if(this.statusLists[index].menus){
+                    this.statusLists[index].menus.push({editFlag:true,is_open:true,parent_id:parent_id});
+                }
             },
             insertCustomSource(){//新增父级记录
                 this.statusLists.push({editFlag:true,is_open:true,parent_id:'0'});

@@ -1145,7 +1145,7 @@
                             if(item.response && item.response.success && item.response.success.length>0){
                                 tempImageIds.push(item.response.success[0].url);
                             }else if(item.status == 'success'){
-                                tempImageIds.push(item.url);
+                                tempImageIds.push(item.image_id);
                             }
                         });
                         this.uploadImageLists = fileList;

@@ -71,7 +71,7 @@
 <script>
     import {activity_save} from '@/service/getData';
     import {mapState,mapMutations,mapActions} from 'vuex';
-    import {getDuration} from '@/utils/index';
+    import {getDuration,getUploadIcon} from '@/utils/index';
 
     export default{
         name:'activityEdit',
@@ -179,7 +179,7 @@
                             if(item.response && item.response.success && item.response.success.length>0){
                                 tempImageIds.push(item.response.success[0].image_id);
                             }else if(item.status === 'success'){
-                                tempImageIds.push(item.url);
+                                tempImageIds.push(item.image_id);
                             }
                         });
                         this.activityForm.imageLists = fileList;
@@ -196,15 +196,31 @@
             },
             handlePictureCardPreview(file) {
                 try {
-                    let tempLists = this.activityForm.imageLists;
-                    const index = tempLists.findIndex(function(item, index, arr) {
-                        return item.url === file.url
-                    });
-                    this.initialIndex = index;
-                    this.dialogVisible = true;
-                    this.$nextTick(()=>{
-                        this.$refs['carouselItems'].setActiveItem(file.url);
-                    });
+                    let flag = false,fileUrl='';//是否为文件
+                    if(file.response && file.response.success && file.response.success.length>0){
+                        fileUrl = file.response.success[0].image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }else if(file.status === 'success'){
+                        fileUrl = file.image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }
+                    if(flag){//非图片
+                        window.open(fileUrl);
+                    }else{
+                        let tempLists = this.activityForm.imageLists;
+                        const index = tempLists.findIndex(function(item, index, arr) {
+                            return item.url === file.url
+                        });
+                        this.initialIndex = index;
+                        this.dialogVisible = true;
+                        this.$nextTick(()=>{
+                            this.$refs['carouselItems'].setActiveItem(file.url);
+                        });
+                    }
                 } catch(e) {
                     this.$message({
                         showClose:true,
@@ -214,10 +230,25 @@
                 }
             },
             handleSuccess(response, file, fileList){//上传成功
-                if(response.success && response.success.length>0){
-                    this.activityForm.image_id.push(response.success[0].image_id);
+                try {
+                    if(response.success && response.success.length>0){
+                        if(!this.activityForm.image_id){
+                            this.activityForm.image_id = [];
+                        }
+                        this.activityForm.image_id.push(response.success[0].image_id);
+                    }
+                    this.activityForm.imageLists = fileList;
+                    let fileUrl = getUploadIcon(file.name);
+                    if(fileUrl){
+                        file.url = fileUrl;
+                    }
+                } catch(e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
-                this.activityForm.imageLists = fileList;
             },
             beforeAvatarUpload(file) {
                 // const isJPG = file.type === 'image/jpeg';

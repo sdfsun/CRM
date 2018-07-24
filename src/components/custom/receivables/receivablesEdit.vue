@@ -214,7 +214,8 @@
 <script>
     import {mapState} from 'vuex';
     import {receivables_save} from '@/service/getData';
-    import {formatDate} from '@/utils/index';
+    import {formatDate,getUploadIcon} from '@/utils/index';
+
 
     export default{
         name:'receivablesEdit',
@@ -365,7 +366,7 @@
                             if(item.response && item.response.success && item.response.success.length>0){
                                 tempImageIds.push(item.response.success[0].image_id);
                             }else if(item.status === 'success'){
-                                tempImageIds.push(item.url);
+                                tempImageIds.push(item.image_id);
                             }
                         });
                         this.receivablesForm.imageLists = fileList;
@@ -381,15 +382,31 @@
             },
             handlePictureCardPreview(file) {
                 try {
-                    let tempLists = this.receivablesForm.imageLists;
-                    const index = tempLists.findIndex(function(item, index, arr) {
-                        return item.url === file.url
-                    });
-                    this.initialIndex = index;
-                    this.dialogVisible = true;
-                    this.$nextTick(()=>{
-                        this.$refs['carouselItems'].setActiveItem(file.url);
-                    });
+                    let flag = false,fileUrl='';//是否为文件
+                    if(file.response && file.response.success && file.response.success.length>0){
+                        fileUrl = file.response.success[0].image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }else if(file.status === 'success'){
+                        fileUrl = file.image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }
+                    if(flag){//非图片
+                        window.open(fileUrl);
+                    }else{
+                        let tempLists = this.receivablesForm.imageLists;
+                        const index = tempLists.findIndex(function(item, index, arr) {
+                            return item.url === file.url
+                        });
+                        this.initialIndex = index;
+                        this.dialogVisible = true;
+                        this.$nextTick(()=>{
+                            this.$refs['carouselItems'].setActiveItem(file.url);
+                        });
+                    }
                 } catch(e) {
                     this.$message({
                         showClose:true,
@@ -401,9 +418,16 @@
             handleSuccess(response, file, fileList){//上传成功
                 try {
                     if(response.success && response.success.length>0){
+                        if(!this.receivablesForm.image_id){
+                            this.receivablesForm.image_id = [];
+                        }
                         this.receivablesForm.image_id.push(response.success[0].image_id);
                     }
                     this.receivablesForm.imageLists = fileList;
+                    let fileUrl = getUploadIcon(file.name);
+                    if(fileUrl){
+                        file.url = fileUrl;
+                    }
                 }catch (e) {
                     this.$message({
                         showClose:true,
@@ -435,10 +459,14 @@
                         let imageLists = [];
                         if(this.activityItems[0].image_id &&  this.activityItems[0].image_id.length>0){
                             this.activityItems[0].image_id.forEach( function(item, index) {
-                                imageLists.push({url:item});
+                                let retUrl = getUploadIcon(item);
+                                if(retUrl){
+                                    imageLists.push({url:retUrl,image_id:item});
+                                }else{
+                                    imageLists.push({url:item,image_id:item});
+                                }
                             });
                             this.activityItems[0].imageLists = imageLists.slice();
-                            // this.$set(this.activityItems[0],'imageLists',imageLists);
                         }
                         this.activityVisible = true;
                     }else{
@@ -454,15 +482,31 @@
             },
             handlePictureCardPreview2(file) {
                 try {
-                    let tempLists = this.activityItems[0].imageLists;
-                    const index = tempLists.findIndex(function(item, index, arr) {
-                        return item.url === file.url
-                    });
-                    this.initialIndex2 = index;
-                    this.dialogVisible2 = true;
-                    this.$nextTick(()=>{
-                        this.$refs['carouselItems2'].setActiveItem(file.url);
-                    });
+                    let flag = false,fileUrl='';//是否为文件
+                    if(file.response && file.response.success && file.response.success.length>0){
+                        fileUrl = file.response.success[0].image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }else if(file.status === 'success'){
+                        fileUrl = file.image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }
+                    if(flag){//非图片
+                        window.open(fileUrl);
+                    }else{
+                        let tempLists = this.activityItems[0].imageLists;
+                        const index = tempLists.findIndex(function(item, index, arr) {
+                            return item.url === file.url
+                        });
+                        this.initialIndex2 = index;
+                        this.dialogVisible2 = true;
+                        this.$nextTick(()=>{
+                            this.$refs['carouselItems2'].setActiveItem(file.url);
+                        });
+                    }
                 } catch(e) {
                     this.$message({
                         showClose:true,

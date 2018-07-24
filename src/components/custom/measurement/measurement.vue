@@ -45,7 +45,7 @@
                 label="量尺图片"
                 min-width='118px'>
                 <template slot-scope="scope" v-if='scope.row.image_id && scope.row.image_id.length>0'>
-                    <img :src="scope.row.image_id[0]" width="100%" height="87" />
+                    <img :src="getImageUrl(scope.row.image_id[0])" width="100%" height="87"/>
                     <i class="el-icon-zoom-in image_item_icon"></i>
                 </template>
             </el-table-column>
@@ -53,8 +53,7 @@
                 prop="information"
                 label="量尺信息"
                 min-width='200px'
-                show-overflow-tooltip
-                >
+                show-overflow-tooltip>
             </el-table-column>
             <el-table-column
                 prop="feedback"
@@ -75,7 +74,7 @@
         <el-dialog title="量尺图片" :visible.sync="measurementImageDialogVisible">
             <el-carousel height="400px" ref='carouselItems' :autoplay='false' trigger="click">
                 <el-carousel-item v-for="(item,index) in images" :key="index">
-                    <img :src="item" class="image_carousel_item">
+                    <img :src="item.url" class="image_carousel_item" @click="lookFileChangeHandle(item)">
                 </el-carousel-item>
             </el-carousel>
         </el-dialog>
@@ -83,6 +82,7 @@
 </template>
 <script>
     import measurementEdit from '@/components/custom/measurement/measurementEdit';
+    import {getUploadIcon} from '@/utils/index';
 
     export default{
         name:'measurement',
@@ -97,6 +97,13 @@
             }
         },
         methods:{
+            getImageUrl(image_id){
+                if(getUploadIcon(image_id)){
+                    return getUploadIcon(image_id);
+                }else{
+                    return image_id;
+                }
+            },
             handleCurrentChange(currentrow){//当表格的当前行发生变化的时候会触发该事件
                 this.currentrow = currentrow;
             },
@@ -130,9 +137,13 @@
                         this.editActiveRow.image_id = this.currentrow.image_id.slice();
                         let imageLists = [];
                         this.editActiveRow.image_id.forEach( function(item, index) {
-                            imageLists.push({url:item});
+                            let retUrl = getUploadIcon(item);
+                            if(retUrl){
+                                imageLists.push({url:retUrl,image_id:item});
+                            }else{
+                                imageLists.push({url:item,image_id:item});
+                            }
                         });
-                        // Object.assign(this.editActiveRow,{imageLists:imageLists});
                         this.editActiveRow.imageLists = imageLists.slice();
                     }else{
                         this.editActiveRow.image_id = [];
@@ -162,15 +173,45 @@
                 // this.images =[];
                 this.$refs['measurementEdit'].$refs['measurementForm'].resetFields();
             },
-            cellClickHandle(row, column, cell, event){
-                if(column.label === '量尺图片'){
-                    if(row.image_id){
-                        this.measurementImageDialogVisible = true;
-                        this.images = Object.assign({}, row.image_id);
-                        this.$nextTick(()=>{
-                            this.$refs['carouselItems'].setActiveItem(0);
-                        });
+            cellClickHandle(row, column, cell, event){//查看量尺图片或文件
+                try{
+                    if(column.label === '量尺图片'){
+                        if(row.image_id){
+                            this.measurementImageDialogVisible = true;
+                            let imageLists = [];
+                            row.image_id.forEach( function(item, index) {
+                                let retUrl = getUploadIcon(item);
+                                if(retUrl){
+                                    imageLists.push({url:retUrl,image_id:item});
+                                }else{
+                                    imageLists.push({url:item,image_id:item});
+                                }
+                            });
+                            this.images = imageLists.slice();
+                            this.$nextTick(()=>{
+                                this.$refs['carouselItems'].setActiveItem(0);
+                            });
+                        }
                     }
+                }catch (e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
+            },
+            lookFileChangeHandle(item){//查看文件
+                try{
+                    if(getUploadIcon(item.url)){
+                        window.open(item.image_id);
+                    }
+                }catch (e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
             }
         },

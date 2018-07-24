@@ -78,6 +78,8 @@ export const getUploadIcon = (fileName) =>{
     }
     else if(fileName.indexOf('ppt')!=-1){
         iconUrl = 'https://pic.solux.cn/PC/crm/ppt.png';
+    }else if(fileName.indexOf('dwg')!=-1){
+        iconUrl = 'https://pic.solux.cn/PC/crm/dwg.png';
     }
     return iconUrl;
 };

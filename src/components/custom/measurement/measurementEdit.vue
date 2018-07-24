@@ -104,7 +104,7 @@
 <script>
     import Vue from 'vue';
     import {measure_save} from '@/service/getData';
-    import {getDuration} from '@/utils/index';
+    import {getDuration,getUploadIcon} from '@/utils/index';
 
     export default{
         name:'measurementEdit',
@@ -185,7 +185,7 @@
                             if(item.response && item.response.success && item.response.success.length>0){
                                 tempImageIds.push(item.response.success[0].image_id);
                             }else if(item.status === 'success'){
-                                tempImageIds.push(item.url);
+                                tempImageIds.push(item.image_id);
                             }
                         });
                         this.measurementForm.imageLists = fileList;
@@ -201,15 +201,31 @@
             },
             handlePictureCardPreview(file) {
                 try {
-                    let tempLists = this.measurementForm.imageLists;
-                    const index = tempLists.findIndex(function(item, index, arr) {
-                        return item.url === file.url
-                    });
-                    this.initialIndex = index;
-                    this.dialogVisible = true;
-                    this.$nextTick(()=>{
-                        this.$refs['carouselItems'].setActiveItem(file.url);
-                    });
+                    let flag = false,fileUrl='';//是否为文件
+                    if(file.response && file.response.success && file.response.success.length>0){
+                        fileUrl = file.response.success[0].image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }else if(file.status === 'success'){
+                        fileUrl = file.image_id;
+                        if(getUploadIcon(fileUrl)){
+                            flag = true;
+                        }
+                    }
+                    if(flag){//非图片
+                        window.open(fileUrl);
+                    }else{
+                        let tempLists = this.measurementForm.imageLists;
+                        const index = tempLists.findIndex(function(item, index, arr) {
+                            return item.url === file.url
+                        });
+                        this.initialIndex = index;
+                        this.dialogVisible = true;
+                        this.$nextTick(()=>{
+                            this.$refs['carouselItems'].setActiveItem(file.url);
+                        });
+                    }
                 } catch(e) {
                     this.$message({
                         showClose:true,
@@ -219,10 +235,25 @@
                 }
             },
             handleSuccess(response, file, fileList){//上传成功
-                if(response.success && response.success.length>0){
-                    this.measurementForm.image_id.push(response.success[0].image_id);
+                try {
+                    if(response.success && response.success.length>0){
+                        if(!this.measurementForm.image_id){
+                            this.measurementForm.image_id = [];
+                        }
+                        this.measurementForm.image_id.push(response.success[0].image_id);
+                    }
+                    this.measurementForm.imageLists = fileList;
+                    let fileUrl = getUploadIcon(file.name);
+                    if(fileUrl){
+                        file.url = fileUrl;
+                    }
+                } catch(e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
                 }
-                this.measurementForm.imageLists = fileList;
             },
             beforeAvatarUpload(file) {
                 const isLt2M = file.size / 1024 / 1024 < 2;

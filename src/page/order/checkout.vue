@@ -1950,6 +1950,7 @@
                 try {
                     if(type === 'logoutCustom'){
                         this.RESETCHECKOUTDATA(type);//重置结算页数据
+                        this.setBuyInstallFlag('1');//设置是否有定制产品 重置仓库完成时间
                     }else{
                         this.RESETCHECKOUTDATA();//重置结算页数据
                         this.discountTemp = 0;

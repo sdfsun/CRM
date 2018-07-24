@@ -12,9 +12,12 @@ export default {
         res.install_flag = 'false';//设置为非安装服务
         res.bprice = res.price;
         if(cartGoods.length > 0){
-            const index = cartGoods.findIndex((item=>{
-                return item.product_id === res.product_id;
-            }));
+            let index = -1;
+            if(res.is_custom == 'false'){//非定制产品才需要判断是否已经存在购物车
+                index = cartGoods.findIndex((item=>{
+                    return item.product_id === res.product_id;
+                }));
+            }
             if(index !== -1){//找到相同的产品 则修改数量，小计
                 let numTemp = Number(cartGoods[index].num)+Number(res.num);
                 res.num = numTemp;

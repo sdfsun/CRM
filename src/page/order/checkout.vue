@@ -454,6 +454,7 @@
                 <div class="t-right">
                     <el-button type="primary" @click="goBackCheckoutHandle" class='submit_btn'>返回</el-button>
                     <template  v-if="checkoutDetailInfo.information_id">
+                        <el-button type="primary" @click="auditOrderHandle(checkoutDetailInfo.transaction_id)" class='submit_btn' v-if="checkoutDetailInfo.uFinPay >0 || checkoutDetailInfo.is_custom == 'true' && checkoutDetailInfo.uFinPay <= 0">通知审单人员</el-button>
                         <el-button type="primary" @click="pushOrderHandle" class='submit_btn' v-if="checkoutDetailInfo.is_custom == 'false' && checkoutDetailInfo.uFinPay <= 0">推送订单</el-button>
                     </template>
                     <el-button type="primary" @click="payOrderHandle('3')" class='submit_btn' v-else>支付</el-button>
@@ -483,7 +484,7 @@
             <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
                 <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex' trigger="click">
                     <el-carousel-item v-for="(item,index) in uploadImageLists" :key="index" :name='item.url'>
-                        <img :src="item.url" class="image_carousel_item">
+                        <img :src="item.url" class="image_carousel_item" @click="lookFileChangeHandle(item)">
                     </el-carousel-item>
                 </el-carousel>
             </el-dialog>
@@ -700,7 +701,7 @@
     import { region } from '@/service/region';
     import {mapState,mapActions,mapMutations} from 'vuex';
     import {getUploadIcon} from '@/utils/index';
-    import {post_login,pre_order,service,order_detail,ajax_pay,query_new,pay_new,order_dead,push_order} from '@/service/getData';
+    import {post_login,pre_order,service,order_detail,ajax_pay,query_new,pay_new,order_dead,push_order,audit_order} from '@/service/getData';
     const priceRegx = /(^[1-9]\d*(\.\d*)?$)|(^0(\.\d*)?$)/;//校验金额
     const phoneRegx = /^1[3456789]\d{9}$/;//校验手机
 
@@ -1145,7 +1146,7 @@
                             if(item.response && item.response.success && item.response.success.length>0){
                                 tempImageIds.push(item.response.success[0].url);
                             }else if(item.status == 'success'){
-                                tempImageIds.push(item.image_id);
+                                tempImageIds.push(item.url);
                             }
                         });
                         this.uploadImageLists = fileList;
@@ -1171,6 +1172,7 @@
                         fileUrl = file.url;
                         if(getUploadIcon(fileUrl)){
                             flag = true;
+                            fileUrl = file.image_id;
                         }
                     }
                     if(flag){//非图片
@@ -1252,9 +1254,9 @@
                         tempImageArray.forEach( function(item, index) {
                             let retUrl = getUploadIcon(item);
                             if(retUrl){
-                                imageLists.push({url:retUrl});
+                                imageLists.push({url:retUrl,image_id:item});
                             }else{
-                                imageLists.push({url:item});
+                                imageLists.push({url:item,image_id:item});
                             }
                         });
                         this.uploadImageLists = imageLists.slice();
@@ -1946,10 +1948,65 @@
                     });
                 });
             },
+            auditOrderHandle(transaction_id){//通知审单人员
+                const that = this;
+                if(!transaction_id){
+                    this.$message({
+                        showClose:true,
+                        message: '订单数据有误，请刷新重试',
+                        type: 'error'
+                    });
+                    return false;
+                }
+                this.$confirm('即将通知审单人员审批订单，请您确认是否继续操作？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    audit_order(transaction_id).then(res=>{
+                        if(res.error){
+                            this.$message({
+                                showClose:true,
+                                message: res.error,
+                                type: 'error'
+                            });
+                            if(res.nologin == 1){//未登录
+                                setTimeout(()=>{
+                                    that.$router.push('/');
+                                },3000);
+                            }
+                            return false;
+                        }
+                        that.$message({
+                            showClose:true,
+                            message: res.success,
+                            type: 'success'
+                        });
+                        that.RESETCHECKOUTDATA();//重置结算页数据
+                        that.discountTemp = 0;
+                    }).catch(err=>{
+                        this.$message({
+                            showClose:true,
+                            message: err.message,
+                            type: 'error'
+                        });
+                    });
+                }).catch((e) => {
+                    if(e == 'cancel'){
+                        return false;
+                    }
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                });
+            },
             resetOrderHandle(type){//重新下单
                 try {
                     if(type === 'logoutCustom'){
                         this.RESETCHECKOUTDATA(type);//重置结算页数据
+                        this.setBuyInstallFlag('1');//设置是否有定制产品 重置仓库完成时间
                     }else{
                         this.RESETCHECKOUTDATA();//重置结算页数据
                         this.discountTemp = 0;
@@ -2166,6 +2223,26 @@
                         type: 'error'
                     });
                 });
+            },
+            lookFileChangeHandle(item){//查看文件
+                try{
+                    let fileUrl = '';
+                    if(item.response && item.response.success && item.response.success.length>0){
+                        fileUrl = item.response.success[0].url;
+                    }else if(item.status == 'success'){
+                        fileUrl = item.url;
+                        if(getUploadIcon(fileUrl)){
+                            fileUrl = item.image_id;
+                        }
+                    }
+                    window.open(fileUrl);
+                }catch (e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             }
         }
     }

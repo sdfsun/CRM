@@ -195,9 +195,7 @@
             },
             lookFileChangeHandle(item){//查看文件
                 try{
-                    if(getUploadIcon(item.url)){
-                        window.open(item.image_id);
-                    }
+                    window.open(item.image_id);
                 }catch (e) {
                     this.$message({
                         showClose:true,

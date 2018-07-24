@@ -248,3 +248,8 @@ export const check_mobile = (mobile) => axios.post('/crm-check_mobile.html',{
 
 //推送订单驳回
 export const order_reject = (formData) => axios.post('/crm-order_reject.html',formData);
+
+//通知审单人员
+export const audit_order = (transaction_id) => axios.post('/crm-audit_order.html',{
+    transaction_id
+});

@@ -40,8 +40,7 @@
                 stripe
                 show-summary
                 class='tableInfo'
-                header-row-class-name='header_row_style'
-                @cell-click="cellClickHandle">
+                header-row-class-name='header_row_style'>
                 <el-table-column
                     prop="name"
                     label="店员名称"
@@ -66,6 +65,9 @@
                         label="总金额"
                         min-width='120px'
                         class-name='cell_2'>
+                        <template slot-scope="scope">
+                            <span @click="cellClickHandle(scope.row)" style="color: #1876EF;cursor: pointer;">{{scope.row.final_amount}}</span>
+                        </template>
                     </el-table-column>
                 </el-table-column>
                 <el-table-column label='退款统计' class-name='cell_3 cell_all'>
@@ -226,11 +228,9 @@
             async incomeExcel(){//导出excel
                 window.location.href='/crm-order_logExport.html?start_time='+this.searchForm.start_time+'&end_time='+this.searchForm.end_time;
             },
-            cellClickHandle(row, column, cell, event){//单元格点击
-                if(column.property === 'final_amount'){//订单总金额
-                    this.orderInfoDialogVisible = true;
-                    this.currentRow = row;
-                }
+            cellClickHandle(row){//订单总金额
+                this.orderInfoDialogVisible = true;
+                this.currentRow = row;
             }
         }
     }

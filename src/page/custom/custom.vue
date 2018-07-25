@@ -354,7 +354,7 @@
                 this.pageForm.elWraper.scrollTop = 0;
                 this.init();
             },
-            async init(type,formData){//获取客户信息列表
+            async init(type){//获取客户信息列表
                 const that = this;
                 try {
                     let tempFormData = Object.assign({},this.searchForm);
@@ -363,11 +363,9 @@
                     }else{
                         delete tempFormData['showLoad'];
                     }
-                    if(type === 'status'){
-                        tempFormData.status = formData.status;
-                    }else{
-                        tempFormData.status = '';
-                    }
+                    const len = tempFormData.status.length;
+                    tempFormData.status = tempFormData.status[len-1];
+
                     const res = await getCustomLists(this.id,this.page,tempFormData);
                     if(res.error){
                         this.$message({
@@ -464,7 +462,6 @@
             searchFormDatas(type,badge){//搜索表单数据
                 try {
                     const that = this;
-                    let tempSearchForm = Object.assign({},this.searchForm);
                     this.page = 1;
                     this.pageForm.HAS_DATA = true;
                     this.pageForm.isOn = true;
@@ -485,9 +482,7 @@
                             this.id = type;
                         }
                     }
-                    const len = tempSearchForm.status.length;
-                    tempSearchForm.status = tempSearchForm.status[len-1];
-                    this.init('status',tempSearchForm);
+                    this.init();
                 }catch (e) {
                     this.$message({
                         showClose:true,

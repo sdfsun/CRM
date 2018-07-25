@@ -29,7 +29,7 @@
             <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
                 <el-carousel height="400px" :autoplay='false'  ref='carouselItems' :initial-index='initialIndex' trigger="click">
                     <el-carousel-item v-for="(item,index) in dataForm.imageLists" :key="index" :name='item.url'>
-                        <img :src="item.url" class="image_carousel_item">
+                        <img :src="item.url" class="image_carousel_item" @click="lookFileChangeHandle(item)">
                     </el-carousel-item>
                 </el-carousel>
             </el-dialog>
@@ -152,6 +152,26 @@
                 }).then(() => {
                     this.$emit('deleteModal',this.index);
                 });
+            },
+            lookFileChangeHandle(item){//查看文件
+                try{
+                    let fileUrl = '';
+                    if(item.response && item.response.success && item.response.success.length>0){
+                        fileUrl = item.response.success[0].url;
+                    }else if(item.status == 'success'){
+                        fileUrl = item.url;
+                        if(getUploadIcon(fileUrl)){
+                            fileUrl = item.image_id;
+                        }
+                    }
+                    window.open(fileUrl);
+                }catch (e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             }
         }
     }

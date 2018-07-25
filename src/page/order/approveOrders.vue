@@ -180,6 +180,10 @@
                                     <span class="t1">{{item.payment == 'wxf2fpay' ? '微信支付' : item.payment == 'alif2fpay' ? '支付宝支付' :
                                         item.payment == 'pos' ? 'pos机支付' : item.payment == 'cash' ? '现金支付' : '对公转账'}}</span>
                                 </p>
+                                <p class="txt">
+                                    <span class="t0">表头附件：</span>
+                                    <span class="t1" @click="uploadFileHandle(item.cumtomFormData.fileUrls)" v-if="item.cumtomFormData.fileUrls" style="color: #1876EF;cursor: pointer;">查看附件</span>
+                                </p>
                             </li>
                             <li>
                                 <p class="txt"><span class="t0">姓名：</span><span class="t1">{{item.cumtomFormData.acceptOrdMan}}</span></p>
@@ -309,7 +313,7 @@
             <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
                 <el-carousel height="400px" :autoplay='false' ref='carouselItems'  :initial-index='initialIndex' trigger="click">
                     <el-carousel-item v-for="(item,index) in uploadImageLists" :key="index" :name='item.url'>
-                        <img :src="item.url" class="image_carousel_item">
+                        <img :src="item.url" class="image_carousel_item" @click="lookFileChangeHandle(item)">
                     </el-carousel-item>
                 </el-carousel>
             </el-dialog>
@@ -473,12 +477,12 @@
                 try {
                     let flag = false,fileUrl='';//是否为文件
                     if(file.response && file.response.success && file.response.success.length>0){
-                        fileUrl = file.response.success[0].url;
+                        fileUrl = file.response.success[0].image_id;
                         if(getUploadIcon(fileUrl)){
                             flag = true;
                         }
                     }else if(file.status == 'success'){
-                        fileUrl = file.url;
+                        fileUrl = file.image_id;
                         if(getUploadIcon(fileUrl)){
                             flag = true;
                         }
@@ -511,9 +515,9 @@
                         tempImageArray.forEach( function(item, index) {
                             let retUrl = getUploadIcon(item);
                             if(retUrl){
-                                imageLists.push({url:retUrl});
+                                imageLists.push({url:retUrl,image_id:item});
                             }else{
-                                imageLists.push({url:item});
+                                imageLists.push({url:item,image_id:item});
                             }
                         });
                         this.uploadImageLists = imageLists.slice();
@@ -702,6 +706,17 @@
             },
             resetRejectFormDialog(){
                 this.$refs['rejectForm'].resetFields();
+            },
+            lookFileChangeHandle(item){//查看文件
+                try{
+                    window.open(item.image_id);
+                }catch (e) {
+                    this.$message({
+                        showClose:true,
+                        message: e.message,
+                        type: 'error'
+                    });
+                }
             }
         }
     }

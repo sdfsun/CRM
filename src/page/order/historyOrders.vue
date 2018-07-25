@@ -58,13 +58,6 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <!--<el-col :span='6'>-->
-                    <!--<el-form-item prop='content'>-->
-                        <!--<el-input placeholder="退货订单号" v-model="afterSaleOrderId" clearable @keyup.13.native='afterSaleChangeHandle'>-->
-                            <!--<el-button slot="append" @click='afterSaleChangeHandle'>申请退货</el-button>-->
-                        <!--</el-input>-->
-                    <!--</el-form-item>-->
-                <!--</el-col>-->
                 <el-col :span='2'>
                     <el-button type="primary"  @click='searchFormDatas'>查询</el-button>
                 </el-col>
@@ -728,17 +721,6 @@
                         type: 'error'
                     });
                 });
-            },
-            afterSaleChangeHandle(){//申请退货
-                if(!this.afterSaleOrderId){
-                    this.$message({
-                        showClose:true,
-                        message: '退货订单号不能为空',
-                        type: 'error'
-                    });
-                    return false;
-                }
-                window.open("/aftersales-add-"+this.afterSaleOrderId+".html");
             },
             lookFileChangeHandle(item){//查看文件
                 try{
